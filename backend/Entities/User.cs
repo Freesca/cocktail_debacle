@@ -1,7 +1,11 @@
+using Microsoft.AspNetCore.Identity;
+
 namespace backend.Entities;
 
-public class User
+public class User : IdentityUser<int>
 {
-    public int Id { get; set; }
-    public required string Username { get; set; }
+    // Campi aggiuntivi (custom)
+    public string? Provider { get; set; }
+    public string? ProviderId { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }
