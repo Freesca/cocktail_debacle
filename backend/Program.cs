@@ -10,9 +10,7 @@ using Microsoft.AspNetCore.Identity;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
@@ -27,7 +25,8 @@ builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = "JwtBearer";
     options.DefaultChallengeScheme = "JwtBearer";
-}).AddJwtBearer("JwtBearer", options =>
+})
+.AddJwtBearer("JwtBearer", options =>
 {
     var jwtConfig = builder.Configuration.GetSection("Jwt");
     options.TokenValidationParameters = new TokenValidationParameters
@@ -42,10 +41,23 @@ builder.Services.AddAuthentication(options =>
             Encoding.UTF8.GetBytes(jwtConfig["Key"]!)
         )
     };
+})
+.AddGoogle(googleOptions =>
+{
+    var clientId = builder.Configuration["Authentication:Google:ClientId"];
+    var clientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+
+    if (string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(clientSecret))
+    {
+        throw new Exception("Google ClientId or ClientSecret is missing from configuration.");
+    }
+
+    googleOptions.ClientId = clientId;
+    googleOptions.ClientSecret = clientSecret;
+    googleOptions.CallbackPath = "/signin-google"; 
 });
 
 builder.Services.AddScoped<JwtService>();
-
 
 var app = builder.Build();
 
@@ -55,9 +67,8 @@ using (var scope = app.Services.CreateScope())
     db.Database.Migrate();
 }
 
-
-// Configure the HTTP request pipeline.
-
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
