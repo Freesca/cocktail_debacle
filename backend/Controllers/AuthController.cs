@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Google;
 
 namespace backend.Controllers;
 
@@ -17,18 +18,21 @@ public class AuthController : ControllerBase
     private readonly SignInManager<User> _signInManager;
     private readonly IConfiguration _config;
     private readonly JwtService _jwtService;
+    private readonly UserNameService _userNameService;
 
     public AuthController(
         UserManager<User> userManager,
         SignInManager<User> signInManager,
         IConfiguration config,
-        JwtService jwtService
+        JwtService jwtService,
+        UserNameService userNameService
     )
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _config = config;
         _jwtService = jwtService;
+        _userNameService = userNameService;
     }
 
     // POST /auth/register
@@ -49,7 +53,8 @@ public class AuthController : ControllerBase
         if (!result.Succeeded)
             return BadRequest(result.Errors);
 
-        return Ok(new { message = "User registered successfully." });
+        var token = _jwtService.GenerateToken(user);
+        return Ok(new { token });
     }
 
     // POST /auth/login
@@ -101,7 +106,8 @@ public class AuthController : ControllerBase
 
         if (user == null)
         {
-            user = new User { UserName = name, Email = email };
+            var ValidUserName = await _userNameService.GenerateValidUserNameAsync(name, email);
+            user = new User { UserName = ValidUserName, Email = email };
             var createUserResult = await _userManager.CreateAsync(user);
 
             if (!createUserResult.Succeeded)

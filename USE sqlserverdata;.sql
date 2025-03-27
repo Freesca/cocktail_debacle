@@ -1,5 +1,2 @@
-USE sqlserverdata;
-GO
-
-SELECT * FROM sys.tables;
+SELECT * FROM AspNetUsers;
 GO
