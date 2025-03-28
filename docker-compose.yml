@@ -46,6 +46,7 @@ services:
       - "4200:4200"
     volumes:
       - ./frontend:/app
+      - /app/node_modules
     working_dir: /app
     command: npm run start -- --host 0.0.0.0
     depends_on:
