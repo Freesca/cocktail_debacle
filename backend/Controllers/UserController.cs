@@ -47,6 +47,16 @@ public class UserController : ControllerBase
         if (!string.IsNullOrWhiteSpace(dto.Email))
             user.Email = dto.Email;
 
+        // Cambiamento password se non è presente
+        if (string.IsNullOrWhiteSpace(user.PasswordHash))
+        {
+            if (!string.IsNullOrWhiteSpace(dto.NewPassword))
+            {
+                var addPasswordResult = await _userManager.AddPasswordAsync(user, dto.NewPassword);
+                if (!addPasswordResult.Succeeded)
+                    return BadRequest(addPasswordResult.Errors);
+            }
+        }
         // Cambiamento password se sono presenti entrambi i campi
         if (!string.IsNullOrWhiteSpace(dto.OldPassword) && !string.IsNullOrWhiteSpace(dto.NewPassword))
         {
@@ -54,11 +64,6 @@ public class UserController : ControllerBase
 
             if (!passwordChangeResult.Succeeded)
                 return BadRequest(passwordChangeResult.Errors);
-        }
-        else if (!string.IsNullOrWhiteSpace(dto.NewPassword) || !string.IsNullOrWhiteSpace(dto.OldPassword))
-        {
-            // Se è presente solo uno dei due, mostra errore
-            return BadRequest(new { message = "Both old and new passwords are required to change the password." });
         }
 
         var result = await _userManager.UpdateAsync(user);
