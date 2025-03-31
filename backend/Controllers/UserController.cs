@@ -23,7 +23,7 @@ public class UserController : ControllerBase
     [HttpGet("profile")]
     public async Task<IActionResult> GetProfile()
     {
-        var user = await GetCurrentUserAsync();
+        var user = await _userManager.GetUserAsync(User);
         if (user == null)
             return Unauthorized();
 
@@ -37,7 +37,7 @@ public class UserController : ControllerBase
     [HttpPatch("profile")]
     public async Task<IActionResult> UpdateProfile([FromBody] UpdateUserProfileDto dto)
     {
-        var user = await GetCurrentUserAsync();
+        var user = await _userManager.GetUserAsync(User);
         if (user == null)
             return Unauthorized();
 
@@ -76,7 +76,7 @@ public class UserController : ControllerBase
     [HttpDelete("profile")]
     public async Task<IActionResult> DeleteAccount()
     {
-        var user = await GetCurrentUserAsync();
+        var user = await _userManager.GetUserAsync(User);
         if (user == null)
             return Unauthorized();
 
@@ -85,11 +85,6 @@ public class UserController : ControllerBase
             return BadRequest(result.Errors);
 
         return Ok(new { message = "Account deleted successfully" });
-    }
-    private Task<User?> GetCurrentUserAsync()
-    {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        return _userManager.FindByIdAsync(userId!);
     }
 }
 

@@ -11,10 +11,8 @@ public class JwtService(IConfiguration config)
     {
         var claims = new[]
         {
-            new Claim(JwtRegisteredClaimNames.Sub, user.UserName ?? ""),
-            new Claim(JwtRegisteredClaimNames.Email, user.Email ?? ""),
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim("uid", user.Id.ToString())
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]!));
