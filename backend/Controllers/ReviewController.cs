@@ -1,5 +1,6 @@
 using backend.Data;
 using backend.DTOs.Review;
+using backend.DTOs.CocktailMeta;
 using backend.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -45,6 +46,10 @@ public class ReviewController(AppDbContext db, UserManager<User> userManager) : 
 
         if (cocktail == null)
         {
+            if (dto.CocktailId.HasValue)
+            {
+                return BadRequest("Cocktail not found.");
+            }
             cocktail = new Cocktail
             {
                 ExternalId = dto.CocktailExternalId ?? "",
@@ -93,4 +98,39 @@ public class ReviewController(AppDbContext db, UserManager<User> userManager) : 
 
         return Ok(new { message = "Review added successfully." });
     }
+
+    [Authorize]
+    [HttpGet("metadata/cocktail/{cocktailIdOrExternal}")]
+    public async Task<IActionResult> GetMetadataCocktail(string cocktailIdOrExternal)
+    {
+        Cocktail? cocktail;
+
+        // Prova a convertire in int → vuol dire che è un ID interno
+        if (int.TryParse(cocktailIdOrExternal, out var intId))
+        {
+            cocktail = await _db.Cocktail.FirstOrDefaultAsync(c => c.Id == intId);
+        }
+        else
+        {
+            cocktail = await _db.Cocktail.FirstOrDefaultAsync(c => c.ExternalId == cocktailIdOrExternal);
+        }
+
+        if (cocktail == null)
+            return NotFound("Cocktail not found");
+
+        var results = await _db.CocktailReviewMetadatas
+            .Where(m => m.CocktailId == cocktail.Id)
+            .Include(m => m.Place)
+            .Select(m => new CocktailMetaDto
+            {
+                PlaceId = m.PlaceId,
+                GooglePlaceId = m.Place.GooglePlaceId,
+                AverageScore = m.AverageScore,
+                ReviewCount = m.ReviewCount
+            })
+            .ToListAsync();
+
+        return Ok(results);
+    }
+
 }

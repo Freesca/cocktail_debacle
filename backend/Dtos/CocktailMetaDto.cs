@@ -1,0 +1,10 @@
+namespace backend.DTOs.CocktailMeta;
+
+public class CocktailMetaDto
+{
+    public int PlaceId { get; set; }
+    public string GooglePlaceId { get; set; } = string.Empty;
+
+    public double AverageScore { get; set; }
+    public int ReviewCount { get; set; }
+}
