@@ -7,7 +7,6 @@ docker-compose.override.yml
 backend/bin/
 backend/obj/
 backend/.vs/
-backend/Migrations/
 backend/*.db
 backend/*.db-journal
 
