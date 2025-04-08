@@ -1,7 +1,7 @@
 -- SELECT * FROM AspNetUsers;
 -- GO
 
-DROP DATABASE [sqlserverdata];
+-- DROP DATABASE [sqlserverdata];
 -- 
 
 -- SELECT TABLE_NAME
@@ -9,5 +9,10 @@ DROP DATABASE [sqlserverdata];
 -- WHERE TABLE_TYPE = 'BASE TABLE';
 
 -- SELECT DB_NAME() AS CurrentDatabase;
+
+-- SELECT COLUMN_NAME, DATA_TYPE
+-- FROM INFORMATION_SCHEMA.COLUMNS
+-- WHERE TABLE_NAME = 'Reviews'
+
 
 
