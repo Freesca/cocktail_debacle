@@ -18,7 +18,7 @@ public class ReviewController(AppDbContext db, UserManager<User> userManager) : 
 
     [Authorize]
     [HttpPost]
-    public async Task<IActionResult> AddReview([FromBody] CreateReviewDto dto)
+    public async Task<IActionResult> AddReview([FromBody] ReviewCreateDto dto)
     {
         var user = await _userManager.GetUserAsync(User);
         if (user == null)
@@ -98,6 +98,74 @@ public class ReviewController(AppDbContext db, UserManager<User> userManager) : 
 
         return Ok(new { message = "Review added successfully." });
     }
+
+    [Authorize]
+    [HttpGet("{reviewId}")]
+    public async Task<IActionResult> GetReview(int reviewId)
+    {
+        var review = await _db.Reviews
+            .Include(r => r.Cocktail)
+            .Include(r => r.Place)
+            .FirstOrDefaultAsync(r => r.Id == reviewId);
+    
+        if (review == null)
+            return NotFound("Review not found");
+    
+        return Ok(new
+        {
+            review.Id,
+            review.Rating,
+            review.Comment,
+            review.CreatedAt,
+            Cocktail = new { review.Cocktail.Id, review.Cocktail.ExternalId, review.Cocktail.Name },
+            Place = new { review.Place.Id, review.Place.GooglePlaceId },
+            review.UserId
+        });
+    }
+    
+    [Authorize]
+    [HttpPatch("{reviewId}")]
+    public async Task<IActionResult> UpdateReview(int reviewId, [FromBody] ReviewUpdateDto dto)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        var review = await _db.Reviews.FirstOrDefaultAsync(r => r.Id == reviewId);
+    
+        if (review == null)
+            return NotFound("Review not found");
+    
+        if (review.UserId != user?.Id)
+            return Forbid();
+    
+        if (dto.Rating.HasValue)
+            review.Rating = dto.Rating.Value;
+    
+        if (!string.IsNullOrWhiteSpace(dto.Comment))
+            review.Comment = dto.Comment;
+    
+        await _db.SaveChangesAsync();
+    
+        return Ok(new { message = "Review updated successfully." });
+    }
+    
+    [Authorize]
+    [HttpDelete("{reviewId}")]
+    public async Task<IActionResult> DeleteReview(int reviewId)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        var review = await _db.Reviews.FirstOrDefaultAsync(r => r.Id == reviewId);
+    
+        if (review == null)
+            return NotFound("Review not found");
+    
+        if (review.UserId != user?.Id)
+            return Forbid();
+    
+        _db.Reviews.Remove(review);
+        await _db.SaveChangesAsync();
+    
+        return Ok(new { message = "Review deleted successfully." });
+    }
+
 
     [Authorize]
     [HttpGet("metadata/cocktail/{cocktailIdOrExternal}")]

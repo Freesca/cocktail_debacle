@@ -3,7 +3,7 @@ namespace backend.Entities;
 public class Review
 {
     public int Id { get; set; }
-    public int Rating { get; set; } // Es: 1-5 stelle
+    public double Rating { get; set; } // Es: 1-5 stelle
     public string Comment { get; set; } = null!;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

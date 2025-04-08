@@ -1,8 +1,8 @@
 namespace backend.DTOs.Review;
 
-public class CreateReviewDto
+public class ReviewCreateDto
 {
-    public int Rating { get; set; }
+    public double Rating { get; set; }
     public string Comment { get; set; } = null!;
 
     // Almeno uno dei due deve essere fornito
