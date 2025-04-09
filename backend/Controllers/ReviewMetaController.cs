@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace backend.Controllers;
 
 [ApiController]
-[Route("reviews/metadata")]
+[Route("api/reviews/metadata")]
 public class ReviewMetadataController(AppDbContext db) : ControllerBase
 {
     private readonly AppDbContext _db = db;

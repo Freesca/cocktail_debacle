@@ -8,7 +8,7 @@ using backend.Entities;
 namespace backend.Controllers;
 
 [ApiController]
-[Route("user/reviews")]
+[Route("api/user/reviews")]
 public class UserReviewController(AppDbContext db, UserManager<User> userManager) : ControllerBase
 {
     private readonly AppDbContext _db = db;

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace backend.Controllers;
 
 [ApiController]
-[Route("reviews")]
+[Route("api/reviews")]
 public class ReviewController(AppDbContext db, UserManager<User> userManager) : ControllerBase
 {
     private readonly AppDbContext _db = db;

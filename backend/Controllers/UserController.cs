@@ -9,7 +9,7 @@ using backend.Dtos;
 namespace backend.Controllers;
 
 [ApiController]
-[Route("user")]
+[Route("api/user")]
 [Authorize]
 public class UserController : ControllerBase
 {

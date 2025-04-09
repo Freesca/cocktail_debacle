@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authentication.Google;
 namespace backend.Controllers;
 
 [ApiController]
-[Route("auth")]
+[Route("api/auth")]
 public class AuthController : ControllerBase
 {
     private readonly UserManager<User> _userManager;
@@ -73,7 +73,9 @@ public class AuthController : ControllerBase
             return Unauthorized(new { message = "Invalid credentials." });
 
         var token = _jwtService.GenerateToken(user);
-        return Ok(new { token });
+        SetJwtCookie(token);
+        return Ok(new { message = "Login successful" });
+
     }
 
     // GET /auth/google-login
@@ -89,32 +91,89 @@ public class AuthController : ControllerBase
     [HttpGet("google-response")]
     public async Task<IActionResult> GoogleResponse()
     {
+        // Estrarre informazioni dal token di Google
         var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
 
         if (!result.Succeeded)
             return Unauthorized(new { message = "Google authentication failed." });
 
         var claims = result.Principal?.Identities?.FirstOrDefault()?.Claims;
-
         var email = claims?.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
         var name = claims?.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
 
         if (email == null)
             return BadRequest(new { message = "Email not found in Google response." });
 
+        // Creazione dell'utente se non esiste
         var user = await _userManager.FindByEmailAsync(email);
-
         if (user == null)
         {
-            var ValidUserName = await _userNameService.GenerateValidUserNameAsync(name, email);
-            user = new User { UserName = ValidUserName, Email = email };
+            var validUserName = await _userNameService.GenerateValidUserNameAsync(name, email);
+            user = new User { UserName = validUserName, Email = email };
             var createUserResult = await _userManager.CreateAsync(user);
 
             if (!createUserResult.Succeeded)
                 return BadRequest(createUserResult.Errors);
         }
 
+        // Generazione di un token JWT personalizzato per il tuo sistema
         var token = _jwtService.GenerateToken(user);
-        return Ok(new { token });
+
+        // Salvataggio del token nel cookie HttpOnly
+        SetJwtCookie(token);
+
+        return Ok(new { message = "Authenticated", token });
+    }
+
+    private void SetJwtCookie(string token)
+    {
+        var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                SameSite = SameSiteMode.Lax,
+                Secure = false, // solo in HTTPS
+                Expires = DateTime.UtcNow.AddDays(7)
+            };
+        Response.Cookies.Append("jwt", token, cookieOptions);
+    }
+
+    [HttpGet("is-logged-in")]
+    public IActionResult IsLoggedIn()
+    {
+        var jwt = Request.Cookies["jwt"];
+
+        if (string.IsNullOrEmpty(jwt))
+            return Unauthorized();
+
+        var principal = _jwtService.ValidateToken(jwt);
+
+        if (principal == null)
+            return Unauthorized();
+
+        return Ok(new { message = "Authenticated" });
+    }
+
+    [HttpGet("me")]
+    public IActionResult Me()
+    {
+        var jwt = Request.Cookies["jwt"];
+
+        if (string.IsNullOrEmpty(jwt))
+            return Unauthorized();
+
+        var principal = _jwtService.ValidateToken(jwt);
+
+        if (principal == null)
+            return Unauthorized();
+
+        var username = principal.Identity?.Name;
+        return Ok(new { username });
+    }
+
+    [HttpPost("logout")]
+    public IActionResult Logout()
+    {
+        Response.Cookies.Delete("jwt");
+        return Ok(new { message = "Logout successful" });
     }
 }

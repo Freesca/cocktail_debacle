@@ -11,12 +11,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFrontend",
+    options.AddPolicy("AllowLocalhost",  // Nome della policy CORS
         policy =>
         {
-            policy.WithOrigins("http://localhost:4200")
+            policy.WithOrigins("http://localhost")  // L'indirizzo del tuo frontend Angular
                   .AllowAnyHeader()
-                  .AllowAnyMethod();
+                  .AllowAnyMethod()
+                  .AllowCredentials();  // Aggiungi questa riga per permettere l'invio di credenziali (cookie)
         });
 });
 
@@ -72,6 +73,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<UserNameService>();
 
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -83,7 +85,7 @@ using (var scope = app.Services.CreateScope())
 
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCors("AllowFrontend");
+app.UseCors("AllowLocalhost");
 
 app.MapControllers();
 
