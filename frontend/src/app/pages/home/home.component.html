@@ -1,1 +1,16 @@
-<p>Home Works!</p>
+
+<div class="home-container position-absolute top-50 start-50 translate-middle">
+  <h1 class="home-title animate-title text-center">
+    Benvenuto su Cocktail Débâcle,<br />
+    scopri i drink più popolari ora:
+  </h1>
+  
+  <div class="carousel-container text-center overflow-visible mt-5">
+    <div class="carousel">
+      <div class="carousel-slide" *ngFor="let slide of sliderItems; let i = index" (mouseenter)="setHoveredIndex(i)" [ngStyle]="{ transform: getScale(i), zIndex: getZIndex(i) }">
+        <img [src]="slide.image" alt="slide image" />
+        <h3>{{ slide.title }}</h3>
+      </div>
+    </div>
+  </div>
+</div>

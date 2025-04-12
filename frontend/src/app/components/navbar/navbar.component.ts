@@ -5,7 +5,6 @@ import { RegisterFormComponent } from '../register-form/register-form.component'
 import { RouterModule } from '@angular/router';
 import { NgIconsModule } from '@ng-icons/core';
 import { AuthService } from '../../services/auth.service';
-import { UserDropdownComponent } from "../user-dropdown/user-dropdown.component";
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 
 
@@ -18,11 +17,11 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
     LoginFormComponent,
     NgIconsModule, // ✅ solo questo
     RegisterFormComponent,
-    UserDropdownComponent
+    NgbDropdownModule,
 ],
   providers: [AuthService],
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.css'
+  styleUrl: './navbar.component.scss'
 })
 export class NavbarComponent {
   isAuthenticated = false;
@@ -92,5 +91,3 @@ export class NavbarComponent {
     });
   }  
 }
-
-

@@ -36,6 +36,7 @@ export class AuthService {
   }
 
   isLoggedIn(): Observable<boolean> {
+    console.log('Checking if user is logged in...');
     return this.http.get<{ message: string }>(`${this.apiUrl}/is-logged-in`, {
       withCredentials: true
     }).pipe(

@@ -1,0 +1,19 @@
+<div *ngIf="loading">Caricamento in corso...</div>
+
+<div *ngIf="errorMessage" class="error">
+  {{ errorMessage }}
+</div>
+
+<div class="cocktail-grid" *ngIf="cocktails.length > 0">
+    <div *ngFor="let cocktail of cocktails" class="cocktail-card">
+      <a [routerLink]="['/cocktail', cocktail.idDrink]">
+        <img [src]="cocktail.strDrinkThumb" alt="{{ cocktail.strDrink }}" class="cocktail-image" />
+        <p class="cocktail-name">{{ cocktail.strDrink }}</p>
+      </a>
+    </div>
+  </div>
+  
+
+<div *ngIf="cocktails.length === 0 && !loading">
+  Nessun cocktail trovato.
+</div>

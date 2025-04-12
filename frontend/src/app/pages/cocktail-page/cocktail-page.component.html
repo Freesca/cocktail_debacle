@@ -1,0 +1,18 @@
+<div *ngIf="loading">Caricamento...</div>
+<div *ngIf="cocktail">
+  <h2>{{ cocktail.strDrink }}</h2>
+  <img [src]="cocktail.strDrinkThumb" alt="{{ cocktail.strDrink }}" width="200" />
+  <p><strong>Categoria:</strong> {{ cocktail.strCategory }}</p>
+  <p><strong>Alcolico:</strong> {{ cocktail.strAlcoholic }}</p>
+  <p><strong>Istruzioni:</strong> {{ cocktail.strInstructions }}</p>
+
+  <ul>
+    <li *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]">
+      <ng-container *ngIf="cocktail['strIngredient' + i]">
+        {{ cocktail['strIngredient' + i] }} - {{ cocktail['strMeasure' + i] || '' }}
+      </ng-container>
+    </li>
+  </ul>
+</div>
+
+<div *ngIf="errorMessage">{{ errorMessage }}</div>

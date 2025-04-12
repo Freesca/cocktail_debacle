@@ -1,7 +1,4 @@
-main {
-  margin: 0;
-}
 
 .content {
-  padding-left: 130px;  /* Regola questo valore in base all'altezza della tua navbar */
+  padding-left: 80px;  /* Regola questo valore in base all'altezza della tua navbar */
 }
