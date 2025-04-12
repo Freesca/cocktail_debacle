@@ -28,6 +28,7 @@ services:
       - Jwt__Audience=${JWTAUDIENCE}
       - Authentication__Google__ClientId=${GOOGLECLIENTID}
       - Authentication__Google__ClientSecret=${GOOGLECLIENTSECRET}
+      - GOOGLE_MAPS_API_KEY=${GOOGLEAPIKEY}
     volumes:
       - ./backend:/src
     working_dir: /src
