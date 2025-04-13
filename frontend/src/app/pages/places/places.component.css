@@ -1,0 +1,24 @@
+.search-container {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .search-results {
+    max-height: 400px;
+    overflow-y: auto;
+    z-index: 1000;
+  }
+  
+  .list-group-item {
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .list-group-item:hover {
+    background-color: #f8f9fa;
+  }
+  
+  .spinner-border {
+    width: 1.5rem;
+    height: 1.5rem;
+  }

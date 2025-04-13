@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace backend.Controllers;
 
 [ApiController]
-[Route("places")]
+[Route("api/places")]
 public class PlaceSearchController : ControllerBase
 {
     private readonly HttpClient _httpClient;

@@ -1,1 +1,52 @@
-<p>places works!</p>
+<div class="container mt-4">
+  <h1>Find Places</h1>
+  <p>Search for cocktail bars and drink places</p>
+
+  <div class="search-container position-relative mb-4">
+    <div class="input-group">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Search for places..."
+        [(ngModel)]="searchTerm"
+        (input)="search(searchTerm)"
+        aria-label="Search"
+      />
+      <button 
+        *ngIf="searchTerm" 
+        class="btn btn-outline-secondary" 
+        type="button"
+        (click)="clearSearch()">
+        Clear
+      </button>
+    </div>
+
+    <!-- Loading indicator -->
+    <div *ngIf="isLoading" class="text-center p-2">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <!-- Error message -->
+    <div *ngIf="hasError" class="alert alert-danger mt-2">
+      {{ errorMessage }}
+    </div>
+
+    <!-- Search results dropdown -->
+    <div 
+      *ngIf="searchResults.length > 0" 
+      class="search-results position-absolute w-100 mt-1 border rounded bg-white shadow-sm">
+      <ul class="list-group">
+        <li 
+          *ngFor="let place of searchResults" 
+          class="list-group-item list-group-item-action">
+          <div class="d-flex flex-column">
+            <strong>{{ place.name }}</strong>
+            <small>{{ place.formatted_address }}</small>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
