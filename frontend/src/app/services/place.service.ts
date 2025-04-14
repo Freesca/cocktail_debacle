@@ -67,4 +67,10 @@ export class PlaceService {
   searchPlaces(query: string): Observable<PlaceSearchResponse> {
     return this.http.get<PlaceSearchResponse>(`${this.apiUrl}?query=${encodeURIComponent(query)}`);
   }
+
+  getPlacePhoto(photoReference: string, maxWidth: number = 400): Observable<Blob> {
+    return this.http.get(`/api/places/photo?photoReference=${photoReference}&maxWidth=${maxWidth}`, {
+      responseType: 'blob'
+    });
+  }
 }

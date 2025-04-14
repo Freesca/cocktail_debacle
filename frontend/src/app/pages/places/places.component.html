@@ -1,6 +1,4 @@
 <div class="container mt-4">
-  <h1>Find Places</h1>
-  <p>Search for cocktail bars and drink places</p>
 
   <div class="search-container position-relative mb-4">
     <div class="input-group">
@@ -40,7 +38,9 @@
       <ul class="list-group">
         <li 
           *ngFor="let place of searchResults" 
-          class="list-group-item list-group-item-action">
+          class="list-group-item list-group-item-action"
+          (click)="goToPlaceDetails(place)"
+          style="cursor: pointer;">
           <div class="d-flex flex-column">
             <strong>{{ place.name }}</strong>
             <small>{{ place.formatted_address }}</small>

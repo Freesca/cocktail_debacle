@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PlaceService, PlaceResult } from '../../services/place.service';
 import { Subject, debounceTime, distinctUntilChanged, switchMap, of, catchError } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-places',
@@ -20,7 +21,10 @@ export class PlacesComponent {
   
   private searchTerms = new Subject<string>();
 
-  constructor(private placeService: PlaceService) {
+  constructor(
+    private placeService: PlaceService,
+    private router: Router
+  ) {
     this.searchTerms.pipe(
       // wait 300ms after each keystroke before considering the term
       debounceTime(300),
@@ -62,5 +66,12 @@ export class PlacesComponent {
   clearSearch(): void {
     this.searchTerm = '';
     this.searchResults = [];
+  }
+
+  // Navigate to place details page
+  goToPlaceDetails(place: PlaceResult): void {
+    this.router.navigate(['/place', place.place_id], { 
+      state: { place: place }
+    });
   }
 }
