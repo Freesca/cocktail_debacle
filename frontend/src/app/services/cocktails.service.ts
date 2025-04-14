@@ -6,14 +6,14 @@ import { forkJoin, map, Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class CocktailService {
-  private baseUrl = 'https://www.thecocktaildb.com/api/json/v1/1/search.php?f=';
+  private baseUrl = 'https://www.thecocktaildb.com/api/json/v1/1/';
 
   constructor(private http: HttpClient) {}
 
   getAllCocktails(): Observable<any[]> {
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789'.split('');
     const requests = chars.map((char) =>
-      this.http.get<any>(`${this.baseUrl}${char}`)
+      this.http.get<any>(`${this.baseUrl}search.php?f=${char}`)
     );
 
     return forkJoin(requests).pipe(
@@ -27,7 +27,20 @@ export class CocktailService {
   }
 
   getCocktailById(id: string): Observable<any> {
-    return this.http.get<any>(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${id}`);
+    return this.http.get<any>(`${this.baseUrl}lookup.php?i=${id}`);
   }
-  
+
+  getCategories(): Observable<any> {
+    return this.http.get(`${this.baseUrl}list.php?c=list`);
+  }
+
+  // Metodo per ottenere ingredienti
+  getIngredients(): Observable<any> {
+    return this.http.get(`${this.baseUrl}list.php?i=list`);
+  }
+
+  // Metodo per ottenere bicchieri
+  getGlasses(): Observable<any> {
+    return this.http.get(`${this.baseUrl}list.php?g=list`);
+  }
 }

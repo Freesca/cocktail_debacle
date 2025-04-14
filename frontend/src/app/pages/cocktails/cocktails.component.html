@@ -1,19 +1,33 @@
-<div *ngIf="loading">Caricamento in corso...</div>
-
-<div *ngIf="errorMessage" class="error">
-  {{ errorMessage }}
-</div>
-
-<div class="cocktail-grid" *ngIf="cocktails.length > 0">
-    <div *ngFor="let cocktail of cocktails" class="cocktail-card">
-      <a [routerLink]="['/cocktail', cocktail.idDrink]">
-        <img [src]="cocktail.strDrinkThumb" alt="{{ cocktail.strDrink }}" class="cocktail-image" />
-        <p class="cocktail-name">{{ cocktail.strDrink }}</p>
-      </a>
+<div class="cocktails-container position-relative">
+    <div *ngIf="loading">Caricamento in corso...</div>
+  
+    <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+  
+    <!-- Grid dei cocktail -->
+    <div class="cocktail-grid" *ngIf="displayedCocktails.length > 0">
+      <div *ngFor="let cocktail of displayedCocktails" class="cocktail-card">
+        <a [routerLink]="['/cocktail', cocktail.idDrink]" class="image-link">
+          <img
+            [src]="cocktail.strDrinkThumb"
+            alt="{{ cocktail.strDrink }}"
+            class="cocktail-image"
+          />
+          <div class="cocktail-name-overlay">{{ cocktail.strDrink }}</div>
+        </a>
+      </div>
+    </div>
+  
+    <!-- Nessun risultato -->
+    <div
+      class="text-center text-muted fs-5 mt-5"
+      *ngIf="displayedCocktails.length === 0 && !loading"
+    >
+      Nessun cocktail trovato.
+    </div>
+  
+    <!-- Bottone carica altri -->
+    <div class="text-center my-4" *ngIf="currentIndex < filteredCocktails.length">
+      <button class="btn btn-success" (click)="displayNextCocktails()">Carica altri</button>
     </div>
   </div>
   
-
-<div *ngIf="cocktails.length === 0 && !loading">
-  Nessun cocktail trovato.
-</div>

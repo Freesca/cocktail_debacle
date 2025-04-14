@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
   selector: 'app-cocktail-page',
   imports: [CommonModule],
   templateUrl: './cocktail-page.component.html',
-  styleUrls: ['./cocktail-page.component.css'],
+  styleUrls: ['./cocktail-page.component.scss'],
 })
 export class CocktailPageComponent implements OnInit {
   cocktail: any;
@@ -33,5 +33,18 @@ export class CocktailPageComponent implements OnInit {
         }
       );
     }
+  }
+
+  getIngredientDots(): number[] {
+    const ingredientCount = 10; // Massimo numero di ingredienti
+    const availableIngredients = [];
+
+    for (let i = 1; i <= ingredientCount; i++) {
+      if (this.cocktail['strIngredient' + i]) {
+        availableIngredients.push(i); // Aggiungi il numero dell'ingrediente se presente
+      }
+    }
+
+    return availableIngredients; // Restituisci l'elenco dei numeri degli ingredienti trovati
   }
 }

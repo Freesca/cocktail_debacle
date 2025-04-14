@@ -1,18 +1,42 @@
 <div *ngIf="loading">Caricamento...</div>
-<div *ngIf="cocktail">
-  <h2>{{ cocktail.strDrink }}</h2>
-  <img [src]="cocktail.strDrinkThumb" alt="{{ cocktail.strDrink }}" width="200" />
-  <p><strong>Categoria:</strong> {{ cocktail.strCategory }}</p>
-  <p><strong>Alcolico:</strong> {{ cocktail.strAlcoholic }}</p>
-  <p><strong>Istruzioni:</strong> {{ cocktail.strInstructions }}</p>
 
-  <ul>
-    <li *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]">
-      <ng-container *ngIf="cocktail['strIngredient' + i]">
-        {{ cocktail['strIngredient' + i] }} - {{ cocktail['strMeasure' + i] || '' }}
-      </ng-container>
-    </li>
-  </ul>
+<div *ngIf="cocktail" class="cocktail-detail-container">
+  <div class="top-section">
+    <!-- Immagine -->
+    <div class="cocktail-image">
+      <img [src]="cocktail.strDrinkThumb" alt="{{ cocktail.strDrink }}" />
+    </div>
+
+    <!-- Info principali -->
+    <div class="cocktail-info">
+      <h2>{{ cocktail.strDrink }}</h2>
+      <p><strong>Categoria:</strong> {{ cocktail.strCategory }}</p>
+      <p><strong>Alcolico:</strong> {{ cocktail.strAlcoholic }}</p>
+    </div>
+  </div>
+
+  <!-- Sezione inferiore: istruzioni e ingredienti -->
+  <div class="bottom-section">
+    <div class="cocktail-instructions">
+      <h3>Istruzioni</h3>
+      <p>{{ cocktail.strInstructions }}</p>
+    </div>
+
+    <div class="cocktail-ingredients">
+      <h3>Ingredienti</h3>
+      <ul class="ingredient-list">
+        <!-- Genera i dots in base al numero di ingredienti -->
+        <li *ngFor="let i of getIngredientDots()">
+          <ng-container *ngIf="cocktail['strIngredient' + i]">
+            <div class="ingredient">
+              <span class="dot"></span> 
+              {{ cocktail['strIngredient' + i] }} - {{ cocktail['strMeasure' + i] || '' }}
+            </div>
+          </ng-container>
+        </li>
+      </ul>      
+    </div>
+  </div>
 </div>
 
-<div *ngIf="errorMessage">{{ errorMessage }}</div>
+<div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
