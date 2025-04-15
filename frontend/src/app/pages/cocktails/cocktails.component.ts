@@ -1,9 +1,10 @@
 import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
 import { CocktailService } from '../../services/cocktails.service';
 import { SearchService } from '../../services/search.service';
-import { CommonModule } from '@angular/common';
-import { RouterModule, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-cocktails',
@@ -15,8 +16,8 @@ import { Subscription } from 'rxjs';
 })
 export class CocktailsComponent implements OnInit, OnDestroy {
   cocktails: any[] = [];
-  displayedCocktails: any[] = [];
   filteredCocktails: any[] = [];
+  displayedCocktails: any[] = [];
   loading = false;
   errorMessage = '';
   currentIndex = 0;
@@ -34,32 +35,34 @@ export class CocktailsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    // ⬇️ Leggi i parametri dalla URL
+    // Leggi i parametri dalla URL
     this.route.queryParams.subscribe((params) => {
-      this.searchService.searchQuery.next((params['q'] || '').toLowerCase());
-      this.searchService.category.next((params['category'] || '').toLowerCase());
-      this.searchService.ingredient.next((params['ingredient'] || '').toLowerCase());
-      this.searchService.glass.next((params['glass'] || '').toLowerCase());
-
-      this.fetchAllCocktails(); // dopo aver impostato i parametri
+      const { q, category, ingredient, glass } = params;
+      this.searchService.setSearchQuery(q || '');
+      this.searchService.setCategory(category || '');
+      this.searchService.setIngredient(ingredient || '');
+      this.searchService.setGlass(glass || '');
     });
 
-    // Ascolta gli observable per aggiornare i filtri
-    this.searchSub = this.searchService.searchQuery.subscribe(() => {
+    // Ascolta i cambiamenti e applica i filtri
+    this.searchSub = this.searchService.searchQuery$.subscribe(() => {
       this.applySearchFilter();
     });
-    this.categorySub = this.searchService.category.subscribe(() => {
+    this.categorySub = this.searchService.category$.subscribe(() => {
       this.applySearchFilter();
     });
-    this.ingredientSub = this.searchService.ingredient.subscribe(() => {
+    this.ingredientSub = this.searchService.ingredient$.subscribe(() => {
       this.applySearchFilter();
     });
-    this.glassSub = this.searchService.glass.subscribe(() => {
+    this.glassSub = this.searchService.glass$.subscribe(() => {
       this.applySearchFilter();
     });
+
+    this.fetchAllCocktails();
   }
 
   ngOnDestroy() {
+    // Annulla l'abbonamento quando il componente viene distrutto
     this.searchSub?.unsubscribe();
     this.categorySub?.unsubscribe();
     this.ingredientSub?.unsubscribe();
@@ -71,7 +74,7 @@ export class CocktailsComponent implements OnInit, OnDestroy {
     this.cocktailService.getAllCocktails().subscribe(
       (data) => {
         this.cocktails = data;
-        this.applySearchFilter(); // iniziale (anche senza query)
+        this.applySearchFilter(); // iniziale
         this.loading = false;
       },
       (error) => {
@@ -82,10 +85,11 @@ export class CocktailsComponent implements OnInit, OnDestroy {
   }
 
   applySearchFilter() {
-    const query = this.searchService.searchQuery.value.trim().toLowerCase();
-    const category = this.searchService.category.value.toLowerCase();
-    const ingredient = this.searchService.ingredient.value.toLowerCase();
-    const glass = this.searchService.glass.value.toLowerCase();
+    // Ottieni i valori attuali tramite i metodi get del service
+    const query = this.searchService.searchQueryValue.trim().toLowerCase();
+    const category = this.searchService.categoryValue.toLowerCase();
+    const ingredient = this.searchService.ingredientValue.toLowerCase();
+    const glass = this.searchService.glassValue.toLowerCase();
 
     this.filteredCocktails = this.cocktails.filter((cocktail) => {
       const nameMatch = cocktail.strDrink.toLowerCase().includes(query);
@@ -94,9 +98,7 @@ export class CocktailsComponent implements OnInit, OnDestroy {
         !ingredient ||
         Object.keys(cocktail)
           .filter((key) => key.startsWith('strIngredient') && cocktail[key])
-          .some((key) =>
-            cocktail[key].toLowerCase().includes(ingredient)
-          );
+          .some((key) => cocktail[key].toLowerCase().includes(ingredient));
       const glassMatch = !glass || cocktail.strGlass.toLowerCase().includes(glass);
 
       return nameMatch && categoryMatch && ingredientMatch && glassMatch;
@@ -117,4 +119,3 @@ export class CocktailsComponent implements OnInit, OnDestroy {
     this.currentIndex += this.pageSize;
   }
 }
-

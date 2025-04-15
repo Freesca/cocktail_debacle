@@ -1,4 +1,3 @@
-// src/app/services/search.service.ts
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
@@ -6,15 +5,51 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root',
 })
 export class SearchService {
-  searchQuery = new BehaviorSubject<string>('');
-  category = new BehaviorSubject<string>('');
-  ingredient = new BehaviorSubject<string>('');
-  glass = new BehaviorSubject<string>('');
-
+  // Usare BehaviorSubject per poter usare getValue
   private searchQuerySubject = new BehaviorSubject<string>('');
-  searchQuery$ = this.searchQuerySubject.asObservable();
+  private categorySubject = new BehaviorSubject<string>('');
+  private ingredientSubject = new BehaviorSubject<string>('');
+  private glassSubject = new BehaviorSubject<string>('');
 
+  // Creare gli Observable per ogni Subject
+  searchQuery$ = this.searchQuerySubject.asObservable();
+  category$ = this.categorySubject.asObservable();
+  ingredient$ = this.ingredientSubject.asObservable();
+  glass$ = this.glassSubject.asObservable();
+
+  // Metodi per aggiornare i valori
   setSearchQuery(query: string) {
     this.searchQuerySubject.next(query);
   }
+
+  setCategory(category: string) {
+    this.categorySubject.next(category);
+  }
+
+  setIngredient(ingredient: string) {
+    this.ingredientSubject.next(ingredient);
+  }
+
+  setGlass(glass: string) {
+    this.glassSubject.next(glass);
+  }
+
+  // Metodo per ottenere il valore corrente direttamente
+  get searchQueryValue(): string {
+    return this.searchQuerySubject.getValue();
+  }
+
+  get categoryValue(): string {
+    return this.categorySubject.getValue();
+  }
+
+  get ingredientValue(): string {
+    return this.ingredientSubject.getValue();
+  }
+
+  get glassValue(): string {
+    return this.glassSubject.getValue();
+  }
 }
+
+

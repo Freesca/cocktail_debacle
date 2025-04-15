@@ -99,9 +99,9 @@ using (var scope = app.Services.CreateScope())
     db.Database.Migrate();
 }
 
+app.UseCors("AllowLocalhost");
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCors("AllowLocalhost");
 
 app.MapControllers();
 

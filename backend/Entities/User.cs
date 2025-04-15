@@ -4,6 +4,8 @@ namespace backend.Entities;
 
 public class User : IdentityUser<int>
 {
+    public bool ConsentData { get; set; }
+    public bool ConsentSuggestions { get; set; }
     // Campi aggiuntivi (custom)
     public string? Provider { get; set; }
     public string? ProviderId { get; set; }

@@ -1,23 +1,25 @@
 // src/app/components/search-bar/search-bar.component.ts
-import { Component, OnInit, NgModule } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CocktailService } from '../../services/cocktails.service';
 import { SearchService } from '../../services/search.service';
-import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { appRoutes } from '../../app.routes';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-search-bar',
-  imports: [FormsModule, CommonModule],
+  standalone: true,
+  imports: [FormsModule, CommonModule, NgbCollapse],
   templateUrl: './search-bar.component.html',
   styleUrls: ['./search-bar.component.scss'],
 })
 export class SearchBarComponent implements OnInit {
+  isCollapsed = true;
   searchQuery = '';
-  selectedCategory = '';  // Aggiungi questa proprietà
-  selectedIngredient = '';  // Aggiungi questa proprietà
-  selectedGlass = ''; 
+  selectedCategory = '';
+  selectedIngredient = '';
+  selectedGlass = '';
 
   categories: string[] = [];
   ingredients: string[] = [];
@@ -26,11 +28,10 @@ export class SearchBarComponent implements OnInit {
   constructor(
     private cocktailService: CocktailService,
     private searchService: SearchService,
-    private router: Router,
+    private router: Router
   ) {}
 
   ngOnInit() {
-    // Carica categorie, ingredienti e bicchieri da API
     this.loadCategories();
     this.loadIngredients();
     this.loadGlasses();
@@ -70,20 +71,20 @@ export class SearchBarComponent implements OnInit {
   }
 
   onSearch() {
-    // Aggiorna gli observable per i componenti in ascolto
-    this.searchService.searchQuery.next(this.searchQuery.trim().toLowerCase());
-    this.searchService.category.next(this.selectedCategory.toLowerCase());
-    this.searchService.ingredient.next(this.selectedIngredient.toLowerCase());
-    this.searchService.glass.next(this.selectedGlass.toLowerCase());
+    // Usa il SearchService per aggiornare lo stato di ricerca
+    this.searchService.setSearchQuery(this.searchQuery.trim());
+    this.searchService.setCategory(this.selectedCategory);
+    this.searchService.setIngredient(this.selectedIngredient);
+    this.searchService.setGlass(this.selectedGlass);
 
-    // Reindirizza alla pagina dei risultati dei cocktail
+    // Naviga ai risultati con i query params
     this.router.navigate(['/cocktails'], {
       queryParams: {
-        q: this.searchQuery.trim().toLowerCase(),
-        category: this.selectedCategory.toLowerCase(),
-        ingredient: this.selectedIngredient.toLowerCase(),
-        glass: this.selectedGlass.toLowerCase()
-      }
+        q: this.searchQuery.trim(),
+        category: this.selectedCategory,
+        ingredient: this.selectedIngredient,
+        glass: this.selectedGlass,
+      },
     });
   }
 
@@ -92,5 +93,5 @@ export class SearchBarComponent implements OnInit {
       this.onSearch();
     }
   }
-  
 }
+

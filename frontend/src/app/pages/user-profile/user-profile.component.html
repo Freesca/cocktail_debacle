@@ -1,0 +1,93 @@
+<div class="container mt-4">
+    <h2 class="mb-4">Area Personale</h2>
+  
+    <div *ngIf="loading()" class="alert alert-info">Caricamento profilo...</div>
+    <div *ngIf="error()" class="alert alert-danger">Errore: {{ error() }}</div>
+  
+    <form *ngIf="!loading() && !error()" (ngSubmit)="updateProfile()">
+      <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <input
+          type="text"
+          id="username"
+          [(ngModel)]="username"
+          name="username"
+          class="form-control"
+          [disabled]="!editMode"
+          required
+        />
+      </div>
+  
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input
+          type="email"
+          id="email"
+          [(ngModel)]="email"
+          name="email"
+          class="form-control"
+          [disabled]="!editMode"
+          required
+        />
+      </div>
+  
+      <div *ngIf="editMode">
+        <div class="mb-3">
+          <label for="oldPassword" class="form-label">Vecchia Password (opzionale)</label>
+          <input
+            type="password"
+            id="oldPassword"
+            [(ngModel)]="oldPassword"
+            name="oldPassword"
+            class="form-control"
+          />
+        </div>
+  
+        <div class="mb-3">
+          <label for="newPassword" class="form-label">Nuova Password (opzionale)</label>
+          <input
+            type="password"
+            id="newPassword"
+            [(ngModel)]="newPassword"
+            name="newPassword"
+            class="form-control"
+          />
+        </div>
+  
+        <div class="form-check mb-2">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="consentData"
+            [(ngModel)]="consentData"
+            name="consentData"
+          />
+          <label class="form-check-label" for="consentData">
+            Acconsento alla gestione dei dati personali (GDPR)
+          </label>
+        </div>
+  
+        <div class="form-check mb-3">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="consentSuggestions"
+            [(ngModel)]="consentSuggestions"
+            name="consentSuggestions"
+          />
+          <label class="form-check-label" for="consentSuggestions">
+            Acconsento alla memorizzazione delle ricerche per suggerimenti personalizzati
+          </label>
+        </div>
+      </div>
+  
+      <button *ngIf="!editMode" type="button" class="btn btn-secondary" (click)="editMode = true">Modifica Profilo</button>
+      <button *ngIf="editMode" class="btn btn-primary">Salva Modifiche</button>
+      <button type="button" class="btn btn-danger ms-2" (click)="deleteAccount()">Elimina Account</button>
+    </form>
+  
+    <div *ngIf="successMessage()" class="alert alert-success mt-3">
+      {{ successMessage() }}
+    </div>
+  </div>
+  

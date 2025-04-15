@@ -28,9 +28,13 @@ public class UserController : ControllerBase
             return Unauthorized();
 
         return Ok(new {
+            // user.Country,
+            // user.FirstName,
+            // user.LastName,
             user.UserName,
-            user.Email
-            // altri campi pubblici del profilo
+            user.Email,
+            user.ConsentData,
+            user.ConsentSuggestions
         });
     }
 
@@ -46,6 +50,13 @@ public class UserController : ControllerBase
             user.UserName = dto.Username;
         if (!string.IsNullOrWhiteSpace(dto.Email))
             user.Email = dto.Email;
+
+        if (dto.ConsentData.HasValue)
+            user.ConsentData = dto.ConsentData.Value;
+
+        if (dto.ConsentSuggestions.HasValue)
+            user.ConsentSuggestions = dto.ConsentSuggestions.Value;
+
 
         // Cambiamento password se non è presente
         if (string.IsNullOrWhiteSpace(user.PasswordHash))
