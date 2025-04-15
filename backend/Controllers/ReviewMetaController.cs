@@ -18,13 +18,12 @@ public class ReviewMetadataController(AppDbContext db) : ControllerBase
     [HttpGet("cocktail/{cocktailIdOrExternal}")]
     public async Task<IActionResult> GetMetadataCocktail(string cocktailIdOrExternal)
     {
-        Cocktail? cocktail;
+        Cocktail? cocktail = null;
 
-        // Prova a interpretare l'input come ID o external ID
-        if (int.TryParse(cocktailIdOrExternal, out var intId))
+        cocktail = await _db.Cocktail.FirstOrDefaultAsync(c => c.ExternalId == cocktailIdOrExternal);
+
+        if (cocktail == null && int.TryParse(cocktailIdOrExternal, out var intId))  
             cocktail = await _db.Cocktail.FirstOrDefaultAsync(c => c.Id == intId);
-        else
-            cocktail = await _db.Cocktail.FirstOrDefaultAsync(c => c.ExternalId == cocktailIdOrExternal);
 
         if (cocktail == null)
             return NotFound("Cocktail not found");
@@ -76,3 +75,83 @@ public class ReviewMetadataController(AppDbContext db) : ControllerBase
     }
 
 }
+
+/*     private async Task<List<GooglePlaceResult>> GetNearbyPlacesFromGoogle(double lat, double lng, string apiKey, string? pageToken = null)
+    {
+        var allResults = new List<GooglePlaceResult>();
+        var url = string.IsNullOrEmpty(pageToken)
+            ? $"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={lat},{lng}&rankby=distance&keyword=cocktail+drink&key={apiKey}"
+            : $"https://maps.googleapis.com/maps/api/place/nearbysearch/json?pagetoken={pageToken}&key={apiKey}";
+
+        try
+        {
+            var httpClient = _httpClientFactory.CreateClient();
+            var responseString = await httpClient.GetStringAsync(url);
+            int responseLength = responseString.Length;
+            Console.WriteLine("Google API response received, length: {0}", responseLength);
+            
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+                NumberHandling = JsonNumberHandling.AllowReadingFromString
+            };
+            
+            var response = JsonSerializer.Deserialize<GoogleNearbySearchResponse>(responseString, options);
+            
+            if (response?.Status != "OK" || response.Results == null)
+            {
+                string status = response?.Status ?? "null";
+                Console.WriteLine("Invalid response status: {0}", status);
+                return allResults;
+            }
+
+            int resultCount = response.Results.Count();
+            Console.WriteLine("Successfully parsed {0} results from Google API", resultCount);
+            allResults.AddRange(response.Results);
+
+            // Check if we need to get more results
+            if (!string.IsNullOrEmpty(response.NextPageToken) && allResults.Count() < 10)
+            {
+                // Google requires a delay before using the next_page_token
+                await Task.Delay(2000);
+                var nextPageResults = await GetNearbyPlacesFromGoogle(lat, lng, apiKey, response.NextPageToken);
+                allResults.AddRange(nextPageResults);
+            }
+
+            return allResults;
+        }
+        catch (Exception ex)
+        {
+            // Log the error and return empty list
+            string errorMessage = ex.Message;
+            Console.WriteLine("Error getting nearby places: {0}", errorMessage);
+            
+            if (ex.InnerException != null)
+            {
+                string innerErrorMessage = ex.InnerException.Message;
+                Console.WriteLine("Inner exception: {0}", innerErrorMessage);
+            }
+            
+            return allResults;
+        }
+    }
+
+    private class GoogleNearbySearchResponse
+    {
+        public List<GooglePlaceResult>? Results { get; set; }
+        public string? NextPageToken { get; set; }
+        public string Status { get; set; } = string.Empty;
+    }
+
+    private class GooglePlaceResult
+    {
+        [JsonPropertyName("place_id")]
+        public string place_id { get; set; } = string.Empty;
+        
+        [JsonPropertyName("name")]
+        public string name { get; set; } = string.Empty;
+        
+        [JsonPropertyName("vicinity")]
+        public string vicinity { get; set; } = string.Empty;
+    }
+ */
