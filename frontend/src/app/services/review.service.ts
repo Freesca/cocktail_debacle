@@ -10,6 +10,13 @@ export interface CocktailReviewMetadata {
   reviewCount: number;
 }
 
+export interface PlaceReviewMetadata {
+  placeId: number;
+  googlePlaceId: string;
+  averageScore: number;
+  reviewCount: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -25,4 +32,13 @@ export class ReviewService {
       }
     );
   }
-} 
+
+  getCocktailReviewMetadata(cocktailId: string, lat: number, lng: number): Observable<PlaceReviewMetadata[]> {
+    return this.http.get<PlaceReviewMetadata[]>(
+      `${this.apiUrl}/cocktail/${cocktailId}?lat=${lat}&lng=${lng}`,
+      {
+        withCredentials: true
+      }
+    );
+  }
+}

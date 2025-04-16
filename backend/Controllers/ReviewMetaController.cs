@@ -4,31 +4,39 @@ using backend.DTOs.PlaceMeta;
 using backend.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using backend.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers;
 
 [ApiController]
 [Route("api/reviews/metadata")]
-public class ReviewMetadataController(AppDbContext db) : ControllerBase
+public class ReviewMetadataController : ControllerBase
 {
-    private readonly AppDbContext _db = db;
+    private readonly AppDbContext _db;
+    private readonly ISortingService _sortingService;
 
-    [Authorize]
-    [HttpGet("cocktail/{cocktailIdOrExternal}")]
-    public async Task<IActionResult> GetMetadataCocktail(string cocktailIdOrExternal)
+    public ReviewMetadataController(AppDbContext db, ISortingService sortingService)
     {
-        Cocktail? cocktail = null;
+        _db = db;
+        _sortingService = sortingService;
+    }
 
+    [HttpGet("cocktail/{cocktailIdOrExternal}")] 
+    public async Task<IActionResult> GetMetadataCocktail( string cocktailIdOrExternal, [FromQuery] double lat, [FromQuery] double lng)
+    { 
+        Cocktail? cocktail;
+        
         cocktail = await _db.Cocktail.FirstOrDefaultAsync(c => c.ExternalId == cocktailIdOrExternal);
 
-        if (cocktail == null && int.TryParse(cocktailIdOrExternal, out var intId))  
+        if (cocktail == null && int.TryParse(cocktailIdOrExternal, out var intId))
             cocktail = await _db.Cocktail.FirstOrDefaultAsync(c => c.Id == intId);
-
+        
         if (cocktail == null)
             return NotFound("Cocktail not found");
-
-        var results = await _db.CocktailReviewMetadatas
+        
+        // Ottieni tutti i metadati
+        var allResults = await _db.CocktailReviewMetadatas
             .Where(m => m.CocktailId == cocktail.Id)
             .Include(m => m.Place)
             .Select(m => new CocktailMetaDto
@@ -39,8 +47,15 @@ public class ReviewMetadataController(AppDbContext db) : ControllerBase
                 ReviewCount = m.ReviewCount
             })
             .ToListAsync();
+        
+        // Ordina i risultati tramite un servizio (placeholder per ora)
+        var sorted = await _sortingService.SortByDistanceAsync(allResults, lat, lng);
+        
+        // Limita a massimo 20
+        var top20 = sorted.Take(20);
+        
+        return Ok(top20);
 
-        return Ok(results);
     }
 
     [Authorize]
@@ -155,3 +170,32 @@ public class ReviewMetadataController(AppDbContext db) : ControllerBase
         public string vicinity { get; set; } = string.Empty;
     }
  */
+
+ /*     [Authorize]
+    [HttpGet("cocktail/{cocktailIdOrExternal}")]
+    public async Task<IActionResult> GetMetadataCocktail(string cocktailIdOrExternal)
+    {
+        Cocktail? cocktail = null;
+
+        cocktail = await _db.Cocktail.FirstOrDefaultAsync(c => c.ExternalId == cocktailIdOrExternal);
+
+        if (cocktail == null && int.TryParse(cocktailIdOrExternal, out var intId))  
+            cocktail = await _db.Cocktail.FirstOrDefaultAsync(c => c.Id == intId);
+
+        if (cocktail == null)
+            return NotFound("Cocktail not found");
+
+        var results = await _db.CocktailReviewMetadatas
+            .Where(m => m.CocktailId == cocktail.Id)
+            .Include(m => m.Place)
+            .Select(m => new CocktailMetaDto
+            {
+                PlaceId = m.PlaceId,
+                GooglePlaceId = m.Place.GooglePlaceId,
+                AverageScore = m.AverageScore,
+                ReviewCount = m.ReviewCount
+            })
+            .ToListAsync();
+
+        return Ok(results);
+    } */

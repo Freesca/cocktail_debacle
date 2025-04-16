@@ -42,6 +42,31 @@ public class PlaceSearchController : ControllerBase
         }
     }
 
+    [HttpGet("details")] 
+    public async Task<IActionResult> GetPlaceDetails([FromQuery] string placeId) 
+    { 
+        if (string.IsNullOrWhiteSpace(placeId))
+            return BadRequest("placeId is required.");
+
+        var apiKey = Environment.GetEnvironmentVariable("GOOGLE_MAPS_API_KEY");
+        if (string.IsNullOrEmpty(apiKey))
+            return StatusCode(500, "API key not configured on server.");
+        
+        var url = $"https://maps.googleapis.com/maps/api/place/details/json" +
+                  $"?place_id={Uri.EscapeDataString(placeId)}&key={apiKey}";
+        
+        try
+        {
+            var response = await _httpClient.GetStringAsync(url);
+            return Content(response, "application/json");
+        }
+        catch (HttpRequestException ex)
+        {
+            return StatusCode(500, $"Google API request failed: {ex.Message}");
+        }
+
+    }
+
     [HttpGet("photo")]
     public async Task<IActionResult> GetPlacePhoto([FromQuery] string photoReference, [FromQuery] int? maxWidth = 400)
     {

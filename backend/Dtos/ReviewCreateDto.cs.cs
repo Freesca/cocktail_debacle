@@ -10,4 +10,6 @@ public class ReviewCreateDto
     public int? CocktailId { get; set; }
 
     public string GooglePlaceId { get; set; } = null!;
+    public double? Latitude { get; set; } // ← aggiunto
+    public double? Longitude { get; set; } // ← aggiunto
 }

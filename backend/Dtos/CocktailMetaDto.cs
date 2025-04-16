@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace backend.DTOs.CocktailMeta;
 
 public class CocktailMetaDto
@@ -7,4 +9,9 @@ public class CocktailMetaDto
 
     public double AverageScore { get; set; }
     public int ReviewCount { get; set; }
+
+    [JsonIgnore]
+    public double? Latitude { get; set; }
+    [JsonIgnore]
+    public double? Longitude { get; set; }
 }
