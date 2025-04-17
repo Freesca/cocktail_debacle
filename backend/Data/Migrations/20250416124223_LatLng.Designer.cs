@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using backend.Data;
 
 #nullable disable
 
-namespace backend.Migrations
+namespace backend.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250416124223_LatLng")]
+    partial class LatLng
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -125,13 +128,33 @@ namespace backend.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("backend.Entities.Cocktail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ExternalId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Cocktail");
+                });
+
             modelBuilder.Entity("backend.Entities.CocktailReviewMetadata", b =>
                 {
                     b.Property<int>("PlaceId")
                         .HasColumnType("int");
 
-                    b.Property<string>("CocktailId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("CocktailId")
+                        .HasColumnType("int");
 
                     b.Property<double>("AverageScore")
                         .HasColumnType("float");
@@ -147,124 +170,6 @@ namespace backend.Migrations
                     b.HasIndex("CocktailId");
 
                     b.ToTable("CocktailReviewMetadatas");
-                });
-
-            modelBuilder.Entity("backend.Entities.Cocktails", b =>
-                {
-                    b.Property<string>("IdDrink")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("StrAlcoholic")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StrCategory")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StrDrink")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StrDrinkThumb")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StrGlass")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StrIngredient1")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StrIngredient10")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StrIngredient11")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StrIngredient12")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StrIngredient13")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StrIngredient14")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StrIngredient15")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StrIngredient2")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StrIngredient3")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StrIngredient4")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StrIngredient5")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StrIngredient6")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StrIngredient7")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StrIngredient8")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StrIngredient9")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StrInstructions")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StrMeasure1")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StrMeasure10")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StrMeasure11")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StrMeasure12")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StrMeasure13")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StrMeasure14")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StrMeasure15")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StrMeasure2")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StrMeasure3")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StrMeasure4")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StrMeasure5")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StrMeasure6")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StrMeasure7")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StrMeasure8")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StrMeasure9")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("IdDrink");
-
-                    b.ToTable("Cocktails");
                 });
 
             modelBuilder.Entity("backend.Entities.Place", b =>
@@ -301,8 +206,8 @@ namespace backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CocktailId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("CocktailId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Comment")
                         .IsRequired()
@@ -497,7 +402,7 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Entities.CocktailReviewMetadata", b =>
                 {
-                    b.HasOne("backend.Entities.Cocktails", "Cocktail")
+                    b.HasOne("backend.Entities.Cocktail", "Cocktail")
                         .WithMany()
                         .HasForeignKey("CocktailId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -516,10 +421,11 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Entities.Review", b =>
                 {
-                    b.HasOne("backend.Entities.Cocktails", "Cocktail")
+                    b.HasOne("backend.Entities.Cocktail", "Cocktail")
                         .WithMany("Reviews")
                         .HasForeignKey("CocktailId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("backend.Entities.Place", "Place")
                         .WithMany("Reviews")
@@ -540,7 +446,7 @@ namespace backend.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("backend.Entities.Cocktails", b =>
+            modelBuilder.Entity("backend.Entities.Cocktail", b =>
                 {
                     b.Navigation("Reviews");
                 });

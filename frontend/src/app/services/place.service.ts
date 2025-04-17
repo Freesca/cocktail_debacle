@@ -56,6 +56,12 @@ export interface PlaceSearchResponse {
   status: string;
 }
 
+export interface PlaceDetailsResponse {
+  html_attributions: string[];
+  result: PlaceResult;
+  status: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -66,6 +72,10 @@ export class PlaceService {
 
   searchPlaces(query: string): Observable<PlaceSearchResponse> {
     return this.http.get<PlaceSearchResponse>(`${this.apiUrl}?query=${encodeURIComponent(query)}`);
+  }
+
+  getPlaceDetails(placeId: string): Observable<any> {
+    return this.http.get<PlaceDetailsResponse>(`/api/places/details?placeid=${placeId}`);
   }
 
   getPlacePhoto(photoReference: string, maxWidth: number = 400): Observable<Blob> {

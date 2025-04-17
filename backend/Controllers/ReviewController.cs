@@ -28,7 +28,12 @@ public class ReviewController(AppDbContext db, UserManager<User> userManager) : 
         var place = await _db.Places.FirstOrDefaultAsync(p => p.GooglePlaceId == dto.GooglePlaceId);
         if (place == null)
         {
-            place = new Place { GooglePlaceId = dto.GooglePlaceId };
+            place = new Place 
+            { 
+                GooglePlaceId = dto.GooglePlaceId,
+                Latitude = dto.Latitude,
+                Longitude = dto.Longitude
+            };
             _db.Places.Add(place);
             await _db.SaveChangesAsync();
         }
