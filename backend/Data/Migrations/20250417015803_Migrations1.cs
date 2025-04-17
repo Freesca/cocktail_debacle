@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace backend.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Migrations1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -32,6 +32,8 @@ namespace backend.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    ConsentData = table.Column<bool>(type: "bit", nullable: false),
+                    ConsentSuggestions = table.Column<bool>(type: "bit", nullable: false),
                     Provider = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ProviderId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -56,17 +58,50 @@ namespace backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Cocktail",
+                name: "Cocktails",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ExternalId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    IdDrink = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    StrDrink = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StrCategory = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StrAlcoholic = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StrGlass = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StrInstructions = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StrDrinkThumb = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StrIngredient1 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StrIngredient2 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StrIngredient3 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StrIngredient4 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StrIngredient5 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StrIngredient6 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StrIngredient7 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StrIngredient8 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StrIngredient9 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StrIngredient10 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StrIngredient11 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StrIngredient12 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StrIngredient13 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StrIngredient14 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StrIngredient15 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StrMeasure1 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StrMeasure2 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StrMeasure3 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StrMeasure4 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StrMeasure5 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StrMeasure6 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StrMeasure7 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StrMeasure8 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StrMeasure9 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StrMeasure10 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StrMeasure11 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StrMeasure12 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StrMeasure13 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StrMeasure14 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StrMeasure15 = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Cocktail", x => x.Id);
+                    table.PrimaryKey("PK_Cocktails", x => x.IdDrink);
                 });
 
             migrationBuilder.CreateTable(
@@ -193,7 +228,7 @@ namespace backend.Migrations
                 name: "CocktailReviewMetadatas",
                 columns: table => new
                 {
-                    CocktailId = table.Column<int>(type: "int", nullable: false),
+                    CocktailId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     PlaceId = table.Column<int>(type: "int", nullable: false),
                     Id = table.Column<int>(type: "int", nullable: false),
                     AverageScore = table.Column<double>(type: "float", nullable: false),
@@ -203,10 +238,10 @@ namespace backend.Migrations
                 {
                     table.PrimaryKey("PK_CocktailReviewMetadatas", x => new { x.PlaceId, x.CocktailId });
                     table.ForeignKey(
-                        name: "FK_CocktailReviewMetadatas_Cocktail_CocktailId",
+                        name: "FK_CocktailReviewMetadatas_Cocktails_CocktailId",
                         column: x => x.CocktailId,
-                        principalTable: "Cocktail",
-                        principalColumn: "Id",
+                        principalTable: "Cocktails",
+                        principalColumn: "IdDrink",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_CocktailReviewMetadatas_Places_PlaceId",
@@ -222,11 +257,11 @@ namespace backend.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Rating = table.Column<int>(type: "int", nullable: false),
+                    Rating = table.Column<double>(type: "float", nullable: false),
                     Comment = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    CocktailId = table.Column<int>(type: "int", nullable: false),
+                    CocktailId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     PlaceId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -239,10 +274,10 @@ namespace backend.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Reviews_Cocktail_CocktailId",
+                        name: "FK_Reviews_Cocktails_CocktailId",
                         column: x => x.CocktailId,
-                        principalTable: "Cocktail",
-                        principalColumn: "Id",
+                        principalTable: "Cocktails",
+                        principalColumn: "IdDrink",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Reviews_Places_PlaceId",
@@ -343,7 +378,7 @@ namespace backend.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Cocktail");
+                name: "Cocktails");
 
             migrationBuilder.DropTable(
                 name: "Places");

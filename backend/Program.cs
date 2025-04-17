@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text.Json;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -97,7 +98,28 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     // db.Database.EnsureDeleted();
     db.Database.Migrate();
+
+    // ✅ IMPORT AUTOMATICO cocktail
+    var env = scope.ServiceProvider.GetRequiredService<IWebHostEnvironment>();
+    var filePath = Path.Combine(env.WebRootPath ?? "wwwroot", "data", "cocktails.json");
+    
+    if (File.Exists(filePath))
+    {
+        var json = await File.ReadAllTextAsync(filePath);
+        var jsonDoc = JsonDocument.Parse(json);
+        var drinks = jsonDoc.RootElement.GetProperty("drinks");
+
+        var cocktails = JsonSerializer.Deserialize<List<Cocktails>>(drinks.GetRawText());
+        if (cocktails != null && !db.Cocktails.Any())
+        {
+            db.Cocktails.AddRange(cocktails);
+            await db.SaveChangesAsync();
+        }
+    }
 }
+
+
+app.UseStaticFiles(); // Serve i file da wwwroot
 
 app.UseCors("AllowLocalhost");
 app.UseAuthentication();

@@ -1,46 +1,56 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { forkJoin, map, Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CocktailService {
-  private baseUrl = 'https://www.thecocktaildb.com/api/json/v1/1/';
+  private apiUrl = '/api/cocktails'; // Assumendo che NGINX o Angular proxy reindirizzi correttamente
 
   constructor(private http: HttpClient) {}
 
+  // Ottiene tutti i cocktail dal backend
   getAllCocktails(): Observable<any[]> {
-    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789'.split('');
-    const requests = chars.map((char) =>
-      this.http.get<any>(`${this.baseUrl}search.php?f=${char}`)
-    );
+    return this.http.get<any[]>(this.apiUrl);
+  }
 
-    return forkJoin(requests).pipe(
-      map((responses) => {
-        // Unisce tutti i risultati in un unico array
-        return responses
-          .map((res) => res.drinks || []) // esclude risultati null
-          .flat(); // unisce tutti i sotto-array in uno solo
+  // Ottiene un singolo cocktail per ID (es. "15346")
+  getCocktailById(id: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}`);
+  }
+
+  // Estrae le categorie uniche
+  getCategories(): Observable<string[]> {
+    return this.getAllCocktails().pipe(
+      map((cocktails) =>
+        [...new Set(cocktails.map((c) => c.strCategory).filter(Boolean))]
+      )
+    );
+  }
+
+  // Estrae tutti gli ingredienti da tutti i cocktail
+  getIngredients(): Observable<string[]> {
+    return this.getAllCocktails().pipe(
+      map((cocktails) => {
+        const ingredients = new Set<string>();
+        cocktails.forEach((c) => {
+          for (let i = 1; i <= 15; i++) {
+            const ingredient = c[`strIngredient${i}`];
+            if (ingredient) ingredients.add(ingredient);
+          }
+        });
+        return Array.from(ingredients);
       })
     );
   }
 
-  getCocktailById(id: string): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}lookup.php?i=${id}`);
-  }
-
-  getCategories(): Observable<any> {
-    return this.http.get(`${this.baseUrl}list.php?c=list`);
-  }
-
-  // Metodo per ottenere ingredienti
-  getIngredients(): Observable<any> {
-    return this.http.get(`${this.baseUrl}list.php?i=list`);
-  }
-
-  // Metodo per ottenere bicchieri
-  getGlasses(): Observable<any> {
-    return this.http.get(`${this.baseUrl}list.php?g=list`);
+  // Estrae tutti i tipi di bicchiere
+  getGlasses(): Observable<string[]> {
+    return this.getAllCocktails().pipe(
+      map((cocktails) =>
+        [...new Set(cocktails.map((c) => c.strGlass).filter(Boolean))]
+      )
+    );
   }
 }

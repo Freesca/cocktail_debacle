@@ -40,35 +40,36 @@ export class SearchBarComponent implements OnInit {
   loadCategories() {
     this.cocktailService.getCategories().subscribe(
       (data) => {
-        this.categories = data.drinks.map((drink: any) => drink.strCategory);
+        this.categories = data; // ✅ ora è un array di stringhe
       },
       (error) => {
         console.error('Errore nel caricare le categorie', error);
       }
     );
   }
-
+  
   loadIngredients() {
     this.cocktailService.getIngredients().subscribe(
       (data) => {
-        this.ingredients = data.drinks.map((drink: any) => drink.strIngredient1);
+        this.ingredients = data; // ✅ ora è un array di stringhe
       },
       (error) => {
         console.error('Errore nel caricare gli ingredienti', error);
       }
     );
   }
-
+  
   loadGlasses() {
     this.cocktailService.getGlasses().subscribe(
       (data) => {
-        this.glasses = data.drinks.map((drink: any) => drink.strGlass);
+        this.glasses = data; // ✅ ora è un array di stringhe
       },
       (error) => {
         console.error('Errore nel caricare i bicchieri', error);
       }
     );
   }
+  
 
   onSearch() {
     // Usa il SearchService per aggiornare lo stato di ricerca

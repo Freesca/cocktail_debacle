@@ -33,7 +33,7 @@ public class UserReviewController(AppDbContext db, UserManager<User> userManager
                 r.Rating,
                 r.Comment,
                 r.CreatedAt,
-                Cocktail = new { r.Cocktail.Id, r.Cocktail.ExternalId, r.Cocktail.Name },
+                Cocktail = new { r.Cocktail.IdDrink, r.Cocktail.StrDrink },
                 Place = new { r.Place.Id, r.Place.GooglePlaceId }
             })
             .ToListAsync();

@@ -10,7 +10,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
 {
     public DbSet<Place> Places { get; set; }
     public DbSet<Review> Reviews { get; set; }
-    public DbSet<Cocktail> Cocktail { get; set; }
+    public DbSet<Cocktails> Cocktails { get; set; }
     public DbSet<CocktailReviewMetadata> CocktailReviewMetadatas { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

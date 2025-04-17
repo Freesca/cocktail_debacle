@@ -24,16 +24,14 @@ public class ReviewPlaceCocktailController(AppDbContext db) : ControllerBase
             return NotFound("Place not found.");
 
         // Trova il Cocktail (id interno o external)
-        var cocktail = int.TryParse(cocktailIdOrExternal, out var cocktailId)
-            ? await _db.Cocktail.FirstOrDefaultAsync(c => c.Id == cocktailId)
-            : await _db.Cocktail.FirstOrDefaultAsync(c => c.ExternalId == cocktailIdOrExternal);
+        var cocktail = await _db.Cocktails.FirstOrDefaultAsync(c => c.IdDrink == cocktailIdOrExternal);
 
         if (cocktail == null)
             return NotFound("Cocktail not found.");
 
         // Recupera le recensioni
         var reviews = await _db.Reviews
-            .Where(r => r.PlaceId == place.Id && r.CocktailId == cocktail.Id)
+            .Where(r => r.PlaceId == place.Id && r.CocktailId == cocktail.IdDrink)
             .OrderByDescending(r => r.CreatedAt)
             .Select(r => new
             {

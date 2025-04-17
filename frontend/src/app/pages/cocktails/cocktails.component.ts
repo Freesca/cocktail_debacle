@@ -12,7 +12,6 @@ import { RouterModule } from '@angular/router';
   imports: [CommonModule, RouterModule],
   templateUrl: './cocktails.component.html',
   styleUrls: ['./cocktails.component.scss'],
-  providers: [CocktailService],
 })
 export class CocktailsComponent implements OnInit, OnDestroy {
   cocktails: any[] = [];

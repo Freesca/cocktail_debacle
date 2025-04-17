@@ -33,29 +33,11 @@ public class ReviewController(AppDbContext db, UserManager<User> userManager) : 
             await _db.SaveChangesAsync();
         }
 
-        // Trova o crea il Cocktail
-        Cocktail? cocktail = null;
-        if (dto.CocktailId.HasValue)
-        {
-            cocktail = await _db.Cocktail.FindAsync(dto.CocktailId.Value);
-        }
-        else if (!string.IsNullOrWhiteSpace(dto.CocktailExternalId))
-        {
-            cocktail = await _db.Cocktail.FirstOrDefaultAsync(c => c.ExternalId == dto.CocktailExternalId);
-        }
-
+        Cocktails? cocktail = null;
+        
         if (cocktail == null)
         {
-            if (dto.CocktailId.HasValue)
-            {
-                return BadRequest("Cocktail not found.");
-            }
-            cocktail = new Cocktail
-            {
-                ExternalId = dto.CocktailExternalId ?? "",
-            };
-            _db.Cocktail.Add(cocktail);
-            await _db.SaveChangesAsync();
+            return BadRequest("Cocktail is required and was not found or created.");
         }
 
         // Crea la recensione
@@ -65,7 +47,7 @@ public class ReviewController(AppDbContext db, UserManager<User> userManager) : 
             Comment = dto.Comment,
             UserId = user.Id,
             PlaceId = place.Id,
-            CocktailId = cocktail.Id,
+            CocktailId = cocktail.IdDrink,
             CreatedAt = DateTime.UtcNow
         };
 
@@ -74,14 +56,14 @@ public class ReviewController(AppDbContext db, UserManager<User> userManager) : 
 
         // Trova o crea il metadata
         var metadata = await _db.CocktailReviewMetadatas
-            .FirstOrDefaultAsync(m => m.PlaceId == place.Id && m.CocktailId == cocktail.Id);
+            .FirstOrDefaultAsync(m => m.PlaceId == place.Id && m.CocktailId == cocktail.IdDrink);
         
         if (metadata == null)
         {
             metadata = new CocktailReviewMetadata
             {
                 PlaceId = place.Id,
-                CocktailId = cocktail.Id,
+                CocktailId = cocktail.IdDrink,
                 ReviewCount = 1,
                 AverageScore = dto.Rating
             };
@@ -117,7 +99,7 @@ public class ReviewController(AppDbContext db, UserManager<User> userManager) : 
             review.Rating,
             review.Comment,
             review.CreatedAt,
-            Cocktail = new { review.Cocktail.Id, review.Cocktail.ExternalId, review.Cocktail.Name },
+            Cocktail = new { review.Cocktail.IdDrink, review.Cocktail.StrDrink },
             Place = new { review.Place.Id, review.Place.GooglePlaceId },
             review.UserId
         });

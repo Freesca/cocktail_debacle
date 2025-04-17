@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-cocktail-page',
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './cocktail-page.component.html',
   styleUrls: ['./cocktail-page.component.scss'],
@@ -22,29 +23,29 @@ export class CocktailPageComponent implements OnInit {
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
-      this.cocktailService.getCocktailById(id).subscribe(
-        (res) => {
-          this.cocktail = res.drinks ? res.drinks[0] : null;
+      this.cocktailService.getCocktailById(id).subscribe({
+        next: (res) => {
+          this.cocktail = res; // ✅ ora il backend restituisce direttamente l'oggetto cocktail
           this.loading = false;
         },
-        (error) => {
+        error: (err) => {
           this.errorMessage = 'Errore nel caricare il cocktail.';
           this.loading = false;
-        }
-      );
+        },
+      });
     }
   }
 
   getIngredientDots(): number[] {
-    const ingredientCount = 10; // Massimo numero di ingredienti
+    const ingredientCount = 15;
     const availableIngredients = [];
 
     for (let i = 1; i <= ingredientCount; i++) {
-      if (this.cocktail['strIngredient' + i]) {
-        availableIngredients.push(i); // Aggiungi il numero dell'ingrediente se presente
+      if (this.cocktail?.[`strIngredient${i}`]) {
+        availableIngredients.push(i);
       }
     }
 
-    return availableIngredients; // Restituisci l'elenco dei numeri degli ingredienti trovati
+    return availableIngredients;
   }
 }

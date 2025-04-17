@@ -18,19 +18,15 @@ public class ReviewMetadataController(AppDbContext db) : ControllerBase
     [HttpGet("cocktail/{cocktailIdOrExternal}")]
     public async Task<IActionResult> GetMetadataCocktail(string cocktailIdOrExternal)
     {
-        Cocktail? cocktail;
+        Cocktails? cocktail;
 
-        // Prova a interpretare l'input come ID o external ID
-        if (int.TryParse(cocktailIdOrExternal, out var intId))
-            cocktail = await _db.Cocktail.FirstOrDefaultAsync(c => c.Id == intId);
-        else
-            cocktail = await _db.Cocktail.FirstOrDefaultAsync(c => c.ExternalId == cocktailIdOrExternal);
+        cocktail = await _db.Cocktails.FirstOrDefaultAsync(c => c.IdDrink == cocktailIdOrExternal);
 
         if (cocktail == null)
             return NotFound("Cocktail not found");
 
         var results = await _db.CocktailReviewMetadatas
-            .Where(m => m.CocktailId == cocktail.Id)
+            .Where(m => m.CocktailId == cocktail.IdDrink)
             .Include(m => m.Place)
             .Select(m => new CocktailMetaDto
             {
@@ -65,8 +61,7 @@ public class ReviewMetadataController(AppDbContext db) : ControllerBase
             .Select(m => new PlaceMetaDto
             {
                 CocktailId = m.CocktailId,
-                ExternalId = m.Cocktail.ExternalId,
-                Name = m.Cocktail.Name,
+                Name = m.Cocktail.StrDrink,
                 AverageScore = m.AverageScore,
                 ReviewCount = m.ReviewCount
             })
