@@ -8,7 +8,7 @@ using backend.Data;
 
 #nullable disable
 
-namespace backend.Migrations
+namespace backend.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
@@ -152,115 +152,152 @@ namespace backend.Migrations
             modelBuilder.Entity("backend.Entities.Cocktails", b =>
                 {
                     b.Property<string>("IdDrink")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(450)")
+                        .HasAnnotation("Relational:JsonPropertyName", "idDrink");
 
                     b.Property<string>("StrAlcoholic")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strAlcoholic");
 
                     b.Property<string>("StrCategory")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strCategory");
 
                     b.Property<string>("StrDrink")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strDrink");
 
                     b.Property<string>("StrDrinkThumb")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strDrinkThumb");
 
                     b.Property<string>("StrGlass")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strGlass");
 
                     b.Property<string>("StrIngredient1")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strIngredient1");
 
                     b.Property<string>("StrIngredient10")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strIngredient10");
 
                     b.Property<string>("StrIngredient11")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strIngredient11");
 
                     b.Property<string>("StrIngredient12")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strIngredient12");
 
                     b.Property<string>("StrIngredient13")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strIngredient13");
 
                     b.Property<string>("StrIngredient14")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strIngredient14");
 
                     b.Property<string>("StrIngredient15")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strIngredient15");
 
                     b.Property<string>("StrIngredient2")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strIngredient2");
 
                     b.Property<string>("StrIngredient3")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strIngredient3");
 
                     b.Property<string>("StrIngredient4")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strIngredient4");
 
                     b.Property<string>("StrIngredient5")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strIngredient5");
 
                     b.Property<string>("StrIngredient6")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strIngredient6");
 
                     b.Property<string>("StrIngredient7")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strIngredient7");
 
                     b.Property<string>("StrIngredient8")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strIngredient8");
 
                     b.Property<string>("StrIngredient9")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strIngredient9");
 
                     b.Property<string>("StrInstructions")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strInstructions");
 
                     b.Property<string>("StrMeasure1")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strMeasure1");
 
                     b.Property<string>("StrMeasure10")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strMeasure10");
 
                     b.Property<string>("StrMeasure11")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strMeasure11");
 
                     b.Property<string>("StrMeasure12")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strMeasure12");
 
                     b.Property<string>("StrMeasure13")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strMeasure13");
 
                     b.Property<string>("StrMeasure14")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strMeasure14");
 
                     b.Property<string>("StrMeasure15")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strMeasure15");
 
                     b.Property<string>("StrMeasure2")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strMeasure2");
 
                     b.Property<string>("StrMeasure3")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strMeasure3");
 
                     b.Property<string>("StrMeasure4")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strMeasure4");
 
                     b.Property<string>("StrMeasure5")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strMeasure5");
 
                     b.Property<string>("StrMeasure6")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strMeasure6");
 
                     b.Property<string>("StrMeasure7")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strMeasure7");
 
                     b.Property<string>("StrMeasure8")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strMeasure8");
 
                     b.Property<string>("StrMeasure9")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "strMeasure9");
 
                     b.HasKey("IdDrink");
 

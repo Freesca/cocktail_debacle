@@ -23,7 +23,7 @@ public class ReviewMetadataController : ControllerBase
     }
 
     [HttpGet("cocktail/{cocktailIdOrExternal}")]
-    public async Task<IActionResult> GetMetadataCocktail(string cocktailIdOrExternal)
+    public async Task<IActionResult> GetMetadataCocktail( string cocktailIdOrExternal, [FromQuery] double lat, [FromQuery] double lng)
     {
         Cocktails? cocktail;
 
