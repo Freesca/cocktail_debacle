@@ -3,8 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface CocktailReviewMetadata {
-  cocktailId: number;
-  externalId: string;
+  cocktailId: string;
   name: string | null;
   averageScore: number;
   reviewCount: number;

@@ -39,6 +39,10 @@ public class ReviewController(AppDbContext db, UserManager<User> userManager) : 
         }
 
         Cocktails? cocktail = null;
+
+        // Trova o crea il Cocktail
+        if (!string.IsNullOrWhiteSpace(dto.CocktailId))
+            cocktail = await _db.Cocktails.FirstOrDefaultAsync(c => c.IdDrink == dto.CocktailId);
         
         if (cocktail == null)
         {

@@ -114,20 +114,10 @@ export class PlacePageComponent implements OnInit {
   }
 
   loadCocktailDetails(): void {
-    // Create observables for each cocktail
     const cocktailRequests = this.cocktailReviews.map(review => {
-      return this.cocktailService.getCocktailById(review.externalId).pipe(
-        map(response => {
-          const drink = response.drinks && response.drinks.length > 0 ? response.drinks[0] : null;
-          return {
-            review,
-            drink
-          };
-        }),
-        catchError(() => {
-          // Handle error for this specific cocktail
-          return of({ review, drink: null });
-        })
+      return this.cocktailService.getCocktailById(review.cocktailId).pipe(
+        map(drink => ({ review, drink })), // 👈 cambiato qui
+        catchError(() => of({ review, drink: null }))
       );
     });
     
@@ -135,7 +125,7 @@ export class PlacePageComponent implements OnInit {
     forkJoin(cocktailRequests).subscribe(results => {
       // Update each cocktail review with details
       results.forEach(result => {
-        const index = this.cocktailReviews.findIndex(r => r.externalId === result.review.externalId);
+        const index = this.cocktailReviews.findIndex(r => r.cocktailId === result.review.cocktailId);
         if (index !== -1) {
           if (result.drink) {
             this.cocktailReviews[index] = {
