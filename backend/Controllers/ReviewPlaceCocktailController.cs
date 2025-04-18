@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace backend.Controllers;
 
 [ApiController]
-[Route("reviews/place/{placeIdOrGoogle}/cocktail/{cocktailIdOrExternal}")]
+[Route("api/reviews/place/{placeIdOrGoogle}/cocktail/{cocktailIdOrExternal}")]
 public class ReviewPlaceCocktailController(AppDbContext db) : ControllerBase
 {
     private readonly AppDbContext _db = db;
@@ -32,6 +32,7 @@ public class ReviewPlaceCocktailController(AppDbContext db) : ControllerBase
         // Recupera le recensioni
         var reviews = await _db.Reviews
             .Where(r => r.PlaceId == place.Id && r.CocktailId == cocktail.IdDrink)
+            .Include(r => r.User)
             .OrderByDescending(r => r.CreatedAt)
             .Select(r => new
             {
@@ -39,7 +40,8 @@ public class ReviewPlaceCocktailController(AppDbContext db) : ControllerBase
                 r.Rating,
                 r.Comment,
                 r.CreatedAt,
-                r.UserId
+                r.UserId,
+                r.User.UserName
             })
             .ToListAsync();
 

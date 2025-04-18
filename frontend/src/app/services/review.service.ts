@@ -16,11 +16,30 @@ export interface PlaceReviewMetadata {
   reviewCount: number;
 }
 
+export interface CocktailReview {
+  id: number;
+  rating: number;
+  comment: string;
+  createdAt: string;
+  userId: string;
+  userName: string;
+}
+
+export interface ReviewCreateDto {
+  rating: number;
+  comment: string;
+  cocktailId: string;
+  googlePlaceId: string;
+  latitude?: number;
+  longitude?: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class ReviewService {
   private apiUrl = '/api/reviews/metadata';
+  private reviewsUrl = '/api/reviews';
 
   constructor(private http: HttpClient) { }
 
@@ -39,5 +58,20 @@ export class ReviewService {
         withCredentials: true
       }
     );
+  }
+
+  getCocktailReviewsAtPlace(placeId: string, cocktailId: string): Observable<CocktailReview[]> {
+    return this.http.get<CocktailReview[]>(
+      `/api/reviews/place/${placeId}/cocktail/${cocktailId}`,
+      {
+        withCredentials: true
+      }
+    );
+  }
+
+  createReview(review: ReviewCreateDto): Observable<any> {
+    return this.http.post(this.reviewsUrl, review, {
+      withCredentials: true
+    });
   }
 }

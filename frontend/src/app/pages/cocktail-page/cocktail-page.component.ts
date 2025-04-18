@@ -190,7 +190,14 @@ export class CocktailPageComponent implements OnInit {
   }
 
   navigateToPlace(placeId: string) {
-    this.router.navigate(['/place', placeId]);
+    const cocktailId = this.route.snapshot.paramMap.get('id');
+    if (cocktailId) {
+      // Navigate to the reviews page for this cocktail at this place
+      this.router.navigate(['/reviews', placeId, cocktailId]);
+    } else {
+      // Fallback to the place page if the cocktail ID is not available
+      this.router.navigate(['/place', placeId]);
+    }
   }
 
   getStarRating(score: number): string {

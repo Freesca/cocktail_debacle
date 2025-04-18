@@ -152,8 +152,18 @@ export class PlacePageComponent implements OnInit {
     this.router.navigate(['/places']);
   }
 
-  navigateToCocktail(externalId: string): void {
-    this.router.navigate(['/cocktail', externalId]);
+  navigateToCocktail(cocktailId: string): void {
+    // Get the index of the review in the array
+    const index = this.cocktailReviews.findIndex(r => r.cocktailId === cocktailId);
+    
+    if (index !== -1) {
+      const review = this.cocktailReviews[index];
+      // Navigate to the reviews page for this cocktail at this place
+      this.router.navigate(['/reviews', this.placeId, cocktailId]);
+    } else {
+      // Fallback to the cocktail page if the review is not found
+      this.router.navigate(['/cocktail', cocktailId]);
+    }
   }
 
   getStarRating(score: number): string {
