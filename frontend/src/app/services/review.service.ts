@@ -30,6 +30,7 @@ export interface ReviewCreateDto {
   comment: string;
   cocktailId: string;
   googlePlaceId: string;
+  placeName?: string;
   latitude?: number;
   longitude?: number;
 }

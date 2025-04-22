@@ -7,6 +7,7 @@ public class ReviewCreateDto
     public string? CocktailId { get; set; }
 
     public string GooglePlaceId { get; set; } = null!;
+    public string? PlaceName { get; set; }
     public double? Latitude { get; set; }
     public double? Longitude { get; set; }
 }

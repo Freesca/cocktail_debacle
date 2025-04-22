@@ -31,6 +31,7 @@ public class ReviewController(AppDbContext db, UserManager<User> userManager) : 
             place = new Place 
             { 
                 GooglePlaceId = dto.GooglePlaceId,
+                Name = dto.PlaceName,
                 Latitude = dto.Latitude,
                 Longitude = dto.Longitude
             };

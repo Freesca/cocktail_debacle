@@ -1,0 +1,140 @@
+// Card and container styling
+.card {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  
+  .card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    padding: 1rem;
+  }
+  
+  .card-body {
+    padding: 1.5rem;
+  }
+}
+
+// Place and cocktail cards
+.place-card, .cocktail-card {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.cocktail-card {
+  img {
+    height: 180px;
+    object-fit: cover;
+  }
+}
+
+// Star rating
+.rating-selector {
+  display: flex;
+  align-items: center;
+  
+  .star-rating {
+    display: flex;
+    
+    .star-btn {
+      background: none;
+      border: none;
+      color: #ccc;
+      cursor: pointer;
+      font-size: 2rem;
+      padding: 0;
+      margin-right: 5px;
+      line-height: 1;
+      transition: color 0.2s ease;
+      
+      &:hover, &.selected {
+        color: #ffc107;
+      }
+      
+      .star {
+        display: block;
+      }
+    }
+  }
+  
+  .rating-display {
+    font-size: 1.2rem;
+    font-weight: 500;
+    
+    .stars {
+      color: #ffc107;
+    }
+  }
+}
+
+// Selected item styling
+.selected-item {
+  .card {
+    border-color: #28a745;
+    border-width: 2px;
+  }
+}
+
+// Rating display in search results
+.rating {
+  .text-warning {
+    color: #ffc107;
+  }
+}
+
+// Success and error animations
+.alert {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Form controls
+textarea.form-control {
+  resize: vertical;
+  min-height: 100px;
+}
+
+// Media queries for responsive design
+@media (max-width: 767px) {
+  .selected-item {
+    .card-body {
+      .d-flex {
+        flex-direction: column;
+        
+        .flex-shrink-0 {
+          margin-bottom: 1rem;
+          margin-right: 0 !important;
+        }
+      }
+    }
+  }
+  
+  .cocktail-results {
+    .row {
+      .col-md-4 {
+        width: 50%;
+      }
+    }
+  }
+  
+  .rating-selector {
+    .star-btn {
+      font-size: 1.5rem;
+    }
+  }
+} 

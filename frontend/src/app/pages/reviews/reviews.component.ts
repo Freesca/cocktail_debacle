@@ -41,6 +41,7 @@ export class ReviewsComponent implements OnInit {
     comment: '',
     cocktailId: '',
     googlePlaceId: '',
+    placeName: undefined,
     latitude: undefined,
     longitude: undefined
   };
@@ -125,6 +126,9 @@ export class ReviewsComponent implements OnInit {
       // Process place details
       if (results.place && results.place.result) {
         this.place = results.place.result;
+        // Set place name for the review
+        if (this.place)
+          this.newReview.placeName = this.place.name;
         // Set latitude and longitude for the review
         if (this.place && this.place.geometry && this.place.geometry.location) {
           const location = this.place.geometry.location;
