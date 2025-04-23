@@ -9,8 +9,8 @@
           <h4>Step 1: Select a Place</h4>
         </div>
         <div class="card-body">
-          <!-- Search Bar -->
-          <div class="search-container mb-3">
+          <!-- Search Bar - Styled like places page -->
+          <div class="search-container mb-4">
             <div class="input-group">
               <input
                 type="text"
@@ -18,14 +18,45 @@
                 placeholder="Search for a place..."
                 [(ngModel)]="placeSearchQuery"
                 (input)="onPlaceSearchInput()"
-              >
+                aria-label="Search"
+              />
               <button 
+                *ngIf="placeSearchQuery" 
                 class="btn btn-outline-secondary" 
                 type="button"
-                (click)="searchNearbyPlaces()"
-                [disabled]="placeSearching">
-                Nearby Places
+                (click)="placeSearchQuery = ''; searchNearbyPlaces()">
+                Clear
               </button>
+            </div>
+            
+            <!-- Loading indicator -->
+            <div *ngIf="placeSearching" class="text-center p-2">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+            
+            <!-- Error message -->
+            <div *ngIf="placeSearchError" class="alert alert-danger mt-2">
+              Error searching for places. Please try again.
+            </div>
+            
+            <!-- Search results dropdown -->
+            <div 
+              *ngIf="placeSearchQuery && placeSearchResults.length > 0" 
+              class="search-results border rounded bg-white shadow-sm">
+              <ul class="list-group">
+                <li 
+                  *ngFor="let place of placeSearchResults" 
+                  class="list-group-item list-group-item-action"
+                  (click)="selectPlace(place)"
+                  style="cursor: pointer;">
+                  <div class="d-flex flex-column">
+                    <strong>{{ place.name }}</strong>
+                    <small>{{ place.formatted_address }}</small>
+                  </div>
+                </li>
+              </ul>
             </div>
           </div>
 
@@ -39,7 +70,7 @@
                   </div>
                   <div>
                     <h5 class="card-title">{{ selectedPlace.name }}</h5>
-                    <p class="card-text text-muted">{{ selectedPlace.formatted_address }}</p>
+                    <p class="card-text text-muted">{{ getFormattedAddress(selectedPlace) }}</p>
                     <button class="btn btn-sm btn-outline-danger" (click)="selectedPlace = null">Change Place</button>
                   </div>
                 </div>
@@ -47,40 +78,47 @@
             </div>
           </div>
 
-          <!-- Search Results -->
-          <div *ngIf="!selectedPlace">
+          <!-- Nearby Places (if no search and no selection) -->
+          <div *ngIf="!selectedPlace && !placeSearchQuery">
+            <h5 class="mb-3">Nearby Places</h5>
+            
             <!-- Loading state -->
             <div *ngIf="placeSearching" class="text-center py-3">
               <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Loading...</span>
               </div>
             </div>
-
+            
             <!-- Error message -->
             <div *ngIf="placeSearchError" class="alert alert-danger">
-              Error searching for places. Please try again.
+              Error finding nearby places. Please try searching instead.
             </div>
-
+            
             <!-- Empty state -->
-            <div *ngIf="!placeSearching && !placeSearchError && placeSearchResults.length === 0" class="text-center py-3">
-              <p class="text-muted">No places found. Try a different search term or search for nearby places.</p>
+            <div *ngIf="!placeSearching && !placeSearchError && displayedNearbyPlaces.length === 0" class="text-center py-3">
+              <p class="text-muted">No places found nearby. Try searching for a specific place.</p>
             </div>
-
-            <!-- Results -->
-            <div *ngIf="!placeSearching && placeSearchResults.length > 0" class="place-results">
-              <div *ngFor="let place of placeSearchResults" class="card mb-2 place-card" (click)="selectPlace(place)">
-                <div class="card-body">
-                  <div class="d-flex justify-content-between">
-                    <div>
-                      <h5 class="card-title">{{ place.name }}</h5>
-                      <p class="card-text text-muted small mb-0">{{ place.formatted_address }}</p>
-                    </div>
-                    <div *ngIf="place.rating" class="rating align-self-start">
-                      <span class="text-warning">{{ getStarRating(place.rating) }}</span>
-                      <span class="ms-1">{{ place.rating }}</span>
-                    </div>
+            
+            <!-- Nearby Places List -->
+            <div *ngIf="!placeSearching && displayedNearbyPlaces.length > 0" class="nearby-places">
+              <ul class="list-group">
+                <li 
+                  *ngFor="let place of displayedNearbyPlaces" 
+                  class="list-group-item list-group-item-action"
+                  (click)="selectPlace(place)"
+                  style="cursor: pointer;">
+                  <div class="d-flex flex-column">
+                    <strong>{{ place.name }}</strong>
+                    <small>{{ getFormattedAddress(place) }}</small>
                   </div>
-                </div>
+                </li>
+              </ul>
+              
+              <!-- Load More Button -->
+              <div *ngIf="nearbyPlacesCurrentIndex < nearbyPlaces.length" class="text-center mt-3">
+                <button class="btn btn-outline-primary" (click)="displayNextNearbyPlaces()">
+                  Show More Places
+                </button>
               </div>
             </div>
           </div>
@@ -94,7 +132,7 @@
         </div>
         <div class="card-body">
           <!-- Search Bar -->
-          <div class="search-container mb-3">
+          <div class="search-container mb-4">
             <div class="input-group">
               <input
                 type="text"
@@ -102,7 +140,14 @@
                 placeholder="Search for a cocktail..."
                 [(ngModel)]="cocktailSearchQuery"
                 (input)="onCocktailSearchInput()"
-              >
+              />
+              <button 
+                *ngIf="cocktailSearchQuery" 
+                class="btn btn-outline-secondary" 
+                type="button"
+                (click)="cocktailSearchQuery = ''; searchCocktails('')">
+                Clear
+              </button>
             </div>
           </div>
 
@@ -124,7 +169,7 @@
             </div>
           </div>
 
-          <!-- Search Results -->
+          <!-- Cocktail Search Results - Styled like cocktails page -->
           <div *ngIf="!selectedCocktail">
             <!-- Loading state -->
             <div *ngIf="cocktailSearching" class="text-center py-3">
@@ -139,28 +184,35 @@
             </div>
 
             <!-- Empty search term message -->
-            <div *ngIf="!cocktailSearchQuery && !cocktailSearching" class="text-center py-3">
+            <div *ngIf="!cocktailSearchQuery && !cocktailSearching && displayedCocktailResults.length === 0" class="text-center py-3">
               <p class="text-muted">Enter a cocktail name to search</p>
             </div>
 
-            <!-- Empty state -->
-            <div *ngIf="cocktailSearchQuery && !cocktailSearching && !cocktailSearchError && cocktailSearchResults.length === 0" class="text-center py-3">
+            <!-- Empty results message -->
+            <div *ngIf="cocktailSearchQuery && !cocktailSearching && !cocktailSearchError && displayedCocktailResults.length === 0" class="text-center py-3">
               <p class="text-muted">No cocktails found. Try a different search term.</p>
             </div>
 
-            <!-- Results -->
-            <div *ngIf="!cocktailSearching && cocktailSearchResults.length > 0" class="cocktail-results">
-              <div class="row">
-                <div *ngFor="let cocktail of cocktailSearchResults" class="col-md-4 mb-3">
-                  <div class="card h-100 cocktail-card" (click)="selectCocktail(cocktail)">
-                    <img *ngIf="cocktail.strDrinkThumb" [src]="cocktail.strDrinkThumb" class="card-img-top" alt="{{ cocktail.strDrink }}">
-                    <div class="card-body">
-                      <h5 class="card-title">{{ cocktail.strDrink }}</h5>
-                      <p *ngIf="cocktail.strCategory" class="card-text text-muted small">{{ cocktail.strCategory }}</p>
-                    </div>
-                  </div>
+            <!-- Results - Styled like cocktails page -->
+            <div *ngIf="!cocktailSearching && displayedCocktailResults.length > 0" class="cocktail-grid">
+              <div *ngFor="let cocktail of displayedCocktailResults" class="cocktail-card" (click)="selectCocktail(cocktail)">
+                <div class="image-container">
+                  <img 
+                    *ngIf="cocktail.strDrinkThumb" 
+                    [src]="cocktail.strDrinkThumb" 
+                    alt="{{ cocktail.strDrink }}" 
+                    class="cocktail-image"
+                  />
+                  <div class="cocktail-name-overlay">{{ cocktail.strDrink }}</div>
                 </div>
               </div>
+            </div>
+            
+            <!-- Load More Button -->
+            <div *ngIf="cocktailCurrentIndex < cocktailSearchResults.length" class="text-center mt-3">
+              <button class="btn btn-success" (click)="displayNextCocktails()">
+                Load More Cocktails
+              </button>
             </div>
           </div>
         </div>

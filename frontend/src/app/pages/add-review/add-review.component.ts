@@ -24,11 +24,20 @@ export class AddReviewComponent implements OnInit {
   placeSearchError: boolean = false;
   private placeSearchQuerySubject = new Subject<string>();
 
+  // Nearby places with pagination
+  nearbyPlaces: PlaceResult[] = [];
+  displayedNearbyPlaces: PlaceResult[] = [];
+  nearbyPlacesCurrentIndex: number = 0;
+  nearbyPlacesPageSize: number = 4;
+
   cocktailSearchQuery: string = '';
   allCocktails: any[] = [];
   cocktailSearchResults: any[] = [];
+  displayedCocktailResults: any[] = [];
   cocktailSearching: boolean = false;
   cocktailSearchError: boolean = false;
+  cocktailCurrentIndex: number = 0;
+  cocktailPageSize: number = 8; // Display fewer cocktails initially
 
   // Selected items
   selectedPlace: PlaceResult | null = null;
@@ -108,7 +117,9 @@ export class AddReviewComponent implements OnInit {
   searchNearbyPlaces(): void {
     this.placeSearching = true;
     this.placeSearchError = false;
-    this.placeSearchResults = [];
+    this.nearbyPlaces = [];
+    this.displayedNearbyPlaces = [];
+    this.nearbyPlacesCurrentIndex = 0;
 
     // Use browser geolocation to get current coordinates
     if (navigator.geolocation) {
@@ -120,7 +131,8 @@ export class AddReviewComponent implements OnInit {
           // Call the API with the current coordinates
           this.placeService.searchNearbyPlaces(lat, lng).subscribe({
             next: (response: PlaceSearchResponse) => {
-              this.placeSearchResults = response.results;
+              this.nearbyPlaces = response.results;
+              this.displayNextNearbyPlaces();
               this.placeSearching = false;
             },
             error: (error) => {
@@ -141,6 +153,31 @@ export class AddReviewComponent implements OnInit {
       this.placeSearchError = true;
       this.placeSearching = false;
     }
+  }
+
+  displayNextNearbyPlaces(): void {
+    const nextPlaces = this.nearbyPlaces.slice(
+      this.nearbyPlacesCurrentIndex,
+      this.nearbyPlacesCurrentIndex + this.nearbyPlacesPageSize
+    );
+    this.displayedNearbyPlaces = [...this.displayedNearbyPlaces, ...nextPlaces];
+    this.nearbyPlacesCurrentIndex += this.nearbyPlacesPageSize;
+  }
+
+  // Format address for places that might not have formatted_address field
+  getFormattedAddress(place: PlaceResult): string {
+    // If formatted_address exists, return it
+    if (place.formatted_address) {
+      return place.formatted_address;
+    }
+    
+    // Otherwise, try to construct an address from vicinity or other fields
+    if (place.vicinity) {
+      return place.vicinity;
+    }
+    
+    // If no address info is available, return a generic message
+    return 'Address not available';
   }
 
   selectPlace(place: PlaceResult): void {
@@ -202,6 +239,8 @@ export class AddReviewComponent implements OnInit {
   searchCocktails(query: string): void {
     if (!query.trim()) {
       this.cocktailSearchResults = [];
+      this.displayedCocktailResults = [];
+      this.cocktailCurrentIndex = 0;
       return;
     }
 
@@ -212,9 +251,23 @@ export class AddReviewComponent implements OnInit {
     const searchTerm = query.toLowerCase().trim();
     this.cocktailSearchResults = this.allCocktails.filter(cocktail => 
       cocktail.strDrink.toLowerCase().includes(searchTerm)
-    ).slice(0, 20); // Limit results to 20 items
+    ).slice(0, 40); // Limit total results but keep more for pagination
+    
+    // Reset pagination
+    this.cocktailCurrentIndex = 0;
+    this.displayedCocktailResults = [];
+    this.displayNextCocktails();
     
     this.cocktailSearching = false;
+  }
+
+  displayNextCocktails(): void {
+    const nextCocktails = this.cocktailSearchResults.slice(
+      this.cocktailCurrentIndex,
+      this.cocktailCurrentIndex + this.cocktailPageSize
+    );
+    this.displayedCocktailResults = [...this.displayedCocktailResults, ...nextCocktails];
+    this.cocktailCurrentIndex += this.cocktailPageSize;
   }
 
   selectCocktail(cocktail: any): void {
@@ -262,10 +315,6 @@ export class AddReviewComponent implements OnInit {
 
   isSelectedRating(rating: number): boolean {
     return this.newReview.rating === rating;
-  }
-
-  getStarRating(score: number): string {
-    return '★'.repeat(Math.round(score));
   }
 
   // Navigation

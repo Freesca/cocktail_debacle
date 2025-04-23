@@ -28,7 +28,8 @@ export interface PlacePhoto {
 
 export interface PlaceResult {
   business_status?: string;
-  formatted_address: string;
+  formatted_address?: string;
+  vicinity?: string;
   geometry: PlaceGeometry;
   icon?: string;
   icon_background_color?: string;
