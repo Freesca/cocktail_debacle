@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ReviewService, CocktailReview, ReviewCreateDto } from '../../services/review.service';
+import { ReviewService, CocktailReview, ReviewCreateDto, ReviewUpdateDto } from '../../services/review.service';
 import { PlaceService, PlaceResult } from '../../services/place.service';
 import { CocktailService } from '../../services/cocktails.service';
+import { AuthService } from '../../services/auth.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { catchError, forkJoin, of } from 'rxjs';
 
@@ -19,6 +20,9 @@ export class ReviewsComponent implements OnInit {
   placeId: string = '';
   cocktailId: string = '';
   reviews: CocktailReview[] = [];
+  
+  // Current user info
+  currentUser: any = null;
   
   loading: boolean = true;
   errorMessage: string = '';
@@ -49,6 +53,19 @@ export class ReviewsComponent implements OnInit {
   reviewSuccess: boolean = false;
   reviewError: string = '';
 
+  // Edit review
+  isEditing: boolean = false;
+  editingReviewId: number | null = null;
+  editReview: ReviewUpdateDto = {
+    rating: 5,
+    comment: ''
+  };
+  
+  // Delete review
+  showDeleteConfirm: boolean = false;
+  deletingReviewId: number | null = null;
+  deletingReview: boolean = false;
+
   // Rating options for the selector
   ratingOptions = [1, 2, 3, 4, 5];
 
@@ -58,10 +75,17 @@ export class ReviewsComponent implements OnInit {
     private reviewService: ReviewService,
     private placeService: PlaceService,
     private cocktailService: CocktailService,
+    private authService: AuthService,
     private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit(): void {
+    // Get current user info
+    this.authService.userInfo$.subscribe(user => {
+      this.currentUser = user;
+    });
+    this.authService.fetchUserInfoIfLoggedIn();
+    
     this.route.paramMap.subscribe(params => {
       const placeId = params.get('placeId');
       const cocktailId = params.get('cocktailId');
@@ -146,6 +170,113 @@ export class ReviewsComponent implements OnInit {
     });
   }
   
+  // Check if current user is the author of a review
+  isReviewAuthor(review: CocktailReview): boolean {
+    return this.currentUser && this.currentUser.username === review.userName;
+  }
+  
+  // Edit review methods
+  startEditReview(review: CocktailReview): void {
+    this.isEditing = true;
+    this.editingReviewId = review.id;
+    this.editReview = {
+      rating: review.rating,
+      comment: review.comment
+    };
+    
+    // Hide other forms
+    this.showReviewForm = false;
+    this.showDeleteConfirm = false;
+  }
+  
+  cancelEditReview(): void {
+    this.isEditing = false;
+    this.editingReviewId = null;
+    this.editReview = {
+      rating: 5,
+      comment: ''
+    };
+  }
+  
+  saveEditReview(): void {
+    if (!this.editingReviewId) return;
+    
+    // Validate form
+    if (!this.editReview.comment || this.editReview.comment.trim() === '') {
+      this.reviewError = 'Please enter a comment';
+      return;
+    }
+    
+    this.submittingReview = true;
+    this.reviewError = '';
+    
+    this.reviewService.updateReview(this.editingReviewId, this.editReview).subscribe({
+      next: () => {
+        this.submittingReview = false;
+        this.reviewSuccess = true;
+        
+        // Reset form and reload reviews
+        setTimeout(() => {
+          this.loadReviewsAndDetails();
+          this.isEditing = false;
+          this.editingReviewId = null;
+          this.reviewSuccess = false;
+        }, 2000);
+      },
+      error: (error) => {
+        this.submittingReview = false;
+        this.reviewError = error.error?.message || 'Failed to update review. Please try again.';
+        console.error('Error updating review:', error);
+      }
+    });
+  }
+  
+  // Delete review methods
+  startDeleteReview(reviewId: number): void {
+    this.showDeleteConfirm = true;
+    this.deletingReviewId = reviewId;
+    
+    // Hide other forms
+    this.showReviewForm = false;
+    this.isEditing = false;
+  }
+  
+  cancelDeleteReview(): void {
+    this.showDeleteConfirm = false;
+    this.deletingReviewId = null;
+  }
+  
+  confirmDeleteReview(): void {
+    if (!this.deletingReviewId) return;
+    
+    this.deletingReview = true;
+    
+    this.reviewService.deleteReview(this.deletingReviewId).subscribe({
+      next: () => {
+        this.deletingReview = false;
+        this.showDeleteConfirm = false;
+        
+        // Reload reviews
+        this.loadReviewsAndDetails();
+      },
+      error: (error) => {
+        this.deletingReview = false;
+        this.reviewError = error.error?.message || 'Failed to delete review. Please try again.';
+        console.error('Error deleting review:', error);
+      }
+    });
+  }
+  
+  // Rating methods for edit form
+  setEditRating(rating: number): void {
+    this.editReview.rating = rating;
+  }
+  
+  isEditRatingSelected(rating: number): boolean {
+    return this.editReview.rating === rating;
+  }
+
+  // Existing methods
   loadPlacePhoto(): void {
     if (this.place?.photos && this.place.photos.length > 0) {
       const photoRef = this.place.photos[0].photo_reference;
@@ -167,6 +298,10 @@ export class ReviewsComponent implements OnInit {
   
   toggleReviewForm(): void {
     this.showReviewForm = !this.showReviewForm;
+    // Reset other forms
+    this.isEditing = false;
+    this.showDeleteConfirm = false;
+    
     // Reset form state when toggling
     if (this.showReviewForm) {
       this.reviewSuccess = false;

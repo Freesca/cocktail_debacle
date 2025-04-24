@@ -35,6 +35,11 @@ export interface ReviewCreateDto {
   longitude?: number;
 }
 
+export interface ReviewUpdateDto {
+  rating?: number;
+  comment?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -72,6 +77,25 @@ export class ReviewService {
 
   createReview(review: ReviewCreateDto): Observable<any> {
     return this.http.post(this.reviewsUrl, review, {
+      withCredentials: true
+    });
+  }
+
+  // New methods for updating and deleting reviews
+  updateReview(reviewId: number, updateData: ReviewUpdateDto): Observable<any> {
+    return this.http.patch(`${this.reviewsUrl}/${reviewId}`, updateData, {
+      withCredentials: true
+    });
+  }
+
+  deleteReview(reviewId: number): Observable<any> {
+    return this.http.delete(`${this.reviewsUrl}/${reviewId}`, {
+      withCredentials: true
+    });
+  }
+
+  getReview(reviewId: number): Observable<any> {
+    return this.http.get(`${this.reviewsUrl}/${reviewId}`, {
       withCredentials: true
     });
   }
