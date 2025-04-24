@@ -1,4 +1,5 @@
 <div class="container mt-4">
+  <h2 class="mb-4">Find Places</h2>
 
   <div class="search-container position-relative mb-4">
     <div class="input-group">
@@ -43,10 +44,60 @@
           style="cursor: pointer;">
           <div class="d-flex flex-column">
             <strong>{{ place.name }}</strong>
-            <small>{{ place.formatted_address }}</small>
+            <small>{{ getFormattedAddress(place) }}</small>
           </div>
         </li>
       </ul>
+    </div>
+  </div>
+
+  <!-- Nearby Places Section (shown when no search is active) -->
+  <div *ngIf="!searchTerm" class="nearby-places-section mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h3>Nearby Places</h3>
+      <button class="btn btn-outline-primary btn-sm" (click)="searchNearbyPlaces()" [disabled]="isLoadingNearby">
+        <i class="bi bi-arrow-repeat me-1"></i> Refresh
+      </button>
+    </div>
+
+    <!-- Loading state -->
+    <div *ngIf="isLoadingNearby" class="text-center py-3">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading nearby places...</span>
+      </div>
+    </div>
+    
+    <!-- Error message -->
+    <div *ngIf="nearbyError" class="alert alert-danger">
+      <p>Error finding nearby places. Please allow location access and try again.</p>
+    </div>
+    
+    <!-- Empty state -->
+    <div *ngIf="!isLoadingNearby && !nearbyError && displayedNearbyPlaces.length === 0" class="text-center py-3">
+      <p class="text-muted">No places found nearby. Try searching for a specific place.</p>
+    </div>
+    
+    <!-- Nearby Places List -->
+    <div *ngIf="!isLoadingNearby && displayedNearbyPlaces.length > 0" class="nearby-places">
+      <ul class="list-group">
+        <li 
+          *ngFor="let place of displayedNearbyPlaces" 
+          class="list-group-item list-group-item-action"
+          (click)="goToPlaceDetails(place)"
+          style="cursor: pointer;">
+          <div class="d-flex flex-column">
+            <strong>{{ place.name }}</strong>
+            <small>{{ getFormattedAddress(place) }}</small>
+          </div>
+        </li>
+      </ul>
+      
+      <!-- Load More Button -->
+      <div *ngIf="nearbyPlacesCurrentIndex < nearbyPlaces.length" class="text-center mt-3">
+        <button class="btn btn-outline-primary" (click)="displayNextNearbyPlaces()">
+          Show More Places
+        </button>
+      </div>
     </div>
   </div>
 </div>

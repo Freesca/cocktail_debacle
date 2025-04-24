@@ -28,9 +28,6 @@ public class UserController : ControllerBase
             return Unauthorized();
 
         return Ok(new {
-            // user.Country,
-            // user.FirstName,
-            // user.LastName,
             user.UserName,
             user.Email,
             user.ConsentData,

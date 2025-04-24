@@ -1,0 +1,285 @@
+<div class="container my-4">
+  <h2 class="text-center mb-4">Add Cocktail Review</h2>
+
+  <div class="row">
+    <div class="col-md-10 offset-md-1">
+      <!-- Place Search Section -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <h4>Step 1: Select a Place</h4>
+        </div>
+        <div class="card-body">
+          <!-- Search Bar - Styled like places page -->
+          <div class="search-container mb-4">
+            <div class="input-group">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Search for a place..."
+                [(ngModel)]="placeSearchQuery"
+                (input)="onPlaceSearchInput()"
+                aria-label="Search"
+              />
+              <button 
+                *ngIf="placeSearchQuery" 
+                class="btn btn-outline-secondary" 
+                type="button"
+                (click)="placeSearchQuery = ''; searchNearbyPlaces()">
+                Clear
+              </button>
+            </div>
+            
+            <!-- Loading indicator -->
+            <div *ngIf="placeSearching" class="text-center p-2">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+            
+            <!-- Error message -->
+            <div *ngIf="placeSearchError" class="alert alert-danger mt-2">
+              Error searching for places. Please try again.
+            </div>
+            
+            <!-- Search results dropdown -->
+            <div 
+              *ngIf="placeSearchQuery && placeSearchResults.length > 0" 
+              class="search-results border rounded bg-white shadow-sm">
+              <ul class="list-group">
+                <li 
+                  *ngFor="let place of placeSearchResults" 
+                  class="list-group-item list-group-item-action"
+                  (click)="selectPlace(place)"
+                  style="cursor: pointer;">
+                  <div class="d-flex flex-column">
+                    <strong>{{ place.name }}</strong>
+                    <small>{{ place.formatted_address }}</small>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Selected Place -->
+          <div *ngIf="selectedPlace" class="selected-item mb-3">
+            <div class="card">
+              <div class="card-body">
+                <div class="d-flex">
+                  <div *ngIf="placePhotoUrl" class="flex-shrink-0 me-3">
+                    <img [src]="placePhotoUrl" alt="Place Photo" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
+                  </div>
+                  <div>
+                    <h5 class="card-title">{{ selectedPlace.name }}</h5>
+                    <p class="card-text text-muted">{{ getFormattedAddress(selectedPlace) }}</p>
+                    <button class="btn btn-sm btn-outline-danger" (click)="selectedPlace = null">Change Place</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Nearby Places (if no search and no selection) -->
+          <div *ngIf="!selectedPlace && !placeSearchQuery">
+            <h5 class="mb-3">Nearby Places</h5>
+            
+            <!-- Loading state -->
+            <div *ngIf="placeSearching" class="text-center py-3">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+            
+            <!-- Error message -->
+            <div *ngIf="placeSearchError" class="alert alert-danger">
+              Error finding nearby places. Please try searching instead.
+            </div>
+            
+            <!-- Empty state -->
+            <div *ngIf="!placeSearching && !placeSearchError && displayedNearbyPlaces.length === 0" class="text-center py-3">
+              <p class="text-muted">No places found nearby. Try searching for a specific place.</p>
+            </div>
+            
+            <!-- Nearby Places List -->
+            <div *ngIf="!placeSearching && displayedNearbyPlaces.length > 0" class="nearby-places">
+              <ul class="list-group">
+                <li 
+                  *ngFor="let place of displayedNearbyPlaces" 
+                  class="list-group-item list-group-item-action"
+                  (click)="selectPlace(place)"
+                  style="cursor: pointer;">
+                  <div class="d-flex flex-column">
+                    <strong>{{ place.name }}</strong>
+                    <small>{{ getFormattedAddress(place) }}</small>
+                  </div>
+                </li>
+              </ul>
+              
+              <!-- Load More Button -->
+              <div *ngIf="nearbyPlacesCurrentIndex < nearbyPlaces.length" class="text-center mt-3">
+                <button class="btn btn-outline-primary" (click)="displayNextNearbyPlaces()">
+                  Show More Places
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cocktail Search Section -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <h4>Step 2: Select a Cocktail</h4>
+        </div>
+        <div class="card-body">
+          <!-- Search Bar -->
+          <div class="search-container mb-4">
+            <div class="input-group">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Search for a cocktail..."
+                [(ngModel)]="cocktailSearchQuery"
+                (input)="onCocktailSearchInput()"
+              />
+              <button 
+                *ngIf="cocktailSearchQuery" 
+                class="btn btn-outline-secondary" 
+                type="button"
+                (click)="cocktailSearchQuery = ''; searchCocktails('')">
+                Clear
+              </button>
+            </div>
+          </div>
+
+          <!-- Selected Cocktail -->
+          <div *ngIf="selectedCocktail" class="selected-item mb-3">
+            <div class="card">
+              <div class="card-body">
+                <div class="d-flex">
+                  <div *ngIf="selectedCocktail.strDrinkThumb" class="flex-shrink-0 me-3">
+                    <img [src]="selectedCocktail.strDrinkThumb" alt="Cocktail Photo" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
+                  </div>
+                  <div>
+                    <h5 class="card-title">{{ selectedCocktail.strDrink }}</h5>
+                    <p *ngIf="selectedCocktail.strCategory" class="card-text text-muted">{{ selectedCocktail.strCategory }}</p>
+                    <button class="btn btn-sm btn-outline-danger" (click)="selectedCocktail = null">Change Cocktail</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cocktail Search Results - Styled like cocktails page -->
+          <div *ngIf="!selectedCocktail">
+            <!-- Loading state -->
+            <div *ngIf="cocktailSearching" class="text-center py-3">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+
+            <!-- Error message -->
+            <div *ngIf="cocktailSearchError" class="alert alert-danger">
+              Error searching for cocktails. Please try again.
+            </div>
+
+            <!-- Empty search term message -->
+            <div *ngIf="!cocktailSearchQuery && !cocktailSearching && displayedCocktailResults.length === 0" class="text-center py-3">
+              <p class="text-muted">Enter a cocktail name to search</p>
+            </div>
+
+            <!-- Empty results message -->
+            <div *ngIf="cocktailSearchQuery && !cocktailSearching && !cocktailSearchError && displayedCocktailResults.length === 0" class="text-center py-3">
+              <p class="text-muted">No cocktails found. Try a different search term.</p>
+            </div>
+
+            <!-- Results - Styled like cocktails page -->
+            <div *ngIf="!cocktailSearching && displayedCocktailResults.length > 0" class="cocktail-grid">
+              <div *ngFor="let cocktail of displayedCocktailResults" class="cocktail-card" (click)="selectCocktail(cocktail)">
+                <div class="image-container">
+                  <img 
+                    *ngIf="cocktail.strDrinkThumb" 
+                    [src]="cocktail.strDrinkThumb" 
+                    alt="{{ cocktail.strDrink }}" 
+                    class="cocktail-image"
+                  />
+                  <div class="cocktail-name-overlay">{{ cocktail.strDrink }}</div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Load More Button -->
+            <div *ngIf="cocktailCurrentIndex < cocktailSearchResults.length" class="text-center mt-3">
+              <button class="btn btn-success" (click)="displayNextCocktails()">
+                Load More Cocktails
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review Form Section -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <h4>Step 3: Write Your Review</h4>
+        </div>
+        <div class="card-body">
+          <!-- Success message -->
+          <div *ngIf="reviewSuccess" class="alert alert-success">
+            Your review has been submitted successfully! Redirecting to the review page...
+          </div>
+          
+          <!-- Error message -->
+          <div *ngIf="reviewError" class="alert alert-danger">
+            {{ reviewError }}
+          </div>
+
+          <!-- Review form -->
+          <form (ngSubmit)="submitReview()" #reviewForm="ngForm">
+            <div class="mb-3">
+              <label for="rating" class="form-label">Rating</label>
+              <div class="rating-selector">
+                <div class="star-rating">
+                  <button 
+                    type="button" 
+                    *ngFor="let rating of ratingOptions" 
+                    class="star-btn"
+                    [class.selected]="isSelectedRating(rating)"
+                    (click)="setRating(rating)">
+                    <span class="star">★</span>
+                  </button>
+                </div>
+                <span class="ms-3 rating-display">
+                  <span class="stars">{{ newReview.rating }}/5</span>
+                </span>
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label for="comment" class="form-label">Comment</label>
+              <textarea 
+                class="form-control" 
+                id="comment" 
+                rows="4" 
+                [(ngModel)]="newReview.comment" 
+                name="comment" 
+                required
+                placeholder="Share your experience with this cocktail at this place..."></textarea>
+            </div>
+            
+            <div class="text-end">
+              <button type="button" class="btn btn-outline-secondary me-2" (click)="cancelReview()">Cancel</button>
+              <button 
+                type="submit" 
+                class="btn btn-primary" 
+                [disabled]="submittingReview || !newReview.comment.trim() || !selectedPlace || !selectedCocktail">
+                <span *ngIf="submittingReview" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                Submit Review
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

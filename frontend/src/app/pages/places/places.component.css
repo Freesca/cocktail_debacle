@@ -11,14 +11,55 @@
   
   .list-group-item {
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, transform 0.2s;
   }
   
   .list-group-item:hover {
     background-color: #f8f9fa;
+    transform: translateY(-2px);
   }
   
   .spinner-border {
     width: 1.5rem;
     height: 1.5rem;
+  }
+
+  /* Nearby Places Section */
+  .nearby-places-section {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .nearby-places {
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .nearby-places .list-group-item {
+    border-left: none;
+    border-right: none;
+  }
+
+  .nearby-places .list-group-item:first-child {
+    border-top: none;
+  }
+
+  .nearby-places .list-group-item:last-child {
+    border-bottom: none;
+  }
+
+  /* Animation for the nearby places */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .nearby-places {
+    animation: fadeIn 0.4s ease;
   }

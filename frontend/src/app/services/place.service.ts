@@ -28,7 +28,8 @@ export interface PlacePhoto {
 
 export interface PlaceResult {
   business_status?: string;
-  formatted_address: string;
+  formatted_address?: string;
+  vicinity?: string;
   geometry: PlaceGeometry;
   icon?: string;
   icon_background_color?: string;
@@ -72,6 +73,17 @@ export class PlaceService {
 
   searchPlaces(query: string): Observable<PlaceSearchResponse> {
     return this.http.get<PlaceSearchResponse>(`${this.apiUrl}?query=${encodeURIComponent(query)}`);
+  }
+
+  searchNearbyPlaces(lat?: number, lng?: number): Observable<PlaceSearchResponse> {
+    let url = '/api/places/nearby';
+    
+    // Add coordinates to the URL if provided
+    if (lat !== undefined && lng !== undefined) {
+      url += `?lat=${lat}&lng=${lng}`;
+    }
+    
+    return this.http.get<PlaceSearchResponse>(url);
   }
 
   getPlaceDetails(placeId: string): Observable<any> {
