@@ -7,7 +7,7 @@ import { AppComponent } from './app/app.component';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
 import { NgIconsModule } from '@ng-icons/core';
-import { heroUserCircle, heroHome, heroMapPin } from '@ng-icons/heroicons/outline';
+import { heroUserCircle, heroHome, heroMapPin, heroBookmark, heroBookmarkSlash } from '@ng-icons/heroicons/outline';
 import { heroXMark } from '@ng-icons/heroicons/outline';
 import { provideRouter } from '@angular/router';
 import { appRoutes } from './app/app.routes';
@@ -16,7 +16,7 @@ import { appRoutes } from './app/app.routes';
 bootstrapApplication(AppComponent, {
   providers: [
     importProvidersFrom(
-      NgIconsModule.withIcons({ heroUserCircle, heroXMark, heroHome, heroMapPin }),
+      NgIconsModule.withIcons({ heroUserCircle, heroXMark, heroHome, heroMapPin, heroBookmark, heroBookmarkSlash }),
     ),
     provideHttpClient(),
     provideRouter(appRoutes),

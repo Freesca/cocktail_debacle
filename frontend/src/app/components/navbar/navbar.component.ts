@@ -6,6 +6,8 @@ import { RouterModule } from '@angular/router';
 import { NgIconsModule } from '@ng-icons/core';
 import { AuthService } from '../../services/auth.service';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { UserImageComponent } from '../user-image/user-image.component'; // Aggiungi il percorso corretto
+
 
 
 @Component({
@@ -18,6 +20,7 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
     NgIconsModule, // ✅ solo questo
     RegisterFormComponent,
     NgbDropdownModule,
+    UserImageComponent // Aggiungi il componente UserImage
 ],
   providers: [AuthService],
   templateUrl: './navbar.component.html',
@@ -29,23 +32,11 @@ export class NavbarComponent {
   showLoginForm = false;
   showRegisterForm = false;
 
-  username = ''; // ← aggiorna dinamicamente da API o localStorage
-  userColor = '';
-  userInitial = '';
-
   constructor(private authService: AuthService) {}
 
   ngOnInit() {
     this.authService.isLoggedIn().subscribe((isLoggedIn: boolean) => {
       this.isAuthenticated = isLoggedIn;
-    });
-  
-    this.authService.userInfo$.subscribe((res) => {
-      if (res) {
-        this.username = res.username;
-        this.userInitial = res.username.charAt(0).toUpperCase();
-        this.userColor = this.getColorForUser(res.username);
-      }
     });
   
     // Nel caso in cui entri nella pagina già loggato
@@ -65,17 +56,6 @@ export class NavbarComponent {
     this.isAuthenticated = true;
     this.authService.fetchUserInfoIfLoggedIn(); // 👈 forza la fetch anche qui
     this.showLoginForm = false;
-  }
-  
-
-  getColorForUser(name: string): string {
-    // Crea un colore hash dal nome per mantenerlo consistente
-    let hash = 0;
-    for (let i = 0; i < name.length; i++) {
-      hash = name.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    const color = `hsl(${hash % 360}, 70%, 50%)`; // Colori vivaci e leggibili
-    return color;
   }
 
   onLogout() {

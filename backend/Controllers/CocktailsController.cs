@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using backend.Data;
 using backend.Entities;
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
+using backend.DTOs;
+
 
 namespace backend.Controllers;
 
@@ -59,5 +62,23 @@ public class CocktailsController : ControllerBase
         await _context.SaveChangesAsync();
 
         return Ok(new { message = $"Importati {cocktails.Count} cocktail nel database." });
+    }
+
+    [HttpGet("popular")]
+    public async Task<IActionResult> GetPopularCocktails()
+    {
+        var cocktails = await _context.Cocktails
+            .Select(c => new CocktailDto
+            {
+                IdDrink = c.IdDrink!,
+                StrDrink = c.StrDrink!,
+                StrDrinkThumb = c.StrDrinkThumb!,
+                Popularity = c.FavoritedBy.Count(),
+                ReviewsCount = c.Reviews.Count()
+            })
+            .OrderByDescending(c => c.Popularity)
+            .ToListAsync();
+
+        return Ok(cocktails);
     }
 }

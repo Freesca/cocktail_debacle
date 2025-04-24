@@ -6,22 +6,21 @@ using backend.Entities;
 namespace backend.Data;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options)
-    : IdentityDbContext<User, Role, int>(options) // 👈 attenzione a questo
+    : IdentityDbContext<User, Role, int>(options)
 {
     public DbSet<Place> Places { get; set; }
     public DbSet<Review> Reviews { get; set; }
     public DbSet<Cocktails> Cocktails { get; set; }
     public DbSet<CocktailReviewMetadata> CocktailReviewMetadatas { get; set; }
+    public DbSet<UserFavorite> UserFavorites { get; set; } // 👈 Aggiunto
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        // Indica la chiave primaria composta per CocktailReviewMetadata
         modelBuilder.Entity<CocktailReviewMetadata>()
             .HasKey(m => new { m.PlaceId, m.CocktailId });
 
-        // Configura le relazioni
         modelBuilder.Entity<Review>()
             .HasOne(r => r.User)
             .WithMany(u => u.Reviews)
@@ -49,5 +48,18 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
             .HasOne(m => m.Cocktail)
             .WithMany()
             .HasForeignKey(m => m.CocktailId);
+
+        // 👇 Aggiungi questa parte
+        modelBuilder.Entity<UserFavorite>()
+            .HasOne(f => f.User)
+            .WithMany(u => u.Favorites)
+            .HasForeignKey(f => f.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<UserFavorite>()
+            .HasOne(f => f.Cocktail)
+            .WithMany(c => c.FavoritedBy)
+            .HasForeignKey(f => f.CocktailId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

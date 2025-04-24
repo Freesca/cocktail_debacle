@@ -1,0 +1,51 @@
+$cocktail-radius: 8px;
+$cocktail-overlay-gradient: linear-gradient(
+  to top,
+  rgba(0, 0, 0, 0.9) 0%,
+  rgba(0, 0, 0, 0.7) 40%,
+  rgba(0, 0, 0, 0.4) 70%,
+  rgba(0, 0, 0, 0) 100%
+);
+$cocktail-text-color: #fff;
+
+
+.cocktail-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 20px;
+  padding: 20px;
+}
+
+.cocktail-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: $cocktail-radius;
+
+  a.image-link {
+    display: block;
+    position: relative;
+    text-decoration: none;
+
+    img.cocktail-image {
+      width: 100%;
+      aspect-ratio: 1 / 1; // Mantiene l'immagine quadrata
+      object-fit: cover;
+      border-radius: $cocktail-radius;
+      display: block;
+    }
+
+    .cocktail-name-overlay {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      padding: 8px 5px;
+      background: $cocktail-overlay-gradient;
+      color: $cocktail-text-color;
+      text-align: center;
+      font-weight: bold;
+      font-size: 1rem;
+      border-bottom-left-radius: $cocktail-radius;
+      border-bottom-right-radius: $cocktail-radius;
+    }
+  }
+}

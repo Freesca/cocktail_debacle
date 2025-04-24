@@ -11,4 +11,5 @@ public class User : IdentityUser<int>
     public string? ProviderId { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public ICollection<Review> Reviews { get; set; } = new List<Review>();
+     public ICollection<UserFavorite> Favorites { get; set; } = new List<UserFavorite>();
 }

@@ -53,4 +53,9 @@ export class CocktailService {
       )
     );
   }
+
+  // Ottiene i cocktail ordinati per popolarità
+  getPopularCocktails(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/popular`);
+  }
 }

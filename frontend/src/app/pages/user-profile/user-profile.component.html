@@ -1,93 +1,72 @@
-<div class="container mt-4">
-    <h2 class="mb-4">Area Personale</h2>
-  
-    <div *ngIf="loading()" class="alert alert-info">Caricamento profilo...</div>
-    <div *ngIf="error()" class="alert alert-danger">Errore: {{ error() }}</div>
-  
-    <form *ngIf="!loading() && !error()" (ngSubmit)="updateProfile()">
-      <div class="mb-3">
-        <label for="username" class="form-label">Username</label>
-        <input
-          type="text"
-          id="username"
-          [(ngModel)]="username"
-          name="username"
-          class="form-control"
-          [disabled]="!editMode"
-          required
-        />
+<div class="profile-container container mt-4">
+  <div class="profile-header d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex align-items-center">
+      <app-user-image></app-user-image>
+      <div class="ms-3">
+        <h3>{{ username }}</h3>
+        <p class="text-muted">{{ email }}</p>
       </div>
-  
-      <div class="mb-3">
-        <label for="email" class="form-label">Email</label>
-        <input
-          type="email"
-          id="email"
-          [(ngModel)]="email"
-          name="email"
-          class="form-control"
-          [disabled]="!editMode"
-          required
-        />
-      </div>
-  
-      <div *ngIf="editMode">
-        <div class="mb-3">
-          <label for="oldPassword" class="form-label">Vecchia Password (opzionale)</label>
-          <input
-            type="password"
-            id="oldPassword"
-            [(ngModel)]="oldPassword"
-            name="oldPassword"
-            class="form-control"
-          />
-        </div>
-  
-        <div class="mb-3">
-          <label for="newPassword" class="form-label">Nuova Password (opzionale)</label>
-          <input
-            type="password"
-            id="newPassword"
-            [(ngModel)]="newPassword"
-            name="newPassword"
-            class="form-control"
-          />
-        </div>
-  
-        <div class="form-check mb-2">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="consentData"
-            [(ngModel)]="consentData"
-            name="consentData"
-          />
-          <label class="form-check-label" for="consentData">
-            Acconsento alla gestione dei dati personali (GDPR)
-          </label>
-        </div>
-  
-        <div class="form-check mb-3">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="consentSuggestions"
-            [(ngModel)]="consentSuggestions"
-            name="consentSuggestions"
-          />
-          <label class="form-check-label" for="consentSuggestions">
-            Acconsento alla memorizzazione delle ricerche per suggerimenti personalizzati
-          </label>
-        </div>
-      </div>
-  
-      <button *ngIf="!editMode" type="button" class="btn btn-secondary" (click)="editMode = true">Modifica Profilo</button>
-      <button *ngIf="editMode" class="btn btn-primary">Salva Modifiche</button>
-      <button type="button" class="btn btn-danger ms-2" (click)="deleteAccount()">Elimina Account</button>
-    </form>
-  
-    <div *ngIf="successMessage()" class="alert alert-success mt-3">
-      {{ successMessage() }}
     </div>
+    <button class="btn btn-outline-secondary" (click)="editMode = !editMode">
+      <i class="bi bi-gear"></i> Impostazioni
+    </button>
   </div>
-  
+
+  <!-- Sezioni con tab -->
+  <ul ngbNav #nav="ngbNav" class="nav nav-tabs mb-3">
+    <li [ngbNavItem]="'cocktails'">
+      <a ngbNavLink>Cocktail personalizzati</a>
+    </li>
+    <li [ngbNavItem]="'favorites'">
+      <a ngbNavLink>Cocktail Preferiti</a>
+    </li>
+    <li [ngbNavItem]="'comments'">
+      <a ngbNavLink>Recensioni</a>
+    </li>
+  </ul>
+  <div [ngbNavOutlet]="nav" class="mt-3"></div>
+
+  <!-- Contenuti tab -->
+  <ng-template ngbNavContent id="cocktails">
+    <div class="row">
+      <!-- Mostra cocktail creati -->
+      <div class="col-md-4">
+        <div class="card">Cocktail Utente</div>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template ngbNavContent id="favorites">
+    <div class="row">
+      <!-- Mostra cocktail preferiti -->
+      <div class="col-md-4">
+        <app-cocktails-grid 
+        [cocktails]="favourites" 
+        [loading]="loading" 
+        [currentIndex]="currentIndex" 
+        [pageSize]="pageSize" 
+        [total]="total"
+        (toggleFavorite)="onToggleFavourite($event)" 
+        ></app-cocktails-grid>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template ngbNavContent id="comments">
+    <div class="row">
+      <!-- Mostra commenti -->
+      <div class="col-md-12">
+        <div class="card">Commento dell’utente</div>
+      </div>
+    </div>
+  </ng-template>
+
+  <!-- Modalità modifica -->
+  <div *ngIf="editMode" class="mt-5">
+    <hr />
+    <h4>Modifica Profilo</h4>
+    <form (ngSubmit)="updateProfile()">
+      <!-- ...form di modifica... -->
+    </form>
+  </div>
+</div>

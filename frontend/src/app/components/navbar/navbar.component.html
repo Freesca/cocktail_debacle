@@ -37,9 +37,8 @@
     <!-- Icona utente (se autenticato) -->
     <div *ngIf="isAuthenticated" class="position-relative dropdown dropend mb-3">
       <button class="btn p-0 border-0 shadow-none" [class.show]="showDropdown" (click)="toggleDropdown()" type="button" aria-expanded="false">
-        <div class="user-initial" [ngStyle]="{ 'background-color': userColor }">
-          {{ userInitial }}
-        </div>
+        <app-user-image>
+        </app-user-image>
       </button>
     
       <ul class="dropdown-menu show" [ngStyle]="{ display: showDropdown ? 'block' : 'none', top: '-70px', left: '100%' }" style="position: absolute;">

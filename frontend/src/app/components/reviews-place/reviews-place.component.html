@@ -1,0 +1,52 @@
+    <!-- Cocktail Reviews Section -->
+    <div class="cocktail-reviews mt-5">
+        <h3 class="text-center mb-4">Cocktails reviewed at this place</h3>
+        
+        <!-- Loading indicator for reviews -->
+        <div *ngIf="reviewsLoading" class="text-center py-3">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading cocktail reviews...</span>
+          </div>
+        </div>
+        
+        <!-- No reviews message -->
+        <div *ngIf="!reviewsLoading && cocktailReviews.length === 0" class="text-center py-3">
+          <p class="text-muted">No cocktail reviews for this place yet.</p>
+        </div>
+        
+        <!-- Reviews grid -->
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+          <div *ngFor="let review of cocktailReviews" class="col">
+            <div class="card h-100 cocktail-card" (click)="navigateToCocktail(review.cocktailId)">
+              <!-- Loading state -->
+              <div *ngIf="review.loading" class="card-img-top cocktail-image-placeholder d-flex align-items-center justify-content-center">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              </div>
+              
+              <!-- Error state -->
+              <div *ngIf="!review.loading && review.error" class="card-img-top cocktail-image-placeholder d-flex align-items-center justify-content-center">
+                <div class="text-muted">Image not available</div>
+              </div>
+              
+              <!-- Image -->
+              <img *ngIf="!review.loading && !review.error && review.strDrinkThumb" 
+                   [src]="review.strDrinkThumb" 
+                   class="card-img-top cocktail-image" 
+                   alt="{{ review.strDrink || 'Cocktail' }}">
+              
+              <div class="card-body">
+                <h5 class="card-title">{{ review.strDrink || 'Unknown Cocktail' }}</h5>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="rating">
+                    <span class="stars">{{ getStarRating(review.averageScore) }}</span>
+                    <span class="average">{{ review.averageScore.toFixed(1) }}</span>
+                  </div>
+                  <span class="review-count">{{ review.reviewCount }} {{ review.reviewCount === 1 ? 'review' : 'reviews' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>

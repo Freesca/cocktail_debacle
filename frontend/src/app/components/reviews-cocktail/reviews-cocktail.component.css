@@ -1,0 +1,22 @@
+.card-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 0.5rem;
+  }
+  
+  .stars {
+    color: #ffc107;
+    letter-spacing: 1px;
+    margin-right: 5px;
+  }
+  
+  .average {
+    font-weight: bold;
+  }
+  
+  .review-count {
+    color: #6c757d;
+    font-size: 0.875rem;
+  }
+  

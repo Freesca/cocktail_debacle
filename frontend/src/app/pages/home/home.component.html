@@ -5,12 +5,5 @@
     scopri i drink più popolari ora:
   </h1>
   
-  <div class="carousel-container text-center overflow-visible mt-5">
-    <div class="carousel">
-      <div class="carousel-slide" *ngFor="let slide of sliderItems; let i = index" (mouseenter)="setHoveredIndex(i)" [ngStyle]="{ transform: getScale(i), zIndex: getZIndex(i) }">
-        <img [src]="slide.image" alt="slide image" />
-        <h3>{{ slide.title }}</h3>
-      </div>
-    </div>
-  </div>
+  <app-carousel></app-carousel>
 </div>
