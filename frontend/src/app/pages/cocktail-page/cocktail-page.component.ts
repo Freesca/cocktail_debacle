@@ -1,13 +1,27 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CocktailService } from '../../services/cocktails.service';
 import { CommonModule } from '@angular/common';
-import { ReviewsCocktailComponent } from '../../components/reviews-cocktail/reviews-cocktail.component';
+import { ReviewService, PlaceReviewMetadata } from '../../services/review.service';
+import { LocationService } from '../../services/location.service';
+import { PlaceService } from '../../services/place.service';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { forkJoin, of } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
+
+interface PlaceWithDetails extends PlaceReviewMetadata {
+  name?: string;
+  address?: string;
+  photoUrl?: SafeUrl;
+  photoReference?: string;
+  loading?: boolean;
+  error?: boolean;
+}
 
 @Component({
   selector: 'app-cocktail-page',
   standalone: true,
-  imports: [CommonModule, ReviewsCocktailComponent],
+  imports: [CommonModule],
   templateUrl: './cocktail-page.component.html',
   styleUrls: ['./cocktail-page.component.scss'],
 })
@@ -15,10 +29,20 @@ export class CocktailPageComponent implements OnInit {
   cocktail: any;
   loading = true;
   errorMessage = '';
+  
+  // Place reviews related properties
+  placeReviews: PlaceWithDetails[] = [];
+  reviewsLoading = false;
+  locationError = '';
 
   constructor(
     private route: ActivatedRoute,
-    private cocktailService: CocktailService
+    private router: Router,
+    private cocktailService: CocktailService,
+    private reviewService: ReviewService,
+    private locationService: LocationService,
+    private placeService: PlaceService,
+    private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit() {
@@ -26,15 +50,158 @@ export class CocktailPageComponent implements OnInit {
     if (id) {
       this.cocktailService.getCocktailById(id).subscribe({
         next: (res) => {
-          this.cocktail = res;
+          this.cocktail = res; // ✅ ora il backend restituisce direttamente l'oggetto cocktail
           this.loading = false;
+          
+          // After loading cocktail details, load places with this cocktail
+          if (this.cocktail) {
+            this.loadNearbyPlaces(id);
+          }
         },
-        error: () => {
+        error: (err) => {
           this.errorMessage = 'Errore nel caricare il cocktail.';
           this.loading = false;
         },
       });
     }
+  }
+
+  loadNearbyPlaces(cocktailId: string) {
+    this.reviewsLoading = true;
+    
+    this.locationService.getPositionOrDefault().pipe(
+      switchMap(coords => {
+        return this.reviewService.getCocktailReviewMetadata(
+          cocktailId, 
+          coords.latitude, 
+          coords.longitude
+        );
+      }),
+      catchError(error => {
+        this.locationError = error.message || 'Failed to get your location.';
+        this.reviewsLoading = false;
+        return of([]);
+      })
+    ).subscribe({
+      next: (placeMetadata) => {
+        // Initialize place reviews with loading state
+        this.placeReviews = placeMetadata.map(place => ({
+          ...place,
+          loading: true,
+          error: false
+        }));
+        
+        // Load details for each place
+        if (this.placeReviews.length > 0) {
+          this.loadPlaceDetails();
+        } else {
+          this.reviewsLoading = false;
+        }
+      },
+      error: (error) => {
+        this.reviewsLoading = false;
+        this.locationError = 'Failed to fetch places: ' + (error.message || 'Unknown error');
+      }
+    });
+  }
+
+  loadPlaceDetails() {
+    // Create observables for each place
+    const placeRequests = this.placeReviews.map(place => {
+      return this.placeService.getPlaceDetails(place.googlePlaceId).pipe(
+        map(response => {
+          const placeDetails = response.result;
+          return {
+            place,
+            details: placeDetails
+          };
+        }),
+        catchError(() => {
+          // Handle error for this specific place
+          return of({ place, details: null });
+        })
+      );
+    });
+    
+    // Execute all requests in parallel
+    forkJoin(placeRequests).subscribe(results => {
+      // Update each place with details
+      results.forEach(result => {
+        const index = this.placeReviews.findIndex(p => p.googlePlaceId === result.place.googlePlaceId);
+        if (index !== -1) {
+          if (result.details) {
+            // Store the photo reference for later use
+            const photoReference = result.details.photos && result.details.photos.length > 0 
+              ? result.details.photos[0].photo_reference 
+              : null;
+              
+            this.placeReviews[index] = {
+              ...this.placeReviews[index],
+              name: result.details.name,
+              address: result.details.formatted_address,
+              photoReference: photoReference,
+              loading: photoReference ? true : false, // Keep loading true if we have a photo to load
+              error: false
+            };
+            
+            // Load photos for places with photo references
+            if (photoReference) {
+              this.loadPlacePhoto(index, photoReference);
+            }
+          } else {
+            this.placeReviews[index] = {
+              ...this.placeReviews[index],
+              loading: false,
+              error: true
+            };
+          }
+        }
+      });
+      
+      // If no places have photos to load, mark loading as complete
+      if (!this.placeReviews.some(p => p.loading)) {
+        this.reviewsLoading = false;
+      }
+    });
+  }
+
+  loadPlacePhoto(placeIndex: number, photoReference: string) {
+    this.placeService.getPlacePhoto(photoReference, 400).subscribe({
+      next: (blob) => {
+        const objectURL = URL.createObjectURL(blob);
+        this.placeReviews[placeIndex].photoUrl = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+        this.placeReviews[placeIndex].loading = false;
+        
+        // Check if all places are done loading
+        if (!this.placeReviews.some(p => p.loading)) {
+          this.reviewsLoading = false;
+        }
+      },
+      error: () => {
+        this.placeReviews[placeIndex].loading = false;
+        this.placeReviews[placeIndex].error = true;
+        
+        // Check if all places are done loading
+        if (!this.placeReviews.some(p => p.loading)) {
+          this.reviewsLoading = false;
+        }
+      }
+    });
+  }
+
+  navigateToPlace(placeId: string) {
+    const cocktailId = this.route.snapshot.paramMap.get('id');
+    if (cocktailId) {
+      // Navigate to the reviews page for this cocktail at this place
+      this.router.navigate(['/reviews', placeId, cocktailId]);
+    } else {
+      // Fallback to the place page if the cocktail ID is not available
+      this.router.navigate(['/place', placeId]);
+    }
+  }
+
+  getStarRating(score: number): string {
+    return '★'.repeat(Math.round(score));
   }
 
   getIngredientDots(): number[] {
