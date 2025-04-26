@@ -1,13 +1,32 @@
 <div class="profile-container container mt-4">
-  <div class="profile-header d-flex justify-content-between align-items-center mb-4">
+  <!-- Show loading indicator if still loading -->
+  <div *ngIf="isLoading()" class="text-center py-3">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading profile...</span>
+    </div>
+  </div>
+
+  <!-- Display error message if any -->
+  <div *ngIf="error()" class="alert alert-danger">
+    {{ error() }}
+  </div>
+
+  <!-- Display success message if any -->
+  <div *ngIf="successMessage()" class="alert alert-success">
+    {{ successMessage() }}
+  </div>
+
+  <div *ngIf="!isLoading()" class="profile-header d-flex justify-content-between align-items-center mb-4">
     <div class="d-flex align-items-center">
-      <app-user-image></app-user-image>
+      <app-user-image [userName]="username" size="large"></app-user-image>
       <div class="ms-3">
         <h3>{{ username }}</h3>
-        <p class="text-muted">{{ email }}</p>
+        <!-- Only show email for own profile -->
+        <p *ngIf="isOwnProfile" class="text-muted">{{ email }}</p>
       </div>
     </div>
-    <button class="btn btn-outline-secondary" (click)="editMode = !editMode">
+    <!-- Only show settings button for own profile -->
+    <button *ngIf="isOwnProfile" class="btn btn-outline-secondary" (click)="editMode = !editMode">
       <i class="bi bi-gear"></i> Impostazioni
     </button>
   </div>
@@ -56,13 +75,13 @@
     <div class="row">
       <!-- Mostra commenti -->
       <div class="col-md-12">
-        <div class="card">Commento dell’utente</div>
+        <div class="card">Commento dell'utente</div>
       </div>
     </div>
   </ng-template>
 
-  <!-- Modalità modifica -->
-  <div *ngIf="editMode" class="mt-5">
+  <!-- Modalità modifica - only visible for own profile -->
+  <div *ngIf="editMode && isOwnProfile" class="mt-5">
     <hr />
     <h4>Modifica Profilo</h4>
     <form (ngSubmit)="updateProfile()">

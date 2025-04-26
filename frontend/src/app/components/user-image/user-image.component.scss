@@ -1,17 +1,34 @@
 .user-initial {
-  width: 50px;
-  height: 50px;
-  font-size: 1.2rem;
   color: white;
   font-weight: bold;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+  
+  &.small {
+    width: 30px;
+    height: 30px;
+    font-size: 0.9rem;
+  }
+  
+  &.medium {
+    width: 50px;
+    height: 50px;
+    font-size: 1.2rem;
+  }
+  
+  &.large {
+    width: 70px;
+    height: 70px;
+    font-size: 1.8rem;
+  }
 }
 
 .user-initial img {
   width: 100%;
   height: 100%;
   border-radius: 50%;
+  object-fit: cover;
 }

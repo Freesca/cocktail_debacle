@@ -164,7 +164,12 @@
         <div *ngFor="let review of reviews" class="card mb-3 review-card">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-2">
-              <h5 class="card-title mb-0">{{ review.userName || 'Anonymous' }}</h5>
+              <div class="d-flex align-items-center user-profile-link">
+                <div (click)="navigateToUserProfile(review.userName)" class="d-flex align-items-center">
+                  <app-user-image [userName]="review.userName" size="small" class="me-2 clickable"></app-user-image>
+                  <h5 class="card-title mb-0 clickable">{{ review.userName || 'Anonymous' }}</h5>
+                </div>
+              </div>
               <div class="d-flex align-items-center">
                 <!-- Edit and Delete buttons (only for author) -->
                 <div *ngIf="isReviewAuthor(review)" class="review-actions me-3">

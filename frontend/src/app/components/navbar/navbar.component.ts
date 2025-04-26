@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LoginFormComponent } from '../login-form/login-form.component';
 import { RegisterFormComponent } from '../register-form/register-form.component';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { NgIconsModule } from '@ng-icons/core';
 import { AuthService } from '../../services/auth.service';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
@@ -31,16 +31,31 @@ export class NavbarComponent {
   showDropdown = false;
   showLoginForm = false;
   showRegisterForm = false;
+  currentUsername = '';
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit() {
     this.authService.isLoggedIn().subscribe((isLoggedIn: boolean) => {
       this.isAuthenticated = isLoggedIn;
     });
   
+    // Get current username for profile navigation
+    this.authService.userInfo$.subscribe(userInfo => {
+      if (userInfo) {
+        this.currentUsername = userInfo.username;
+      }
+    });
+    
     // Nel caso in cui entri nella pagina già loggato
     this.authService.fetchUserInfoIfLoggedIn();
+  }
+
+  navigateToProfile() {
+    if (this.currentUsername) {
+      this.router.navigate(['/profile', this.currentUsername]);
+      this.showDropdown = false;
+    }
   }
 
   toggleLoginForm() {
