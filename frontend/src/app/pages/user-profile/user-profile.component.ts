@@ -7,6 +7,7 @@ import { UserImageComponent } from '../../components/user-image/user-image.compo
 import { AuthService } from '../../services/auth.service';
 import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { CocktailsGridComponent } from '../../components/cocktails-grid/cocktails-grid.component';
+import { FavouritesService } from '../../services/favourites.service';
 
 @Component({
   selector: 'app-user-profile',
