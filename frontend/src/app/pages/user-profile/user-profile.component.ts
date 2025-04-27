@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -7,7 +7,6 @@ import { UserImageComponent } from '../../components/user-image/user-image.compo
 import { AuthService } from '../../services/auth.service';
 import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { CocktailsGridComponent } from '../../components/cocktails-grid/cocktails-grid.component';
-import { FavouritesService } from '../../services/favourites.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -33,11 +32,13 @@ export class UserProfileComponent implements OnInit {
   currentIndex = 0;
   pageSize = 30;
   isLoading = signal(true);
+  activeId = 2; // Per il tab attivo
+
 
   // Aggiungi questa proprietà per i preferiti
   favourites: any[] = [];
 
-  constructor(private http: HttpClient, private authService: AuthService, private favouritesService: FavouritesService) {}
+  constructor(private http: HttpClient, private authService: AuthService) {}
 
   ngOnInit() {
     this.authService.isLoggedIn().subscribe((isLoggedIn: boolean) => {
@@ -59,7 +60,15 @@ export class UserProfileComponent implements OnInit {
       },
     });
 
-    this.loadFavourites();
+    // Carica i preferiti
+    this.http.get<any[]>('/api/favorites').subscribe({
+      next: (res) => {
+        this.favourites = res;
+      },
+      error: (err) => {
+        this.error.set(err.error?.message || 'Errore nel caricamento dei preferiti');
+      },
+    });
   }
 
   enableEdit() {
@@ -101,53 +110,5 @@ export class UserProfileComponent implements OnInit {
         this.error.set(err.error?.message || 'Errore durante la cancellazione');
       },
     });
-  }
-
-  loadFavourites() {
-    this.loading = true;
-    this.favouritesService.getFavourites().subscribe({
-      next: (res) => {
-        this.favourites = res;
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Errore nel caricamento dei preferiti', err);
-        this.loading = false;
-      },
-    });
-  }
-
-  onToggleFavourite(cocktail: any) {
-    if (this.isFavourite(cocktail)) {
-      this.removeFavourite(cocktail);
-    } else {
-      this.addFavourite(cocktail);
-    }
-  }
-
-  addFavourite(cocktail: any) {
-    this.favouritesService.addFavourite(cocktail.idDrink).subscribe({
-      next: () => {
-        this.loadFavourites(); // Ricarica la lista dei preferiti
-      },
-      error: (err) => {
-        console.error('Errore durante l\'aggiunta ai preferiti', err);
-      },
-    });
-  }
-
-  removeFavourite(cocktail: any) {
-    this.favouritesService.removeFavourite(cocktail.idDrink).subscribe({
-      next: () => {
-        this.loadFavourites(); // Ricarica la lista dei preferiti
-      },
-      error: (err) => {
-        console.error('Errore durante la rimozione dai preferiti', err);
-      },
-    });
-  }
-
-  isFavourite(cocktail: any): boolean {
-    return this.favourites.some(fav => fav.idDrink === cocktail.idDrink);
   }
 }

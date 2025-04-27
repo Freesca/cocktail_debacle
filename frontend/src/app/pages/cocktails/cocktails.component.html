@@ -1,20 +1,4 @@
 <div class="cocktails-container position-relative">
-    <div *ngIf="loading">Caricamento in corso...</div>
-  
-    <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
-
-     <!-- Ordinamento -->
-    <app-cocktail-sorter (sortChange)="onSortChange($event)"></app-cocktail-sorter>
-  
-    <app-cocktails-grid
-    [cocktails]="displayedCocktails"
-    [loading]="loading"
-    [currentIndex]="currentIndex"
-    [pageSize]="pageSize"
-    [total]="filteredCocktails.length"
-    (toggleFavorite)="toggleFavorite($event)"
-    (loadMore)="displayNextCocktails()"
-    ></app-cocktails-grid>
-  
-  </div>
-  
+  <app-cocktail-sorter (sortChange)="onSortChange($event)"></app-cocktail-sorter>
+  <app-cocktails-grid [sortType]="currentSort"></app-cocktails-grid>
+</div>

@@ -13,53 +13,40 @@
   </div>
 
   <!-- Sezioni con tab -->
-  <ul ngbNav #nav="ngbNav" class="nav nav-tabs mb-3">
-    <li [ngbNavItem]="'cocktails'">
+  <ul ngbNav #nav="ngbNav" [(activeId)]="activeId" class="nav nav-tabs mb-3">
+    <li [ngbNavItem]="1">
       <a ngbNavLink>Cocktail personalizzati</a>
+      <ng-template ngbNavContent>
+        <div class="row">
+          <div class="col-md-4">
+          </div>
+        </div>
+      </ng-template>
     </li>
-    <li [ngbNavItem]="'favorites'">
+
+    <li [ngbNavItem]="2">
       <a ngbNavLink>Cocktail Preferiti</a>
+      <ng-template ngbNavContent>
+        <div class="row">
+          <div>
+            <app-cocktails-grid [cocktails]="favourites" [onlyFavorites]="true"></app-cocktails-grid>
+          </div>
+        </div>
+      </ng-template>
     </li>
-    <li [ngbNavItem]="'comments'">
+
+    <li [ngbNavItem]="3">
       <a ngbNavLink>Recensioni</a>
+      <ng-template ngbNavContent>
+        <div class="row">
+          <div class="col-md-12">
+          </div>
+        </div>
+      </ng-template>
     </li>
   </ul>
+
   <div [ngbNavOutlet]="nav" class="mt-3"></div>
-
-  <!-- Contenuti tab -->
-  <ng-template ngbNavContent id="cocktails">
-    <div class="row">
-      <!-- Mostra cocktail creati -->
-      <div class="col-md-4">
-        <div class="card">Cocktail Utente</div>
-      </div>
-    </div>
-  </ng-template>
-
-  <ng-template ngbNavContent id="favorites">
-    <div class="row">
-      <!-- Mostra cocktail preferiti -->
-      <div class="col-md-4">
-        <app-cocktails-grid 
-        [cocktails]="favourites" 
-        [loading]="loading" 
-        [currentIndex]="currentIndex" 
-        [pageSize]="pageSize" 
-        [total]="total"
-        (toggleFavorite)="onToggleFavourite($event)" 
-        ></app-cocktails-grid>
-      </div>
-    </div>
-  </ng-template>
-
-  <ng-template ngbNavContent id="comments">
-    <div class="row">
-      <!-- Mostra commenti -->
-      <div class="col-md-12">
-        <div class="card">Commento dell’utente</div>
-      </div>
-    </div>
-  </ng-template>
 
   <!-- Modalità modifica -->
   <div *ngIf="editMode" class="mt-5">
