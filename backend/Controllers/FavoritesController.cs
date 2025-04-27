@@ -19,34 +19,52 @@ public class FavoritesController : ControllerBase
         _context = context;
     }
 
-    // GET: /api/favorites
-    [HttpGet]
-    [Authorize]
-    public async Task<IActionResult> GetUserFavorites()
+// GET: /api/favorites/{username?}
+[Authorize]
+[HttpGet("{username?}")] // <-- Aggiungi il ? per renderlo opzionale
+public async Task<IActionResult> GetUserFavorites(string? username)
+{
+    User? user = null;
+
+    if (string.IsNullOrWhiteSpace(username))
     {
+        // Se username non è stato passato, prendi l'utente loggato
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (userId == null)
             return Unauthorized();
 
-        int userIdInt = Convert.ToInt32(userId); // Converte userId in int
-        var favorites = await _context.Users
-            .Where(u => u.Id == userIdInt)
-            .Include(u => u.Favorites) // Carica i preferiti (UserFavorites)
-            .ThenInclude(uf => uf.Cocktail) // Carica i cocktail associati
-            .SelectMany(u => u.Favorites)
-            .Select(uf => new CocktailDto
-            {
-                IdDrink = uf.Cocktail != null ? uf.Cocktail.IdDrink : "", // Controllo esplicito dei nulli
-                StrDrink = uf.Cocktail != null ? uf.Cocktail.StrDrink : "",
-                StrDrinkThumb = uf.Cocktail != null ? uf.Cocktail.StrDrinkThumb : "",
-                Popularity = uf.Cocktail != null ? uf.Cocktail.FavoritedBy.Count : 0, // Controllo esplicito dei nulli
-                ReviewsCount = uf.Cocktail != null ? uf.Cocktail.Reviews.Count : 0 // Controllo esplicito dei nulli
-            })
-            .ToListAsync();
+        int userIdInt = Convert.ToInt32(userId);
 
-
-        return Ok(favorites);
+        user = await _context.Users
+            .Include(u => u.Favorites)
+            .ThenInclude(uf => uf.Cocktail)
+            .FirstOrDefaultAsync(u => u.Id == userIdInt);
     }
+    else
+    {
+        // Altrimenti cerca per username
+        user = await _context.Users
+            .Include(u => u.Favorites)
+            .ThenInclude(uf => uf.Cocktail)
+            .FirstOrDefaultAsync(u => u.UserName == username);
+    }
+
+    if (user == null)
+        return NotFound("User not found.");
+
+    var favorites = user.Favorites
+        .Select(uf => new CocktailDto
+        {
+            IdDrink = uf.Cocktail != null ? uf.Cocktail.IdDrink : "",
+            StrDrink = uf.Cocktail != null ? uf.Cocktail.StrDrink : "",
+            StrDrinkThumb = uf.Cocktail != null ? uf.Cocktail.StrDrinkThumb : "",
+            Popularity = uf.Cocktail != null ? uf.Cocktail.FavoritedBy.Count : 0,
+            ReviewsCount = uf.Cocktail != null ? uf.Cocktail.Reviews.Count : 0
+        })
+        .ToList();
+
+    return Ok(favorites);
+}
 
 
     // POST: /api/favorites/15346

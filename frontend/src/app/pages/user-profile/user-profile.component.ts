@@ -175,10 +175,8 @@ export class UserProfileComponent implements OnInit {
 
   loadFavourites() {
     this.loading = true;
-    // We need to adapt this to get favorites for the profile we're viewing
-    // For now, let's assume we can only see our own favorites
-    if (this.isOwnProfile) {
-      this.favouritesService.getFavourites().subscribe({
+    if (this.profileUsername) {
+      this.favouritesService.getFavourites(this.profileUsername).subscribe({
         next: (res) => {
           this.favourites = res;
           this.loading = false;
@@ -189,8 +187,6 @@ export class UserProfileComponent implements OnInit {
         },
       });
     } else {
-      // For other users' profiles, we could either show nothing or call a different endpoint
-      // that returns public favorites
       this.loading = false;
     }
   }
