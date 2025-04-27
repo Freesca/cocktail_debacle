@@ -206,4 +206,19 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.user-profile-link {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 4px 8px;
+  border-radius: 20px;
+  
+  &:hover {
+    background-color: rgba(0, 123, 255, 0.1);
+  }
 } 

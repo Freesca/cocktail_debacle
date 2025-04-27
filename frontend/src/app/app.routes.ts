@@ -15,7 +15,7 @@ export const appRoutes: Routes = [
   { path: 'cocktail/:id', component: CocktailPageComponent, title: 'Cocktail' },
   { path: 'places', component: PlacesComponent, title: 'Places' },
   { path: 'place/:id', component: PlacePageComponent, title: 'Place' },
-  { path: 'profile', component: UserProfileComponent, title: 'Profile' },
+  { path: 'profile/:username', component: UserProfileComponent, title: 'Profile' },
   { path: 'reviews/:placeId/:cocktailId', component: ReviewsComponent, title: 'Reviews' },
   { path: 'add-review', component: AddReviewComponent, title: 'Add Review' },
 //   { path: 'about', component: AboutComponent }

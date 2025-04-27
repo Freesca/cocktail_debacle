@@ -8,11 +8,12 @@ import { CocktailService } from '../../services/cocktails.service';
 import { AuthService } from '../../services/auth.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { catchError, forkJoin, of } from 'rxjs';
+import { UserImageComponent } from '../../components/user-image/user-image.component';
 
 @Component({
   selector: 'app-reviews',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, UserImageComponent],
   templateUrl: './reviews.component.html',
   styleUrls: ['./reviews.component.scss']
 })
@@ -370,5 +371,12 @@ export class ReviewsComponent implements OnInit {
   // Get empty stars (for display)
   getEmptyStars(score: number): string {
     return '☆'.repeat(5 - Math.round(score));
+  }
+
+  // Add this method to navigate to a user's profile
+  navigateToUserProfile(username: string): void {
+    if (username && username !== 'Anonymous') {
+      this.router.navigate(['/profile', username]);
+    }
   }
 } 
