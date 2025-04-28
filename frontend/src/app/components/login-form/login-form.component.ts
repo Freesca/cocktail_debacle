@@ -50,9 +50,8 @@ export class LoginFormComponent {
     this.switchToRegister.emit();
   }
 
-  loginWithGoogle() {
-    // Implementa l'autenticazione con Google
-    console.log('Login con Google');
+  loginWithGoogle(): void {
+    this.authService.loginWithGoogle();
   }
 }
 

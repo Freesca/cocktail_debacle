@@ -62,6 +62,9 @@ public class FavoritesController : ControllerBase
             .Include(u => u.Favorites)
             .FirstOrDefaultAsync(u => u.Id.ToString() == userId);
 
+        if (user == null)
+            return NotFound(new { message = "Utente non trovato." });
+
         var cocktail = await _context.Cocktails.FindAsync(idDrink);
         if (cocktail == null)
             return NotFound();
@@ -81,6 +84,7 @@ public class FavoritesController : ControllerBase
     }
 
 
+
     // DELETE: /api/favorites/15346
     [HttpDelete("{idDrink}")]
     [Authorize]
@@ -98,7 +102,10 @@ public class FavoritesController : ControllerBase
         if (cocktail == null)
             return NotFound();
 
+        if (user == null)
+            return NotFound(new { message = "Utente non trovato." });
         var userFavorite = user.Favorites.FirstOrDefault(uf => uf.CocktailId == idDrink);
+
         if (userFavorite != null)
         {
             _context.UserFavorites.Remove(userFavorite);

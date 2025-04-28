@@ -1,5 +1,5 @@
 
-namespace backend.Dtos;
+namespace backend.DTOs;
 
 public class UpdateUserProfileDto
 {
