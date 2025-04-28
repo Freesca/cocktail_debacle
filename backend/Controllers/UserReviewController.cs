@@ -33,15 +33,20 @@ public class UserReviewController(AppDbContext db, UserManager<User> userManager
                 r.Rating,
                 r.Comment,
                 r.CreatedAt,
-                Cocktail = new { r.Cocktail.IdDrink, r.Cocktail.StrDrink },
-                Place = new { r.Place.Id, r.Place.GooglePlaceId, r.Place.Name }
+                r.UserId,
+                r.User.UserName,
+                r.PlaceId,
+                r.Place.GooglePlaceId,
+                r.Place.Name,
+                r.CocktailId,
+                r.Cocktail.StrDrink,
             })
             .ToListAsync();
 
         return Ok(reviews);
     }
 
-     [HttpGet("{userIdOrUsername}")]
+    [HttpGet("{userIdOrUsername}")]
     public async Task<IActionResult> GetUserReviewsByIdOrUsername(string userIdOrUsername)
     {
         User? user;
@@ -70,8 +75,13 @@ public class UserReviewController(AppDbContext db, UserManager<User> userManager
                 r.Rating,
                 r.Comment,
                 r.CreatedAt,
-                Cocktail = new { r.Cocktail.IdDrink, r.Cocktail.StrDrink },
-                Place = new { r.Place.Id, r.Place.GooglePlaceId, r.Place.Name }
+                r.UserId,
+                r.User.UserName,
+                r.PlaceId,
+                r.Place.GooglePlaceId,
+                r.Place.Name,
+                r.CocktailId,
+                r.Cocktail.StrDrink,
             })
             .ToListAsync();
 
