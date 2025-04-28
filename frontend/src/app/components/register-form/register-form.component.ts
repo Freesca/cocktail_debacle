@@ -4,13 +4,12 @@ import { NgIconsModule } from '@ng-icons/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service'; // Assicurati che il percorso sia corretto
 
-
 @Component({
   selector: 'app-register-form',
   imports: [CommonModule, NgIconsModule, FormsModule],
   providers: [AuthService],
   templateUrl: './register-form.component.html',
-  styleUrl: './register-form.component.css'
+  styleUrls: ['./register-form.component.css']
 })
 export class RegisterFormComponent {
   username = '';
@@ -20,7 +19,7 @@ export class RegisterFormComponent {
   acceptedTerms = false;
   acceptedPrivacy = false;
 
-  @Output() registerSuccess = new EventEmitter<void>();
+  @Output() registerSuccess = new EventEmitter<boolean>();
   @Output() closeForm = new EventEmitter<void>();
   @Output() switchToLogin = new EventEmitter<void>();
 
@@ -31,7 +30,20 @@ export class RegisterFormComponent {
       this.authService.register(this.username, this.email, this.password).subscribe({
         next: () => {
           console.log('Registrazione completata con successo');
-          this.registerSuccess.emit();
+          
+          // Dopo la registrazione, possiamo fare il login automatico
+          this.authService.login(this.username, this.password).subscribe({
+            next: () => {
+              console.log('Login avvenuto con successo dopo la registrazione');
+              this.authService.fetchUserInfoIfLoggedIn();
+              this.registerSuccess.emit();
+              this.closeForm.emit(); // Chiude il form
+            },
+            error: (err) => {
+              console.error('Errore nel login dopo la registrazione:', err);
+              // Gestisci errori di login se necessario
+            }
+          });
         },
         error: (err) => {
           console.error('Errore nella registrazione:', err);
@@ -48,9 +60,7 @@ export class RegisterFormComponent {
   switchToLoginForm() {
     this.switchToLogin.emit();
   }
-
-  loginWithGoogle() {
-    // Puoi usare lo stesso metodo del login se il provider gestisce anche la registrazione
-    console.log('Registrazione con Google');
+  loginWithGoogle(): void {
+    this.authService.loginWithGoogle();
   }
 }

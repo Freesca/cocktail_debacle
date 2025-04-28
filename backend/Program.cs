@@ -46,6 +46,7 @@ builder.Services.AddAuthentication(options =>
 .AddJwtBearer("JwtBearer", options =>
 {
     var jwtConfig = builder.Configuration.GetSection("Jwt");
+    var key = jwtConfig["Key"] ?? throw new InvalidOperationException("Jwt:Key non configurato correttamente.");
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
@@ -54,9 +55,7 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = jwtConfig["Audience"],
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(jwtConfig["Key"]!)
-        )
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
     };
 
     options.Events = new JwtBearerEvents
@@ -72,20 +71,14 @@ builder.Services.AddAuthentication(options =>
         }
     };
 })
-.AddGoogle(googleOptions =>
+.AddGoogle(options =>
 {
-    var clientId = builder.Configuration["Authentication:Google:ClientId"];
-    var clientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-
-    if (string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(clientSecret))
-    {
-        throw new Exception("Google ClientId or ClientSecret is missing from configuration.");
-    }
-
-    googleOptions.ClientId = clientId;
-    googleOptions.ClientSecret = clientSecret;
-    googleOptions.CallbackPath = "/signin-google"; 
+    var googleConfig = builder.Configuration.GetSection("Authentication:Google");
+    options.ClientId = googleConfig["ClientId"] ?? throw new InvalidOperationException("Authentication:Google:ClientId mancante.");
+    options.ClientSecret = googleConfig["ClientSecret"] ?? throw new InvalidOperationException("Authentication:Google:ClientSecret mancante.");
+    options.CallbackPath = "/auth/google-response"; // Dove Google ti riporta dopo il login
 });
+
 
 builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<UserNameService>();

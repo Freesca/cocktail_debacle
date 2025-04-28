@@ -78,6 +78,7 @@
   </app-login-form>
   <app-register-form
     *ngIf="showRegisterForm"
+    (registerSuccess)="onRegisterSuccess()"
     (closeForm)="toggleLoginForm()"
     (switchToLogin)="showRegisterForm = false">
   </app-register-form>

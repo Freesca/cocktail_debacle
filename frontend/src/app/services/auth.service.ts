@@ -32,7 +32,15 @@ export class AuthService {
   
 
   register(username: string, email: string, password: string) {
-    return this.http.post(`${this.apiUrl}/register`, { username, email, password });
+    return this.http.post(`${this.apiUrl}/register`, { username, email, password }, {
+      withCredentials: true
+    }).pipe(
+      map(() => {
+        this.fetchUserInfoIfLoggedIn(); // 👈 Fetch subito dopo login
+        return true;
+      }),
+      catchError(() => of(false))
+    );
   }
 
   isLoggedIn(): Observable<boolean> {
@@ -65,5 +73,9 @@ export class AuthService {
 
   logout(): Observable<any> {
     return this.http.post(`${this.apiUrl}/logout`, {}, { withCredentials: true });
+  }
+
+  loginWithGoogle(): void {
+    window.location.href = `${this.apiUrl}/google-login`; // Reindirizza al flusso di Google login
   }
 }

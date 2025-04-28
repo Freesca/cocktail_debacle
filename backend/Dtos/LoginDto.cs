@@ -1,7 +1,8 @@
-namespace backend.DTOs;
-
-public class LoginDto
+namespace backend.DTOs
 {
-    public string UsernameOrEmail { get; set; } = null!;
-    public string Password { get; set; } = null!;
+    public class LoginDto
+    {
+        public string UsernameOrEmail { get; set; } = null!;
+        public string Password { get; set; } = null!;
+    }
 }

@@ -73,6 +73,12 @@ export class NavbarComponent {
     this.showLoginForm = false;
   }
 
+  onRegisterSuccess() {
+    this.isAuthenticated = true;
+    this.authService.fetchUserInfoIfLoggedIn(); // 👈 forza la fetc
+    this.showRegisterForm = false;
+  }
+
   onLogout() {
     this.authService.logout().subscribe({
       next: () => {
