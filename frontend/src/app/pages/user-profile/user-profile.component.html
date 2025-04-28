@@ -82,7 +82,7 @@
                 <app-review-card
                   *ngFor="let review of reviews"
                   [review]="review"
-                  [currentUserName]="profileUsername"
+                  [currentUserName]="loggedInUsername"
                   [ratingOptions]="ratingOptions"
                   [showPlaceCocktail]="true"
                   (refreshParent)="loadUserReviews()">
