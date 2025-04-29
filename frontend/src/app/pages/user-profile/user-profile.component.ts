@@ -58,6 +58,8 @@ export class UserProfileComponent implements OnInit {
   reviewsError: string = '';
   ratingOptions = [1, 2, 3, 4, 5];
 
+  savedScrollY: number = 0;
+
   constructor(
     private http: HttpClient, 
     private authService: AuthService, 
@@ -179,6 +181,7 @@ export class UserProfileComponent implements OnInit {
   }
 
   loadUserReviews() {
+    this.savedScrollY = window.scrollY;
     this.reviewsLoading = true;
     this.reviewsError = '';
   
@@ -186,6 +189,7 @@ export class UserProfileComponent implements OnInit {
       next: (reviews) => {
         this.reviews = reviews;
         this.reviewsLoading = false;
+        setTimeout(() => window.scrollTo(0, this.savedScrollY), 0); // ripristina la posizione
       },
       error: (error) => {
         this.reviewsError = 'Failed to load reviews.';

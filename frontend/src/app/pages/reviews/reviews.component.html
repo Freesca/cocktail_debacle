@@ -25,28 +25,23 @@
     <!-- Place Details Section -->
     <div class="place-details text-center">
       <div class="photo-container mx-auto">
-        <div *ngIf="placeLoading" class="text-center py-5">
-          <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading image...</span>
-          </div>
-        </div>
         
         <div *ngIf="placeError || !place" class="no-photo">
           <p>Place details not available</p>
         </div>
         
-        <a *ngIf="!placeLoading && !placeError && place && placePhotoUrl && place.geometry && place.geometry.location" 
+        <a *ngIf="!placeError && place && placePhotoUrl && place.geometry && place.geometry.location" 
            [href]="'https://maps.google.com/?q=' + place.geometry.location.lat + ',' + place.geometry.location.lng"
            target="_blank">
           <img [src]="placePhotoUrl" class="img-fluid rounded" alt="{{ place.name || 'Place' }}">
         </a>
         
-        <a *ngIf="!placeLoading && !placeError && place && placePhotoUrl && (!place.geometry || !place.geometry.location)" 
+        <a *ngIf="!placeError && place && placePhotoUrl && (!place.geometry || !place.geometry.location)" 
            href="javascript:void(0)">
           <img [src]="placePhotoUrl" class="img-fluid rounded" alt="{{ place.name || 'Place' }}">
         </a>
         
-        <div *ngIf="!placeLoading && !placeError && place && !placePhotoUrl" class="no-photo">
+        <div *ngIf="!placeError && place && !placePhotoUrl" class="no-photo">
           <p>No image available</p>
         </div>
       </div>
@@ -59,17 +54,11 @@
     <div class="cocktail-details text-center mt-4">
       <h3 class="mb-3">Cocktail Details</h3>
       
-      <div *ngIf="cocktailLoading" class="text-center py-3">
-        <div class="spinner-border text-primary" role="status">
-          <span class="visually-hidden">Loading cocktail...</span>
-        </div>
-      </div>
-      
       <div *ngIf="cocktailError || !cocktail" class="alert alert-warning">
         <p>Cocktail details not available</p>
       </div>
       
-      <div *ngIf="!cocktailLoading && !cocktailError && cocktail" class="row justify-content-center">
+      <div *ngIf="!cocktailError && cocktail" class="row justify-content-center">
         <div class="col-md-6 col-lg-4">
           <div class="cocktail-image-container mb-3">
             <img *ngIf="cocktail.strDrinkThumb" 
@@ -93,6 +82,11 @@
     <div class="reviews-section mt-5">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h3 class="m-0">Reviews</h3>
+        <div *ngIf="reviewsLoading" class="text-center py-4">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading reviews...</span>
+          </div>
+        </div>
         <button class="btn btn-primary" (click)="toggleReviewForm()">
           {{ showReviewForm ? 'Cancel' : 'Add Review' }}
         </button>
@@ -160,7 +154,7 @@
         <p class="text-muted">No reviews found for this cocktail at this place.</p>
       </div>
       
-      <div *ngIf="reviews.length > 0" class="reviews-list">
+      <div *ngIf="!reviewsLoading && reviews.length > 0" class="reviews-list">
         <div *ngIf="reviews.length > 0" class="reviews-list">
           <app-review-card
           *ngFor="let review of reviews"

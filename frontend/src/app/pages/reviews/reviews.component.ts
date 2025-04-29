@@ -30,13 +30,11 @@ export class ReviewsComponent implements OnInit {
   
   // Place details
   place: PlaceResult | null = null;
-  placeLoading: boolean = false;
   placeError: boolean = false;
   placePhotoUrl: SafeUrl | null = null;
   
   // Cocktail details
   cocktail: any = null;
-  cocktailLoading: boolean = false;
   cocktailError: boolean = false;
   
   // Review form
@@ -51,12 +49,16 @@ export class ReviewsComponent implements OnInit {
     longitude: undefined
   };
   submittingReview: boolean = false;
+  reviewsLoading: boolean = false;
   reviewSuccess: boolean = false;
   reviewError: string = '';
   
 
   // Rating options for the selector
   ratingOptions = [1, 2, 3, 4, 5];
+
+  // Scroll position
+  savedScrollY: number = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -92,64 +94,64 @@ export class ReviewsComponent implements OnInit {
       this.newReview.googlePlaceId = this.placeId;
       this.newReview.cocktailId = this.cocktailId;
   
-      // Carichiamo separatamente
-      this.loadPlaceDetails();
-      this.loadCocktailDetails();
+      // Load initial data
+      this.loadPlaceCocktail();
       this.loadReviews();
     });
   }
-  
 
-  loadPlaceDetails(): void {
-    this.placeLoading = true;
-    this.placeService.getPlaceDetails(this.placeId).subscribe({
-      next: (response) => {
-        if (response?.result) {
-          this.place = response.result;
+
+    loadPlaceCocktail(): void {
+      this.loading = true;
+    
+      const placeRequest = this.placeService.getPlaceDetails(this.placeId).pipe(
+        catchError(error => {
+          console.error('Error loading place details:', error);
+          this.placeError = true;
+          return of(null);
+        })
+      );
+    
+      const cocktailRequest = this.cocktailService.getCocktailById(this.cocktailId).pipe(
+        catchError(error => {
+          console.error('Error loading cocktail details:', error);
+          this.cocktailError = true;
+          return of(null);
+        })
+      );
+    
+      forkJoin([placeRequest, cocktailRequest]).subscribe(([placeResponse, cocktail]) => {
+        if (placeResponse?.result) {
+          this.place = placeResponse.result;
           this.newReview.placeName = this.place?.name;
-          if (this.place && this.place.geometry && this.place.geometry.location) {
-            this.newReview.latitude = this.place.geometry.location.lat;
-            this.newReview.longitude = this.place.geometry.location.lng;
+          const location = this.place?.geometry.location;
+          if (location) {
+            this.newReview.latitude = location.lat;
+            this.newReview.longitude = location.lng;
           }
           this.loadPlacePhoto();
         }
-        this.placeLoading = false;
-      },
-      error: (error) => {
-        console.error('Error loading place details:', error);
-        this.placeLoading = false;
-        this.placeError = true;
-      }
-    });
-  }
-  
-  
-  loadCocktailDetails(): void {
-    this.cocktailLoading = true;
-    this.cocktailService.getCocktailById(this.cocktailId).subscribe({
-      next: (cocktail) => {
+    
         this.cocktail = cocktail;
-        this.cocktailLoading = false;
-      },
-      error: (error) => {
-        console.error('Error loading cocktail details:', error);
-        this.cocktailError = true;
-        this.cocktailLoading = false;
-      }
-    });
-  }
+    
+        this.loading = false; // solo qui viene settato a false
+      });
+    }
+    
 
   loadReviews(): void {
-    this.loading = true;
+    this.savedScrollY = window.scrollY;
+    this.reviewsLoading = true;
     this.reviewService.getCocktailReviewsAtPlace(this.placeId, this.cocktailId).subscribe({
       next: (reviews) => {
         this.reviews = reviews;
-        this.loading = false;
+        this.reviewsLoading = false;
+        setTimeout(() => window.scrollTo(0, this.savedScrollY), 0); // ripristina la posizione
       },
       error: (error) => {
         console.error('Error loading reviews:', error);
         this.errorMessage = 'Failed to load reviews.';
-        this.loading = false;
+        this.reviewsLoading = false;
       }
     });
   }
@@ -158,16 +160,13 @@ export class ReviewsComponent implements OnInit {
   loadPlacePhoto(): void {
     if (this.place?.photos && this.place.photos.length > 0) {
       const photoRef = this.place.photos[0].photo_reference;
-      this.placeLoading = true;
-      
+
       this.placeService.getPlacePhoto(photoRef, 400).subscribe({
         next: (blob) => {
           const objectURL = URL.createObjectURL(blob);
           this.placePhotoUrl = this.sanitizer.bypassSecurityTrustUrl(objectURL);
-          this.placeLoading = false;
         },
         error: () => {
-          this.placeLoading = false;
           this.placeError = true;
         }
       });
