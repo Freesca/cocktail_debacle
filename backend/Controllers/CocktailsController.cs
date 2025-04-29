@@ -81,4 +81,32 @@ public class CocktailsController : ControllerBase
 
         return Ok(cocktails);
     }
+
+    [HttpPost("upload-image")]
+    public async Task<IActionResult> UploadImage(IFormFile file)
+    {
+        if (file == null || file.Length == 0)
+            return BadRequest("Nessun file ricevuto.");
+
+        var permittedMimeTypes = new[] { "image/jpeg", "image/png", "image/webp" };
+        if (!permittedMimeTypes.Contains(file.ContentType))
+            return BadRequest("Formato immagine non supportato.");
+
+
+        var uploadsFolder = Path.Combine(_env.WebRootPath!, "uploads");
+        if (!Directory.Exists(uploadsFolder))
+            Directory.CreateDirectory(uploadsFolder);
+
+        var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+        var filePath = Path.Combine(uploadsFolder, fileName);
+
+        using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await file.CopyToAsync(stream);
+        }
+
+        var fileUrl = $"{Request.Scheme}://{Request.Host}/uploads/{fileName}";
+        return Ok(new { url = fileUrl });
+    }
+
 }
