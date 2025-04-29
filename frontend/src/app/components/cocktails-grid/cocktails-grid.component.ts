@@ -18,6 +18,7 @@ export class CocktailsGridComponent implements OnInit, OnDestroy {
   @Input() sortType: string = 'name';
   @Input() cocktails: any[] = [];
   @Input() onlyFavorites: boolean = false;  // Impostato a false di default
+  @Input() favoriteUsername: string = ''; // Nome utente per i preferiti
 
 
   filteredCocktails: any[] = [];
@@ -70,7 +71,7 @@ export class CocktailsGridComponent implements OnInit, OnDestroy {
           isFavorite: false,
         }));
   
-        this.favouritesService.getFavourites().subscribe(
+        this.favouritesService.getFavourites(this.favoriteUsername || undefined).subscribe(
           (favourites) => {
             const favoriteIds = favourites.map((f: any) => f.idDrink);
             this.cocktails.forEach((cocktail) => {

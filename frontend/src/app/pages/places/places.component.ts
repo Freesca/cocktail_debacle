@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [CommonModule, FormsModule,],
   templateUrl: './places.component.html',
-  styleUrl: './places.component.css'
+  styleUrl: './places.component.scss'
 })
 export class PlacesComponent implements OnInit {
   searchTerm = '';

@@ -1,0 +1,90 @@
+/* Centered Search Container */
+.search-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Search Results Styling */
+.search-results {
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+/* Hover Effect on List Items */
+.list-group-item {
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+
+  &:hover {
+    background-color: #f8f9fa;
+    transform: translateY(-2px);
+  }
+}
+
+/* Spinner size */
+.spinner-border {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* Section layout */
+h2 {
+  text-align: center;
+}
+
+/* Nearby Places Container */
+.nearby-places-section {
+  max-width: 600px;
+  margin: 0 auto;
+
+  h5 {
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* Nearby Places List */
+.nearby-places {
+  border-radius: 8px;
+  overflow: hidden;
+  animation: fadeIn 0.4s ease;
+
+  .list-group-item {
+    border-left: none;
+    border-right: none;
+
+    &:first-child {
+      border-top: none;
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Uniform buttons (e.g., Refresh, Show More) */
+.uniform-button {
+  display: inline-block;
+  min-width: 180px;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  font-size: 1rem;
+  border-radius: 0.375rem;
+  text-align: center;
+}

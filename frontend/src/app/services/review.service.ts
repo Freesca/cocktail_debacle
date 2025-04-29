@@ -16,13 +16,18 @@ export interface PlaceReviewMetadata {
   reviewCount: number;
 }
 
-export interface CocktailReview {
+export interface Review {
   id: number;
   rating: number;
   comment: string;
   createdAt: string;
   userId: string;
   userName: string;
+  placeId: string;
+  googlePlaceId: string;
+  name: string;
+  cocktailId: string;
+  strDrink: string;
 }
 
 export interface ReviewCreateDto {
@@ -66,13 +71,26 @@ export class ReviewService {
     );
   }
 
-  getCocktailReviewsAtPlace(placeId: string, cocktailId: string): Observable<CocktailReview[]> {
-    return this.http.get<CocktailReview[]>(
-      `/api/reviews/place/${placeId}/cocktail/${cocktailId}`,
+  getCocktailReviewsAtPlace(placeId: string, cocktailId: string): Observable<Review[]> {
+    return this.http.get<Review[]>(
+      `${this.reviewsUrl}/place/${placeId}/cocktail/${cocktailId}`,
       {
         withCredentials: true
       }
     );
+  }
+
+  getUserReviews(username?: string): Observable<Review[]> {
+    if (username) {
+      // Se username è passato, chiamiamo /api/user/reviews/{username}
+      return this.http.get<Review[]>(`/api/user/reviews/${username}`);
+    } else {
+      // Se username NON è passato, chiamiamo /api/user/reviews (autenticato)
+      return this.http.get<Review[]>(`/api/user/reviews`, {
+        withCredentials: true
+      }
+      );
+    }
   }
 
   createReview(review: ReviewCreateDto): Observable<any> {

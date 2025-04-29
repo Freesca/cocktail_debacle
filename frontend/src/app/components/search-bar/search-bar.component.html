@@ -1,12 +1,12 @@
-<div class="search-bar-container">
-    <div class="input-group mb-3">
+<div class="search-container position-relative mb-4">
+    <div class="input-group">
       <input
         type="text"
         class="form-control"
         [(ngModel)]="searchQuery"
         (input)="onSearch()"
         (keyup.enter)="onSearch()"
-        placeholder="Cerca un cocktail..."
+        placeholder="Search for cocktails..."
       />
       <button
         class="btn btn-outline-secondary"
@@ -15,7 +15,7 @@
         aria-expanded="false"
         aria-controls="filtersCollapse"
       >
-        Filtri
+        Filters
       </button>
     </div>
   

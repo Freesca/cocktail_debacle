@@ -48,7 +48,7 @@
       <ng-template ngbNavContent>
         <div class="row">
           <div>
-            <app-cocktails-grid [cocktails]="favourites" [onlyFavorites]="true"></app-cocktails-grid>
+            <app-cocktails-grid [favoriteUsername]="profileUsername" [onlyFavorites]="true"></app-cocktails-grid>
           </div>
         </div>
       </ng-template>
@@ -59,8 +59,38 @@
       <ng-template ngbNavContent>
         <div class="row">
           <div class="col-md-12">
+        
+            <!-- Loading spinner -->
+            <div *ngIf="reviewsLoading" class="text-center py-4">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading reviews...</span>
+              </div>
+            </div>
+        
+            <!-- Error message -->
+            <div *ngIf="reviewsError" class="alert alert-danger">
+              {{ reviewsError }}
+            </div>
+        
+            <!-- Reviews list -->
+            <div *ngIf="!reviewsLoading && !reviewsError">
+              <div *ngIf="reviews.length === 0" class="text-center py-4">
+                <p class="text-muted">No reviews found for this user.</p>
+              </div>
+        
+              <div *ngIf="reviews.length > 0" class="reviews-list">
+                <app-review-card
+                  *ngFor="let review of reviews"
+                  [review]="review"
+                  [currentUserName]="loggedInUsername"
+                  [ratingOptions]="ratingOptions"
+                  [showPlaceCocktail]="true"
+                  (refreshParent)="loadUserReviews()">
+                </app-review-card>
+              </div>
+            </div>
           </div>
-        </div>
+        </div>        
       </ng-template>
     </li>
   </ul>

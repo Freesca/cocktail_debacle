@@ -20,6 +20,7 @@ export class FavouritesService {
 
   // Ottieni i preferiti dell'utente
   getFavourites(username?: string): Observable<Cocktail[]> {
+    console.log('Fetching favourites for user:', username);
     const url = username ? `${this.apiUrl}/${username}` : this.apiUrl;
     return this.http.get<Cocktail[]>(url);
   }

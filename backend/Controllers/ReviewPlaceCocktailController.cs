@@ -41,7 +41,12 @@ public class ReviewPlaceCocktailController(AppDbContext db) : ControllerBase
                 r.Comment,
                 r.CreatedAt,
                 r.UserId,
-                r.User.UserName
+                r.User.UserName,
+                r.PlaceId,
+                r.Place.GooglePlaceId,
+                r.Place.Name,
+                r.CocktailId,
+                r.Cocktail.StrDrink,
             })
             .ToListAsync();
 
