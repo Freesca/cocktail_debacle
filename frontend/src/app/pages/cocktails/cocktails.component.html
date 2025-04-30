@@ -9,5 +9,9 @@
     <app-cocktail-sorter (sortChange)="onSortChange($event)"></app-cocktail-sorter>
   </div>
 
-  <app-cocktails-grid [sortType]="currentSort"></app-cocktails-grid>
+  <app-cocktails-grid
+    [sortType]="currentSort"
+    [recommended]="recommendedCocktails"
+    [showRecommended]="true"
+  ></app-cocktails-grid>
 </div>

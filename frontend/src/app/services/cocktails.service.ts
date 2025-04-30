@@ -58,4 +58,9 @@ export class CocktailService {
   getPopularCocktails(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/popular`);
   }
+
+  getRecommendedCocktails(): Observable<any[]> {
+    return this.http.get<any[]>('/api/recommendations');
+  }
+  
 }

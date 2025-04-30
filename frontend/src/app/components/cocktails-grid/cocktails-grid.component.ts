@@ -19,6 +19,8 @@ export class CocktailsGridComponent implements OnInit, OnDestroy {
   @Input() cocktails: any[] = [];
   @Input() onlyFavorites: boolean = false;  // Impostato a false di default
   @Input() favoriteUsername: string = ''; // Nome utente per i preferiti
+  @Input() recommended: any[] = []; // Cocktails suggeriti
+  @Input() showRecommended: boolean = false; // Mostra i cocktail consigliati
 
 
   filteredCocktails: any[] = [];
@@ -51,6 +53,11 @@ export class CocktailsGridComponent implements OnInit, OnDestroy {
     this.glassSub?.unsubscribe();
   }
 
+  ngOnChanges(): void {
+    this.fetchAllCocktails();
+  }
+  
+
   subscribeToSearch() {
     this.searchSub = this.searchService.searchQuery$.subscribe(() => this.applySearchFilter());
     this.categorySub = this.searchService.category$.subscribe(() => this.applySearchFilter());
@@ -64,13 +71,26 @@ export class CocktailsGridComponent implements OnInit, OnDestroy {
   
     this.cocktailService.getAllCocktails().subscribe(
       (data) => {
+        // Mappa i cocktail e marca i recommended
         this.cocktails = data.map((cocktail) => ({
           ...cocktail,
           popularity: cocktail.popularity || 0,
           reviewsCount: cocktail.reviewsCount || 0,
           isFavorite: false,
+          isRecommended: this.recommended?.some(r => r.idDrink === cocktail.idDrink) || false
         }));
   
+        // Se non c'è una ricerca attiva e va data priorità ai recommended, ordina
+        const query = this.searchService.searchQueryValue?.trim().toLowerCase();
+        if (!query && this.showRecommended) {
+          this.cocktails.sort((a, b) => {
+            if (a.isRecommended && !b.isRecommended) return -1;
+            if (!a.isRecommended && b.isRecommended) return 1;
+            return 0;
+          });
+        }
+  
+        // Aggiungi info preferiti
         this.favouritesService.getFavourites(this.favoriteUsername || undefined).subscribe(
           (favourites) => {
             const favoriteIds = favourites.map((f: any) => f.idDrink);
@@ -96,6 +116,7 @@ export class CocktailsGridComponent implements OnInit, OnDestroy {
       }
     );
   }
+  
   
   applySearchFilter() {
     const query = this.searchService.searchQueryValue.trim().toLowerCase();
@@ -125,6 +146,19 @@ export class CocktailsGridComponent implements OnInit, OnDestroy {
   }
 
   sortCocktails() {
+    const query = this.searchService.searchQueryValue.trim().toLowerCase();
+  
+    // Ordina mettendo i recommended in alto solo se non c'è una ricerca attiva
+    if (this.sortType === 'name' && this.showRecommended && !query) {
+      this.filteredCocktails.sort((a, b) => {
+        if (a.isRecommended && !b.isRecommended) return -1;
+        if (!a.isRecommended && b.isRecommended) return 1;
+        return a.strDrink.localeCompare(b.strDrink);
+      });
+      return;
+    }
+  
+    // Altrimenti usa sort "normale"
     switch (this.sortType) {
       case 'name':
         this.filteredCocktails.sort((a, b) => a.strDrink.localeCompare(b.strDrink));

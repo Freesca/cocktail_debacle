@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, NgModule, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -11,6 +11,7 @@ import { FavouritesService } from '../../services/favourites.service';
 import { ReviewService } from '../../services/review.service';
 import { Review } from '../../services/review.service';
 import { ReviewCardComponent } from '../../components/review-card/review-card.component';
+import { SearchService } from '../../services/search.service';
 
 
 @Component({
@@ -22,7 +23,7 @@ import { ReviewCardComponent } from '../../components/review-card/review-card.co
     UserImageComponent,
     ReviewCardComponent,
     NgbNavModule,
-    CocktailsGridComponent
+    CocktailsGridComponent,
   ],
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.scss']
@@ -60,12 +61,15 @@ export class UserProfileComponent implements OnInit {
 
   savedScrollY: number = 0;
 
+
+
   constructor(
     private http: HttpClient, 
     private authService: AuthService, 
     private favouritesService: FavouritesService,
     private route: ActivatedRoute,
     private reviewService: ReviewService,
+    private searchService: SearchService,
   ) {}
 
   ngOnInit() {
@@ -101,7 +105,7 @@ export class UserProfileComponent implements OnInit {
     });
 
     this.loadUserReviews();
-
+    this.searchService.resetFilters();
   }
 
   loadProfileData() {
