@@ -3,10 +3,10 @@
     <div class="d-flex justify-content-between align-items-center mb-2">
       <div class="d-flex align-items-center user-profile-link">
         <ng-container *ngIf="!showPlaceCocktail; else placeCocktailLink">
-          <div (click)="onNavigateToUserProfile()" class="d-flex align-items-center clickable">
+          <a [routerLink]="['/profile', review.userName]" class="d-flex align-items-center clickable text-decoration-none">
             <app-user-image [userName]="review.userName" size="small" class="me-2 clickable"></app-user-image>
             <h5 class="card-title mb-0 clickable">{{ review.userName || 'Anonymous' }}</h5>
-          </div>
+          </a>
         </ng-container>
       
         <ng-template #placeCocktailLink>

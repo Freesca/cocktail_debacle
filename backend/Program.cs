@@ -83,6 +83,8 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<UserNameService>();
 builder.Services.AddScoped<ISortingService, SortingService>();
+builder.Services.AddScoped<RecommendationService>();
+
 
 
 var app = builder.Build();
