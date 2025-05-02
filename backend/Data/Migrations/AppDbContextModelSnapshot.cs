@@ -299,7 +299,12 @@ namespace backend.Data.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasAnnotation("Relational:JsonPropertyName", "strMeasure9");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("IdDrink");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Cocktails");
                 });
@@ -575,6 +580,16 @@ namespace backend.Data.Migrations
                     b.Navigation("Place");
                 });
 
+            modelBuilder.Entity("backend.Entities.Cocktails", b =>
+                {
+                    b.HasOne("backend.Entities.User", "CreatedBy")
+                        .WithMany("CreatedCocktails")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("CreatedBy");
+                });
+
             modelBuilder.Entity("backend.Entities.Review", b =>
                 {
                     b.HasOne("backend.Entities.Cocktails", "Cocktail")
@@ -634,6 +649,8 @@ namespace backend.Data.Migrations
 
             modelBuilder.Entity("backend.Entities.User", b =>
                 {
+                    b.Navigation("CreatedCocktails");
+
                     b.Navigation("Favorites");
 
                     b.Navigation("Reviews");

@@ -58,4 +58,14 @@ export class CocktailService {
   getPopularCocktails(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/popular`);
   }
+
+  uploadImage(file: File): Observable<{ url: string }> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<{ url: string }>(`${this.apiUrl}/upload-image`, formData);
+  }
+
+  createCocktail(dto: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/create`, dto);
+  }  
 }

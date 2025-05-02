@@ -4,6 +4,9 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { CocktailService } from '../../services/cocktails.service';
+import { of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-add-cocktail',
@@ -17,7 +20,7 @@ export class AddCocktailComponent {
   imagePreview: string | ArrayBuffer | null = null;
   selectedImageFile: File | null = null;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private http: HttpClient, private router: Router, private cocktailService: CocktailService) {
     this.form = this.fb.group({
       strDrink: ['', Validators.required],
       strCategory: ['', Validators.required],
@@ -71,34 +74,45 @@ export class AddCocktailComponent {
   }
 
   onSubmit() {
-    if (this.form.invalid) {
+    if (this.form.invalid) return;
+  
+    this.loading = true;
+  
+    if (!this.selectedImageFile) {
+      alert('Please select an image before submitting.');
+      this.loading = false;
       return;
     }
-
-    const formData = new FormData();
-    formData.append('strDrink', this.form.value.strDrink);
-    formData.append('strCategory', this.form.value.strCategory);
-    formData.append('strAlcoholic', this.form.value.strAlcoholic);
-    formData.append('strInstructions', this.form.value.strInstructions);
-    
-    this.form.value.ingredients.forEach((ingredient: any, index: number) => {
-      formData.append(`strIngredient${index + 1}`, ingredient.ingredient);
-      formData.append(`strMeasure${index + 1}`, ingredient.measure);
-    });
-
-    if (this.selectedImageFile) {
-      formData.append('image', this.selectedImageFile);
-    }
-
-    // Qui puoi inviare il formData via HTTP POST al backend
-    console.log('Form inviato!', formData);
-
-    // Simula loading
-    this.loading = true;
-    setTimeout(() => {
-      this.loading = false;
-      alert('Cocktail aggiunto!');
-    }, 1500);
-  }
+    const uploadImage = this.cocktailService.uploadImage(this.selectedImageFile);
   
+    uploadImage.pipe(
+      switchMap((response) => {
+        const imageUrl = response?.url ?? '';
+        const dto: any = {
+          strDrink: this.form.value.strDrink,
+          strCategory: this.form.value.strCategory,
+          strAlcoholic: this.form.value.strAlcoholic,
+          strGlass: this.form.value.strGlass,
+          strInstructions: this.form.value.strInstructions,
+          strDrinkThumb: imageUrl,
+        }
+
+        this.form.value.ingredients.forEach((item: any, index: number) => {
+          dto[`strIngredient${index + 1}`] = item.ingredient;
+          dto[`strMeasure${index + 1}`] = item.measure;
+        });
+        
+        return this.cocktailService.createCocktail(dto);
+      })
+    ).subscribe({
+      next: () => {
+        this.loading = false;
+        alert('Cocktail aggiunto!');
+      },
+      error: () => {
+        this.loading = false;
+        alert('Errore durante la creazione del cocktail');
+      }
+    });
+  }  
 }

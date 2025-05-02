@@ -99,16 +99,27 @@ using (var scope = app.Services.CreateScope())
     
     if (File.Exists(filePath))
     {
-        var json = await File.ReadAllTextAsync(filePath);
-        var jsonDoc = JsonDocument.Parse(json);
-        var drinks = jsonDoc.RootElement.GetProperty("drinks");
-
-        var cocktails = JsonSerializer.Deserialize<List<Cocktails>>(drinks.GetRawText());
-        if (cocktails != null && !db.Cocktails.Any())
+        try
         {
-            db.Cocktails.AddRange(cocktails);
-            await db.SaveChangesAsync();
+            var json = await File.ReadAllTextAsync(filePath);
+            var jsonDoc = JsonDocument.Parse(json);
+            var drinks = jsonDoc.RootElement.GetProperty("drinks");
+
+            var cocktails = JsonSerializer.Deserialize<List<Cocktails>>(drinks.GetRawText());
+            if (cocktails != null && !db.Cocktails.Any())
+            {
+                db.Cocktails.AddRange(cocktails);
+                await db.SaveChangesAsync();
+            }
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Errore durante l'importazione dei cocktail: {ex.Message}");
+        }
+    }
+    else
+    {
+        Console.WriteLine("Il file cocktails.json non è stato trovato.");
     }
 }
 

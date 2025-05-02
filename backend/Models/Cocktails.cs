@@ -116,6 +116,8 @@ public class Cocktails
 
     [JsonPropertyName("strMeasure15")]
     public string? StrMeasure15 { get; set; }
+    public int? UserId { get; set; }
+    public User? CreatedBy { get; set; }
     public ICollection<Review> Reviews { get; set; } = new List<Review>();
     public ICollection<UserFavorite> FavoritedBy { get; set; } = new List<UserFavorite>();
 

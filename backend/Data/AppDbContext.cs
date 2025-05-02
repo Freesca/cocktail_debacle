@@ -61,5 +61,12 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
             .WithMany(c => c.FavoritedBy)
             .HasForeignKey(f => f.CocktailId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        
+        modelBuilder.Entity<Cocktails>()
+            .HasOne(c => c.CreatedBy)
+            .WithMany(u => u.CreatedCocktails)
+            .HasForeignKey(c => c.UserId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

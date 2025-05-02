@@ -12,7 +12,7 @@
       <div class="top-section">
         <!-- Upload immagine -->
         <div class="cocktail-image-upload">
-            <input type="file" id="fileInput" (change)="onImageSelected($event)" accept="image/*" hidden>
+            <input type="file" id="fileInput" (change)="onImageSelected($event)" accept="image/*" hidden required />
             
             <div class="upload-box" (click)="triggerFileInput()">
               <ng-container *ngIf="!imagePreview">
@@ -34,6 +34,9 @@
   
           <label for="strAlcoholic">Tipo (Alcolico / Non alcolico)</label>
           <input type="text" id="strAlcoholic" formControlName="strAlcoholic" class="form-control" placeholder="Tipo" required />
+
+          <label for="strGlass">Tipo di bicchiere</label>
+          <input type="text" id="strGlass" formControlName="strGlass" class="form-control" placeholder="Tipo di bicchiere" required />
         </div>
       </div>
   

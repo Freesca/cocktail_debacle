@@ -12,8 +12,8 @@ using backend.Data;
 namespace backend.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250417154659_NewMigrations1")]
-    partial class NewMigrations1
+    [Migration("20250502175143_newMig")]
+    partial class newMig
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -302,7 +302,12 @@ namespace backend.Data.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasAnnotation("Relational:JsonPropertyName", "strMeasure9");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("IdDrink");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Cocktails");
                 });
@@ -484,6 +489,30 @@ namespace backend.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("backend.Entities.UserFavorite", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CocktailId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CocktailId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserFavorites");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("backend.Entities.Role", null)
@@ -554,6 +583,16 @@ namespace backend.Data.Migrations
                     b.Navigation("Place");
                 });
 
+            modelBuilder.Entity("backend.Entities.Cocktails", b =>
+                {
+                    b.HasOne("backend.Entities.User", "CreatedBy")
+                        .WithMany("CreatedCocktails")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("CreatedBy");
+                });
+
             modelBuilder.Entity("backend.Entities.Review", b =>
                 {
                     b.HasOne("backend.Entities.Cocktails", "Cocktail")
@@ -580,8 +619,29 @@ namespace backend.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("backend.Entities.UserFavorite", b =>
+                {
+                    b.HasOne("backend.Entities.Cocktails", "Cocktail")
+                        .WithMany("FavoritedBy")
+                        .HasForeignKey("CocktailId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("backend.Entities.User", "User")
+                        .WithMany("Favorites")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cocktail");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("backend.Entities.Cocktails", b =>
                 {
+                    b.Navigation("FavoritedBy");
+
                     b.Navigation("Reviews");
                 });
 
@@ -592,6 +652,10 @@ namespace backend.Data.Migrations
 
             modelBuilder.Entity("backend.Entities.User", b =>
                 {
+                    b.Navigation("CreatedCocktails");
+
+                    b.Navigation("Favorites");
+
                     b.Navigation("Reviews");
                 });
 #pragma warning restore 612, 618
