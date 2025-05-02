@@ -1,8 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CocktailSorterComponent } from '../../components/cocktail-sorter/cocktail-sorter.component';
 import { CocktailsGridComponent } from '../../components/cocktails-grid/cocktails-grid.component';
 import { CommonModule } from '@angular/common';
 import { SearchBarComponent } from "../../components/search-bar/search-bar.component";
+import { AuthService } from "../../services/auth.service";
+import { CocktailService } from "../../services/cocktails.service";
+
+
 
 @Component({
   selector: 'app-cocktails',
@@ -11,8 +15,32 @@ import { SearchBarComponent } from "../../components/search-bar/search-bar.compo
   templateUrl: 'cocktails.component.html',
   styleUrls: ['cocktails.component.scss'],
 })
-export class CocktailsComponent {
+export class CocktailsComponent implements OnInit {
   currentSort = 'name';
+  isLoggedIn = false;
+  recommendedCocktails: any[] = [];
+
+  constructor(
+    private cocktailService: CocktailService,
+    private authService: AuthService
+  ) {}
+  
+
+  ngOnInit(): void {
+    this.authService.isLoggedIn().subscribe((isLoggedIn: boolean) => {
+      this.isLoggedIn = isLoggedIn; 
+      if (isLoggedIn) {
+        this.cocktailService.getRecommendedCocktails().subscribe({
+          next: (data) => {
+            this.recommendedCocktails = data.map(c => ({ ...c, isRecommended: true }));
+          },
+          error: () => {
+            this.recommendedCocktails = [];
+          }
+        });
+      }
+    });
+  }
 
   onSortChange(sortType: string) {
     this.currentSort = sortType;

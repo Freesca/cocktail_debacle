@@ -68,4 +68,9 @@ export class CocktailService {
   createCocktail(dto: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/create`, dto);
   }  
+
+  getRecommendedCocktails(): Observable<any[]> {
+    return this.http.get<any[]>('/api/recommendations');
+  }
+  
 }

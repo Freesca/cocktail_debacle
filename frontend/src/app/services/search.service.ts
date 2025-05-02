@@ -17,6 +17,13 @@ export class SearchService {
   ingredient$ = this.ingredientSubject.asObservable();
   glass$ = this.glassSubject.asObservable();
 
+  resetFilters() {
+    this.setSearchQuery('');
+    this.setCategory('');
+    this.setIngredient('');
+    this.setGlass('');
+  }
+
   // Metodi per aggiornare i valori
   setSearchQuery(query: string) {
     this.searchQuerySubject.next(query);
