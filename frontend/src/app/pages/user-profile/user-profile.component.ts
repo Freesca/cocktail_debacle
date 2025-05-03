@@ -54,6 +54,7 @@ export class UserProfileComponent implements OnInit {
   activeId = 2; // Per il tab attivo
   profileForm!: FormGroup;
   deletePassword: string = '';
+  confirmDelete: boolean = false;
 
   
   // Profile visibility controls

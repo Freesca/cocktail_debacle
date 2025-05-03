@@ -131,12 +131,38 @@
                 </label>
               </div>
             </div>
-    
             <!-- Buttons -->
-            <div class="col-12 d-flex gap-3 mt-3">
-              <button type="submit" class="btn btn-primary" [disabled]="profileForm.invalid">Save Changes</button>
-              <button type="button" class="btn btn-outline-danger" (click)="deleteAccount()">Delete Account</button>
-            </div>
+            <div class="col-12 mt-4">
+              <div *ngIf="!confirmDelete">
+                <button type="submit" class="btn btn-primary me-2" [disabled]="profileForm.invalid">
+                  Save Changes
+                </button>
+                <button type="button" class="btn btn-outline-danger" (click)="confirmDelete = true">
+                  Delete Account
+                </button>
+              </div>
+            
+              <div *ngIf="confirmDelete" class="alert alert-warning mt-3">
+                <p><strong>Are you sure you want to delete your account?</strong> This action cannot be undone.</p>
+              
+                <div class="mb-3">
+                  <label for="deletePassword" class="form-label">Enter your password to confirm:</label>
+                  <input
+                    id="deletePassword"
+                    type="password"
+                    class="form-control"
+                    [(ngModel)]="deletePassword"
+                    name="deletePassword"
+                    required
+                  />
+                </div>
+              
+                <div class="d-flex gap-2">
+                  <button type="button" class="btn btn-danger" (click)="deleteAccount()">Confirm Deletion</button>
+                  <button type="button" class="btn btn-secondary" (click)="confirmDelete = false">Cancel</button>
+                </div>
+              </div>
+            </div>  
           </div>
         </form>
       </div>
