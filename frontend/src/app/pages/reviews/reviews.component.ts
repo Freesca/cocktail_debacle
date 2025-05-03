@@ -24,7 +24,8 @@ export class ReviewsComponent implements OnInit {
   
   // Current user info
   currentUser: any = null;
-  
+
+  photoLoading: boolean = true;
   loading: boolean = true;
   errorMessage: string = '';
   
@@ -102,6 +103,7 @@ export class ReviewsComponent implements OnInit {
 
 
     loadPlaceCocktail(): void {
+
       this.loading = true;
     
       const placeRequest = this.placeService.getPlaceDetails(this.placeId).pipe(
@@ -156,18 +158,22 @@ export class ReviewsComponent implements OnInit {
     });
   }
 
-  // Existing methods
+  // load google photo
   loadPlacePhoto(): void {
     if (this.place?.photos && this.place.photos.length > 0) {
       const photoRef = this.place.photos[0].photo_reference;
+
+      this.photoLoading = true;
 
       this.placeService.getPlacePhoto(photoRef, 400).subscribe({
         next: (blob) => {
           const objectURL = URL.createObjectURL(blob);
           this.placePhotoUrl = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+          this.photoLoading = false;
         },
         error: () => {
           this.placeError = true;
+          this.photoLoading = false;
         }
       });
     }
