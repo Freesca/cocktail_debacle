@@ -7,38 +7,44 @@
 
     <!-- Icona Home -->
     <div class="col-12 d-flex align-items-center">
-      <button class="btn border-0 shadow-none mt-4 m-auto" routerLink="/">
-        <ng-icon name="heroHome" class="text-green-500" style="width: 30px; height: 30px"></ng-icon>
+      <button class="btn border-0 shadow-none mt-4 m-auto" ngbTooltip="Home" placement="right" routerLink="/">
+        <ng-icon [name]="isHome ? 'heroHomeSolid' : 'heroHome'" class="text-green-500" style="width: 30px; height: 30px"></ng-icon>
       </button>
     </div>
     
     <!-- Icona Cocktails -->
-    <div class="col-12 d-flex align-items-center" routerLink="/cocktails">
-      <button class="btn border-0 shadow-none mt-4 m-auto">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 30px; height: 30px;">
+    <div class="col-12 d-flex align-items-center">
+      <button class="btn border-0 shadow-none mt-4 m-auto" ngbTooltip="Cocktails" placement="right" routerLink="/cocktails">
+        <svg *ngIf="isCocktails" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" style="width: 30px; height: 30px;">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3h10.5M6.75 3l1.5 15a1.5 1.5 0 001.49 1.35h4.52a1.5 1.5 0 001.49-1.35l1.5-15M6.75 3h10.5M8.25 8h7.5" />
+        </svg>
+
+        <!-- Icona normale -->
+        <svg *ngIf="!isCocktails" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 30px; height: 30px;">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3h10.5M6.75 3l1.5 15a1.5 1.5 0 001.49 1.35h4.52a1.5 1.5 0 001.49-1.35l1.5-15M6.75 3h10.5M8.25 8h7.5" />
         </svg>
       </button>
     </div>
 
+
     <!-- Icona Esplora -->
-    <div class="col-12 d-flex align-items-center" routerLink="/places">
-      <button class="btn border-0 shadow-none mt-4 m-auto">
-        <ng-icon name="heroMapPin" style="width: 30px; height: 30px;"></ng-icon>
+    <div class="col-12 d-flex align-items-center">
+      <button class="btn border-0 shadow-none mt-4 m-auto" ngbTooltip="Places" placement="right" routerLink="/places">
+        <ng-icon [name]="isPlaces ? 'heroMapPinSolid' : 'heroMapPin'" style="width: 30px; height: 30px;"></ng-icon>
       </button>
     </div>
 
     <!-- Icona Aggiungi Recensione -->
-    <div class="col-12 d-flex align-items-center" routerLink="/add-review">
-      <button class="btn border-0 shadow-none mt-4 m-auto">
-        <ng-icon name="heroChatBubbleOvalLeft" class="text-green-500" style="width: 30px; height: 30px"></ng-icon>
+    <div class="col-12 d-flex align-items-center">
+      <button class="btn border-0 shadow-none mt-4 m-auto" ngbTooltip="Add review" placement="right" routerLink="/add-review">
+        <ng-icon [name]="isAddReview ? 'heroChatBubbleOvalLeftSolid' : 'heroChatBubbleOvalLeft'" class="text-green-500" style="width: 30px; height: 30px"></ng-icon>
       </button>
     </div>
 
     <!-- Icona Aggiungi Drink -->
-    <div class="col-12 d-flex align-items-center" routerLink="/add-cocktail">
-      <button class="btn border-0 shadow-none mt-4 m-auto">
-        <ng-icon name="heroPlusCircle" class="text-green-500" style="width: 30px; height: 30px"></ng-icon>
+    <div class="col-12 d-flex align-items-center">
+      <button class="btn border-0 shadow-none mt-4 m-auto" ngbTooltip="Add cocktail" placement="right" routerLink="/add-cocktail">
+        <ng-icon [name]="isAddCocktail ? 'heroPlusCircleSolid' : 'heroPlusCircle'" class="text-green-500" style="width: 30px; height: 30px"></ng-icon>
       </button>
     </div>
   </div>
@@ -51,7 +57,7 @@
 
     <!-- Icona utente (se autenticato) -->
     <div *ngIf="isAuthenticated" class="position-relative dropdown dropend mb-3">
-      <button class="btn p-0 border-0 shadow-none" [class.show]="showDropdown" (click)="toggleDropdown()" type="button" aria-expanded="false">
+      <button class="btn p-0 border-0 shadow-none" [class.show]="showDropdown" (click)="toggleDropdown()" type="button" aria-expanded="false" ngbTooltip="Profile" placement="right">
         <app-user-image>
         </app-user-image>
       </button>
@@ -66,7 +72,7 @@
 
     <!-- Icona utente (se non autenticato) -->
     <div *ngIf="!isAuthenticated" class="mb-3">
-      <button (click)="toggleLoginForm()" class="btn p-0 border-0 shadow-none">
+      <button (click)="toggleLoginForm()" class="btn p-0 border-0 shadow-none" ngbTooltip="Login" placement="right">
         <ng-icon name="heroUserCircle" class="text-green-500" style="width: 50px; height: 50px"></ng-icon>
       </button>
     </div>

@@ -5,9 +5,9 @@ import { appConfig } from './app/app.config';
 import { importProvidersFrom } from '@angular/core';
 import { AppComponent } from './app/app.component';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-
 import { NgIconsModule } from '@ng-icons/core';
-import { heroUserCircle, heroHome, heroMapPin, heroBookmark, heroBookmarkSlash, heroChatBubbleOvalLeft, heroPlusCircle } from '@ng-icons/heroicons/outline';
+import { heroUserCircle, heroHome, heroMapPin, heroBookmark, heroChatBubbleOvalLeft, heroPlusCircle } from '@ng-icons/heroicons/outline';
+import { heroHomeSolid, heroMapPinSolid, heroBookmarkSolid, heroChatBubbleOvalLeftSolid, heroPlusCircleSolid } from '@ng-icons/heroicons/solid'; 
 import { heroXMark } from '@ng-icons/heroicons/outline';
 import { provideRouter } from '@angular/router';
 import { appRoutes } from './app/app.routes';
@@ -16,7 +16,7 @@ import { appRoutes } from './app/app.routes';
 bootstrapApplication(AppComponent, {
   providers: [
     importProvidersFrom(
-      NgIconsModule.withIcons({ heroUserCircle, heroXMark, heroHome, heroMapPin, heroBookmark, heroBookmarkSlash, heroChatBubbleOvalLeft, heroPlusCircle }),
+      NgIconsModule.withIcons({ heroUserCircle, heroXMark, heroHome, heroHomeSolid , heroMapPin, heroMapPinSolid, heroBookmark, heroBookmarkSolid, heroChatBubbleOvalLeft, heroChatBubbleOvalLeftSolid, heroPlusCircle, heroPlusCircleSolid }),
     ),
     provideHttpClient(),
     provideRouter(appRoutes),
