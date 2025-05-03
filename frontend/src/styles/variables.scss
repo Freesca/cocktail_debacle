@@ -8,3 +8,16 @@
 
 
 $font-family-base: 'SF Pro Text', sans-serif; 
+
+:root {
+    --bs-tooltip-arrow-width: 0;
+    --bs-tooltip-arrow-height: 0;
+  }
+  
+  .tooltip .arrow,
+  .tooltip .tooltip-arrow {
+    display: none !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+  }

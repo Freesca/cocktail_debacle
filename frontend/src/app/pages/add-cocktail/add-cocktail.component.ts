@@ -25,6 +25,7 @@ export class AddCocktailComponent {
       strDrink: ['', Validators.required],
       strCategory: ['', Validators.required],
       strAlcoholic: ['', Validators.required],
+      strGlass: ['', Validators.required],
       strInstructions: ['', Validators.required],
       ingredients: this.fb.array([
         this.createIngredientFormGroup()
