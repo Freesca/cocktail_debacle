@@ -34,20 +34,7 @@ public class RecommendationsController : ControllerBase
             return Unauthorized();
         
         var userId = user.Id;
-        
         var cocktails = await _recommendationService.GetRecommendedCocktailsForUserAsync(userId);
-        if (cocktails == null)
-            cocktails = await _context.Cocktails
-            .Select(c => new CocktailDto
-            {
-                IdDrink = c.IdDrink!,
-                StrDrink = c.StrDrink!,
-                StrDrinkThumb = c.StrDrinkThumb!,
-                Popularity = c.FavoritedBy.Count(),
-                ReviewsCount = c.Reviews.Count()
-            })
-            .OrderByDescending(c => c.Popularity)
-            .ToListAsync();
 
         return Ok(cocktails);
     }
