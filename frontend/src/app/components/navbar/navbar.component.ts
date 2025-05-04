@@ -102,7 +102,10 @@ export class NavbarComponent {
     this.authService.logout().subscribe({
       next: () => {
         this.isAuthenticated = false;  // Imposta lo stato di autenticazione su falso
-        this.showDropdown = false;     // Nasconde il dropdown
+        this.showDropdown = false;    // Nasconde il dropdown
+        this.router.navigateByUrl('/').then(() => {
+          window.location.reload();
+        });
         console.log('Logout riuscito');
       },
       error: () => {
