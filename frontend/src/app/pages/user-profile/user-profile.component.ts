@@ -12,6 +12,11 @@ import { ReviewService } from '../../services/review.service';
 import { Review } from '../../services/review.service';
 import { ReviewCardComponent } from '../../components/review-card/review-card.component';
 import { SearchService } from '../../services/search.service';
+import { UserService } from '../../services/user.service';
+import { UpdateProfileDto, DeleteProfileDto } from '../../services/user.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -19,6 +24,7 @@ import { SearchService } from '../../services/search.service';
   standalone: true,
   imports: [CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     RouterModule,
     UserImageComponent,
     ReviewCardComponent,
@@ -46,6 +52,9 @@ export class UserProfileComponent implements OnInit {
   pageSize = 30;
   isLoading = signal(true);
   activeId = 2; // Per il tab attivo
+  profileForm!: FormGroup;
+  deletePassword: string = '';
+  confirmDelete: boolean = false;
 
   
   // Profile visibility controls
@@ -64,12 +73,15 @@ export class UserProfileComponent implements OnInit {
 
 
   constructor(
+    private router: Router,
     private http: HttpClient, 
     private authService: AuthService, 
     private favouritesService: FavouritesService,
     private route: ActivatedRoute,
     private reviewService: ReviewService,
     private searchService: SearchService,
+    private userService: UserService,
+    private fb: FormBuilder
   ) {}
 
   ngOnInit() {
@@ -126,6 +138,16 @@ export class UserProfileComponent implements OnInit {
         this.consentData = res.consentData ?? false;
         this.consentSuggestions = res.consentSuggestions ?? false;
         this.isLoading.set(false);
+
+        this.profileForm = this.fb.group({
+          username: [this.username, [Validators.required]],
+          email: [this.email, [Validators.required, Validators.email]],
+          oldPassword: [''],
+          newPassword: [''],
+          confirmPassword: [''],
+          consentData: this.consentData,
+          consentSuggestions: this.consentSuggestions,
+        });
       },
       error: (err) => {
         this.error.set(err.error?.message || 'Errore di caricamento profilo');
@@ -142,47 +164,61 @@ export class UserProfileComponent implements OnInit {
   }
 
   updateProfile() {
-    // Only allow updating own profile
     if (!this.isOwnProfile) return;
-    
-    const body = {
-      username: this.username,
-      email: this.email,
-      oldPassword: this.oldPassword || null,
-      newPassword: this.newPassword || null,
-      consentData: this.consentData,
-      consentSuggestions: this.consentSuggestions,
-    };
-
-    this.http.patch('/api/user/profile', body).subscribe({
+    if (this.profileForm.invalid) return;
+  
+    const oldUsername = this.username;  // Salva il vecchio username
+    const data: UpdateProfileDto = this.profileForm.value;
+  
+    this.userService.updateProfile(data).subscribe({
       next: () => {
+        const newUsername = this.profileForm.get('username')?.value;
         this.successMessage.set('Profilo aggiornato con successo!');
+        this.error.set('');
         this.editMode = false;
-        this.oldPassword = '';
-        this.newPassword = '';
+  
+        this.profileForm.patchValue({
+          oldPassword: '',
+          newPassword: '',
+          confirmPassword: ''
+        });
+  
+        // Redirect e reload
+        if (newUsername !== oldUsername) {
+          this.router.navigate(['/user', newUsername]).then(() => location.reload());
+        } else {
+          location.reload();
+        }
       },
-      error: (err) => {
-        this.error.set(err.error?.message || 'Errore durante l\'aggiornamento');
-      },
+      error: (err: any) => {
+        this.error.set(err?.error?.message || 'Errore durante l\'aggiornamento.');
+        this.successMessage.set('');
+      }
     });
   }
+  
 
   deleteAccount() {
-    // Only allow deleting own account
     if (!this.isOwnProfile) return;
-    
-    if (!confirm('Sei sicuro di voler eliminare il tuo account?')) return;
-
-    this.http.delete('/api/user/profile').subscribe({
+  
+    const dto: DeleteProfileDto = { password: this.deletePassword };
+  
+    this.userService.deleteAccount(dto).subscribe({
       next: () => {
         this.successMessage.set('Account eliminato con successo!');
-        // Redireziona o mostra messaggio
+  
+        // Esegui logout dell'utente
+        this.authService.logout();
+  
+        // Reindirizza alla home e ricarica completamente la pagina
+        this.router.navigate(['/']).then(() => location.reload());
       },
-      error: (err) => {
+      error: (err: any) => {
         this.error.set(err.error?.message || 'Errore durante la cancellazione');
       },
     });
   }
+  
 
   loadUserReviews() {
     this.savedScrollY = window.scrollY;

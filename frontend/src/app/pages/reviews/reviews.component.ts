@@ -9,11 +9,14 @@ import { AuthService } from '../../services/auth.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { catchError, forkJoin, of } from 'rxjs';
 import { ReviewCardComponent } from '../../components/review-card/review-card.component';
+import { RouterModule } from '@angular/router';
+import { NgIconsModule } from '@ng-icons/core';
+
 
 @Component({
   selector: 'app-reviews',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReviewCardComponent],
+  imports: [CommonModule, FormsModule, ReviewCardComponent, RouterModule, NgIconsModule],
   templateUrl: './reviews.component.html',
   styleUrls: ['./reviews.component.scss']
 })
@@ -24,7 +27,8 @@ export class ReviewsComponent implements OnInit {
   
   // Current user info
   currentUser: any = null;
-  
+
+  photoLoading: boolean = true;
   loading: boolean = true;
   errorMessage: string = '';
   
@@ -102,6 +106,7 @@ export class ReviewsComponent implements OnInit {
 
 
     loadPlaceCocktail(): void {
+
       this.loading = true;
     
       const placeRequest = this.placeService.getPlaceDetails(this.placeId).pipe(
@@ -156,18 +161,22 @@ export class ReviewsComponent implements OnInit {
     });
   }
 
-  // Existing methods
+  // load google photo
   loadPlacePhoto(): void {
     if (this.place?.photos && this.place.photos.length > 0) {
       const photoRef = this.place.photos[0].photo_reference;
+
+      this.photoLoading = true;
 
       this.placeService.getPlacePhoto(photoRef, 400).subscribe({
         next: (blob) => {
           const objectURL = URL.createObjectURL(blob);
           this.placePhotoUrl = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+          this.photoLoading = false;
         },
         error: () => {
           this.placeError = true;
+          this.photoLoading = false;
         }
       });
     }

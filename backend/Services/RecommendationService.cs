@@ -37,8 +37,11 @@ public class RecommendationService
             .ToList();
 
         // Step 2: Confronta con tutti i cocktail e calcola il punteggio
+        var favoriteIds = favorites.Select(f => f.Cocktail.IdDrink).ToHashSet();
+
         var ranked = await _context.Cocktails
             .AsNoTracking()
+            .Where(c => !favoriteIds.Contains(c.IdDrink)) // Non includere i cocktail già preferiti
             .Select(c => new
             {
                 Cocktail = c,
@@ -58,6 +61,19 @@ public class RecommendationService
             .ThenByDescending(r => r.Cocktail.FavoritedBy.Count)
             .Take(12)
             .ToListAsync();
+
+        if (ranked.Count < 12)
+        {
+            var extra = await _context.Cocktails
+                .AsNoTracking()
+                .Where(c => !favoriteIds.Contains(c.IdDrink) && !ranked.Select(r => r.Cocktail.IdDrink).Contains(c.IdDrink))
+                .OrderByDescending(c => c.FavoritedBy.Count)
+                .Take(12 - ranked.Count)
+                .ToListAsync();
+
+            ranked.AddRange(extra.Select(c => new { Cocktail = c, MatchCount = 0 }));
+        }
+
 
         // Step 3: Mappa in DTO
         return ranked.Select(r => new CocktailDto

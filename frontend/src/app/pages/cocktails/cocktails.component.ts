@@ -19,6 +19,7 @@ export class CocktailsComponent implements OnInit {
   currentSort = 'name';
   isLoggedIn = false;
   recommendedCocktails: any[] = [];
+  recommendedReady: boolean = false;
 
   constructor(
     private cocktailService: CocktailService,
@@ -39,6 +40,7 @@ export class CocktailsComponent implements OnInit {
           }
         });
       }
+      this.recommendedReady = true;
     });
   }
 
