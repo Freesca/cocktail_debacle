@@ -6,11 +6,12 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 // importa il nuovo componente
 import { ReviewsPlaceComponent } from '../../components/reviews-place/reviews-place.component';
+import { NgIconsModule } from '@ng-icons/core';
 
 @Component({
   selector: 'app-place-page',
   standalone: true,
-  imports: [CommonModule, ReviewsPlaceComponent],
+  imports: [CommonModule, ReviewsPlaceComponent, NgIconsModule],
   templateUrl: './place-page.component.html',
   styleUrl: './place-page.component.css'
 })
