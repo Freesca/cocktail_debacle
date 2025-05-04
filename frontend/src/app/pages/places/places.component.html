@@ -71,24 +71,31 @@
       <p class="text-muted">No places found nearby. Try searching for a specific place.</p>
     </div>
 
-    <div *ngIf="!isLoadingNearby && displayedNearbyPlaces.length > 0" class="nearby-places">
-      <ul class="list-group">
-        <li 
-          *ngFor="let place of displayedNearbyPlaces" 
-          class="list-group-item list-group-item-action"
-          (click)="goToPlaceDetails(place)">
-          <div class="d-flex flex-column">
-            <strong>{{ place.name }}</strong>
-            <small>{{ getFormattedAddress(place) }}</small>
-          </div>
-        </li>
-      </ul>
-
-      <div *ngIf="nearbyPlacesCurrentIndex < nearbyPlaces.length" class="text-center mt-3">
-        <button class="btn btn-outline-primary" (click)="displayNextNearbyPlaces()">
-          Show More Places
-        </button>
+    <div 
+      class="place-grid"
+      *ngIf="!isLoadingNearby && displayedNearbyPlaces.length > 0"
+      infiniteScroll
+      [infiniteScrollDistance]="scrollDistance"
+      [infiniteScrollThrottle]="150"
+      (scrolled)="displayNextNearbyPlaces()"
+    >
+  
+        <div *ngFor="let place of displayedNearbyPlaces" class="text-center">
+  
+        <div class="place-card position-relative mx-auto">
+          <a (click)="goToPlaceDetails(place)" class="image-link d-block position-relative">
+            <img class="place-image" [src]="place.photoUrl" alt="Place photo" />
+          </a>
+        </div>
+      
+        <!-- INFO SOTTO LA CARD -->
+        <div class="place-info text-center">
+          <div class="fw-bold">{{ place.name }}</div>
+          <div class="text-muted small">{{ getFormattedAddress(place) }}</div>
+        </div>
       </div>
     </div>
+      
+  
+    </div>
   </div>
-</div>

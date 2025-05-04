@@ -1,31 +1,35 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PlaceService, PlaceResult, PlaceSearchResponse } from '../../services/place.service';
-import { Subject, debounceTime, distinctUntilChanged, switchMap, of, catchError } from 'rxjs';
+import { Subject, debounceTime, distinctUntilChanged, switchMap, of, catchError, forkJoin } from 'rxjs';
 import { Router } from '@angular/router';
+import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
+
 
 @Component({
   selector: 'app-places',
   standalone: true,
-  imports: [CommonModule, FormsModule,],
+  imports: [CommonModule, FormsModule, InfiniteScrollDirective],
   templateUrl: './places.component.html',
   styleUrl: './places.component.scss'
 })
-export class PlacesComponent implements OnInit {
+export class PlacesComponent implements OnInit, OnDestroy {
   searchTerm = '';
   searchResults: PlaceResult[] = [];
   isLoading = false;
   hasError = false;
   errorMessage = '';
   
-  // Nearby places with pagination
   nearbyPlaces: PlaceResult[] = [];
   displayedNearbyPlaces: PlaceResult[] = [];
   nearbyPlacesCurrentIndex: number = 0;
-  nearbyPlacesPageSize: number = 4;
+  nearbyPlacesPageSize: number = 10;
   isLoadingNearby: boolean = false;
   nearbyError: boolean = false;
+  scrollDistance = 1;  // Distanza in percentuale per attivare lo scroll
+  scrollUpDistance = 2; // Distanza per triggerare lo scroll in alto
+
   
   private searchTerms = new Subject<string>();
 
@@ -34,22 +38,16 @@ export class PlacesComponent implements OnInit {
     private router: Router
   ) {
     this.searchTerms.pipe(
-      // wait 300ms after each keystroke before considering the term
       debounceTime(300),
-      
-      // ignore new term if same as previous term
       distinctUntilChanged(),
-      
-      // switch to new search observable each time the term changes
       switchMap((term: string) => {
         if (!term.trim()) {
-          // if search term is empty, return empty array
           return of({ results: [], status: 'EMPTY' });
         }
-        
+
         this.isLoading = true;
         this.hasError = false;
-        
+
         return this.placeService.searchPlaces(term).pipe(
           catchError(error => {
             this.hasError = true;
@@ -65,27 +63,24 @@ export class PlacesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Load nearby places on component initialization
     this.searchNearbyPlaces();
   }
 
-  // Format address for places that might not have formatted_address field
+  ngOnDestroy(): void {
+    // Libera eventuali URL blob creati
+    this.nearbyPlaces.forEach(place => {
+      if (place['photoUrl']?.startsWith('blob:')) {
+        URL.revokeObjectURL(place['photoUrl']);
+      }
+    });
+  }
+
   getFormattedAddress(place: PlaceResult): string {
-    // If formatted_address exists, return it
-    if (place.formatted_address) {
-      return place.formatted_address;
-    }
-    
-    // Otherwise, try to construct an address from vicinity or other fields
-    if (place.vicinity) {
-      return place.vicinity;
-    }
-    
-    // If no address info is available, return a generic message
+    if (place.formatted_address) return place.formatted_address;
+    if (place.vicinity) return place.vicinity;
     return 'Address not available';
   }
 
-  // Search for nearby places using geolocation
   searchNearbyPlaces(): void {
     this.isLoadingNearby = true;
     this.nearbyError = false;
@@ -93,19 +88,42 @@ export class PlacesComponent implements OnInit {
     this.displayedNearbyPlaces = [];
     this.nearbyPlacesCurrentIndex = 0;
 
-    // Use browser geolocation to get current coordinates
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const lat = position.coords.latitude;
           const lng = position.coords.longitude;
-          
-          // Call the API with the current coordinates
+
           this.placeService.searchNearbyPlaces(lat, lng).subscribe({
             next: (response: PlaceSearchResponse) => {
               this.nearbyPlaces = response.results;
-              this.displayNextNearbyPlaces();
-              this.isLoadingNearby = false;
+
+              const blobRequests = this.nearbyPlaces.map(place => {
+                const photoRef = place.photos?.[0]?.photo_reference;
+
+                if (!photoRef) {
+                  place['photoUrl'] = 'assets/default-place.jpg';
+                  return of(null);
+                }
+
+                return this.placeService.getPlacePhoto(photoRef).pipe(
+                  catchError(() => of(null)),
+                  switchMap(blob => {
+                    if (blob) {
+                      const objectUrl = URL.createObjectURL(blob);
+                      place['photoUrl'] = objectUrl;
+                    } else {
+                      place['photoUrl'] = 'assets/default-place.jpg';
+                    }
+                    return of(null);
+                  })
+                );
+              });
+
+              forkJoin(blobRequests).subscribe(() => {
+                this.displayNextNearbyPlaces();
+                this.isLoadingNearby = false;
+              });
             },
             error: (error) => {
               console.error('Error searching nearby places:', error);
@@ -128,27 +146,31 @@ export class PlacesComponent implements OnInit {
   }
 
   displayNextNearbyPlaces(): void {
+    console.log("Indice attuale:", this.nearbyPlacesCurrentIndex);
+    console.log("Caricando i posti...");
+    if (this.nearbyPlacesCurrentIndex >= this.nearbyPlaces.length) return;
+
     const nextPlaces = this.nearbyPlaces.slice(
       this.nearbyPlacesCurrentIndex,
       this.nearbyPlacesCurrentIndex + this.nearbyPlacesPageSize
     );
+
     this.displayedNearbyPlaces = [...this.displayedNearbyPlaces, ...nextPlaces];
     this.nearbyPlacesCurrentIndex += this.nearbyPlacesPageSize;
+    console.log("Posti caricati:", this.displayedNearbyPlaces);
   }
+  
 
-  // Push a search term into the observable stream
   search(term: string): void {
     this.searchTerm = term;
     this.searchTerms.next(term);
   }
 
-  // Clear search results
   clearSearch(): void {
     this.searchTerm = '';
     this.searchResults = [];
   }
 
-  // Navigate to place details page
   goToPlaceDetails(place: PlaceResult): void {
     this.router.navigate(['/place', place.place_id], { 
       state: { place: place }

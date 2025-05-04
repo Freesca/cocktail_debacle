@@ -39,6 +39,7 @@ export interface PlaceResult {
     open_now: boolean;
   };
   photos?: PlacePhoto[];
+  photoUrl?: string; // Added for displaying photos
   place_id: string;
   plus_code?: {
     compound_code: string;

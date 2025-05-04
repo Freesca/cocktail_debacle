@@ -55,7 +55,11 @@ $cocktail-text-color: #fff;
   bottom: 10px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: rgba(25, 135, 84, 0.9); // verde elegante (success)
+  background: linear-gradient(
+    to right,
+    rgba(0, 81, 244, 1),
+    rgba(208, 0, 255, 1)
+  );
   color: #fff; // bianco per contrasto
   font-size: 0.75rem;
   font-weight: 600;
