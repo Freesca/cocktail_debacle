@@ -9,11 +9,14 @@ import { AuthService } from '../../services/auth.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { catchError, forkJoin, of } from 'rxjs';
 import { ReviewCardComponent } from '../../components/review-card/review-card.component';
+import { RouterModule } from '@angular/router';
+import { NgIconsModule } from '@ng-icons/core';
+
 
 @Component({
   selector: 'app-reviews',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReviewCardComponent],
+  imports: [CommonModule, FormsModule, ReviewCardComponent, RouterModule, NgIconsModule],
   templateUrl: './reviews.component.html',
   styleUrls: ['./reviews.component.scss']
 })
