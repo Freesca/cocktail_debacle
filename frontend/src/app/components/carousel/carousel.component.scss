@@ -37,7 +37,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: -80px;
     transform-style: preserve-3d;
   }
   
@@ -45,7 +44,7 @@
     position: relative;
     width: 250px;
     height: 180px;
-    margin: 0 -40px;
+    margin: 0 -50px;
     transition: transform 0.3s ease, z-index 0.3s ease;
     transform-origin: center;
     cursor: pointer;

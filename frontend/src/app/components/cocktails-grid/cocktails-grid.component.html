@@ -1,7 +1,14 @@
 <div *ngIf="loading">Caricamento in corso...</div>
 <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
 
-<div class="cocktail-grid" *ngIf="displayedCocktails.length > 0">
+<div 
+  class="cocktail-grid" 
+  *ngIf="displayedCocktails.length > 0"
+  infiniteScroll
+  [infiniteScrollDistance]="scrollDistance"
+  [infiniteScrollUpDistance]="scrollUpDistance"
+  (scrolled)="loadMoreCocktails()"
+>
   <div *ngFor="let cocktail of displayedCocktails" class="cocktail-card position-relative">
     <a [routerLink]="['/cocktail', cocktail.idDrink]" class="image-link d-block position-relative">
       <img
@@ -39,9 +46,5 @@
 
   <div class="text-center text-muted fs-5 mt-5" *ngIf="displayedCocktails.length === 0 && !loading">
     Nessun cocktail trovato.
-  </div>
-
-  <div class="text-center my-4" *ngIf="currentIndex < filteredCocktails.length">
-    <button class="btn btn-success" (click)="displayNextCocktails()">Carica altri</button>
   </div>
 </div>

@@ -1,72 +1,203 @@
 .home-container {
-  padding: 0 20px;
-}
-
-.home-title {
-  font-size: 2.5rem;
-  font-weight: 600;
-  line-height: 1.5;
-  color: #333;
-  opacity: 0;
-  transform: scale(0.95);
-  animation: fadeInScale 1s ease-out forwards;
-}
-
-/* Animazione */
-@keyframes fadeInScale {
-  0% {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-
-.carousel-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
   width: 100%;
-  overflow: hidden;
+  z-index: 1;
+  background: url('/assets/images/bar.jpg') no-repeat center center / cover;
   display: flex;
-  justify-content: center;
-  perspective: 1000px;
-}
-
-.carousel {
-  display: flex;
-  justify-content: center;
   align-items: center;
-  gap: -80px;
-  transform-style: preserve-3d;
-}
+  justify-content: center;
+  text-align: center;
 
-.carousel-slide {
-  position: relative;
-  width: 250px;
-  height: 180px;
-  margin: 0 -40px;
-  transition: transform 0.3s ease, z-index 0.3s ease;
-  transform-origin: center;
-  cursor: pointer;
-
-  img {
+  .overlay {
+    background: rgba(0, 0, 0, 0.7);
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    border-radius: 12px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    padding: 2rem;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 
-  h3 {
+  .home-title {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    animation: fadeInDown 1s ease-out;
+  }
+
+  .gradient-text {
+    background: linear-gradient(90deg, #b406ff, #0011ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .scroll-arrow {
     position: absolute;
-    bottom: 10px;
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
+    font-size: 2rem;
+    animation: bounce 2s infinite;
     color: white;
-    text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+    cursor: default;
+  }
+
+  &.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
   }
 }
 
+.discover-section {
+  position: relative;
+  height: 80vh;
+  margin-top: 100vh; // mantiene il layout dopo home-container
+  background-color: #f0f0f5;
+  z-index: 2;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; // centra verticalmente
+  align-items: center;     // centra orizzontalmente
+  text-align: center;
+  font-size: 2rem;
+  animation: fadeIn 1s ease-in;
+
+  .discover-text {
+    margin-bottom: 2rem;
+  }
+
+  .carousel-container {
+    width: 100%;
+    max-width: 900px;
+  }
+}
+
+
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translate(-50%, 0);
+  }
+  50% {
+    transform: translate(-50%, 10px);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  
+}
+
+.image-section {
+  position: relative;
+  height: 100vh;
+  background: url('/assets/images/pub.jpg') no-repeat center center / cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+
+  .overlay {
+    background: rgba(0, 0, 0, 0.7);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .section-title {
+    color: white;
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 30px; /* Aggiunto margine per separare dal bento */
+    animation: fadeIn 1s ease-in;
+  }
+
+  .bento-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 colonne per la griglia */
+    gap: 10px;
+    width: 100%;
+    max-width: 1200px;
+    grid-template-rows: auto; /* Altezza automatica in base al contenuto */
+  }
+
+  .bento-box {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+    background-size: cover;
+    background-position: center;
+    height: 100%;
+    
+    /* Configurazione per le card con dimensioni diverse */
+    &:nth-child(1) {
+      grid-column: span 2; /* Prima card che occupa due colonne */
+      grid-row: span 30; /* Prima card che occupa due righe */
+    }
+
+    &:nth-child(2) {
+      grid-column: span 1; /* Seconda card che occupa due colonne */
+      grid-row: span 30; /* Seconda card che occupa due righe */
+    }
+
+    &:nth-child(3) {
+      grid-column: span 1; /* Terza card che occupa due colonne */
+      grid-row: span 25; /* Terza card che occupa due righe */
+    }
+
+    &:nth-child(4) {
+      grid-column: span 1; /* Quarta card che occupa due colonne */
+      grid-row: span 30; /* Quarta card che occupa due righe */
+    }
+
+    &:nth-child(5) {
+      grid-column: span 3; /* Quarta card che occupa due colonne */
+      grid-row: span 25; /* Quarta card che occupa due righe */
+    }
+
+    .box-overlay {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      padding: 10px;
+      font-size: 1.5rem;
+      border-radius: 5px;
+    }
+  }
+}
 
 

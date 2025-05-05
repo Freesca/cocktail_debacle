@@ -11,9 +11,12 @@ $cocktail-text-color: #fff;
 
 .cocktail-grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, 200px);
+  grid-auto-rows: 300px;
+  gap: 2rem;
+  justify-content: center;
   padding: 20px;
+  overflow-y: auto;
 }
 
 .cocktail-card {

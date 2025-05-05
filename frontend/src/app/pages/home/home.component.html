@@ -1,9 +1,44 @@
+<div class="home-container" #homeSection>
+  <div class="overlay" [class.hidden]="scrolled">
+    <h1 class="home-title text-center animate-title">
+      Welcome on <span class="gradient-text">Cocktail Débâcle</span>,<br />
+      scroll down for more!
+    </h1>
+    <div class="scroll-arrow" *ngIf="showArrow">
+      <span>&#x2193;</span>
+    </div>
+  </div>
+</div>
 
-<div class="home-container position-absolute top-50 start-50 translate-middle">
-  <h1 class="home-title animate-title text-center">
-    Benvenuto su Cocktail Débâcle,<br />
-    scopri i drink più popolari ora:
-  </h1>
-  
+<!-- SEZIONE 1 -->
+<div class="discover-section">
+  <h2 class="discover-text">So many cocktails, discover them all!</h2>
   <app-carousel></app-carousel>
 </div>
+
+<!-- SEZIONE 2: nuova immagine -->
+<div class="image-section">
+  <div class="overlay">
+    <h2 class="section-title">Find the best places to drink your favorite cocktails</h2>
+    <div class="bento-grid">
+      <div class="bento-box box-1" style="background-image: url('/assets/images/bar.jpg')">
+        <div class="box-overlay">La Bottega</div>
+      </div>
+      <div class="bento-box box-2" style="background-image: url('/assets/images/discover.jpeg')">
+        <div class="box-overlay">Bar Centrale</div>
+      </div>
+      <div class="bento-box box-3" style="background-image: url('/assets/images/notFound.png')">
+        <div class="box-overlay">Il Grottino</div>
+      </div>
+      <div class="bento-box box-4" style="background-image: url('/assets/images/pub.jpg')">
+        <div class="box-overlay">Sky Lounge</div>
+      </div>
+      <div class="bento-box box-5" style="background-image: url('/assets/images/magic.jpg')">
+        <div class="box-overlay">Sky Lounge</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+

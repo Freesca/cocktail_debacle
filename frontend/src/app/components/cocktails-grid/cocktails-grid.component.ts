@@ -6,22 +6,22 @@ import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { NgIconsModule } from '@ng-icons/core';
+import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 
 @Component({
   selector: 'app-cocktails-grid',
   standalone: true,
-  imports: [CommonModule, RouterModule, NgIconsModule],
+  imports: [CommonModule, RouterModule, NgIconsModule, InfiniteScrollDirective],
   templateUrl: './cocktails-grid.component.html',
   styleUrls: ['./cocktails-grid.component.scss'],
 })
 export class CocktailsGridComponent implements OnInit, OnDestroy {
   @Input() sortType: string = 'name';
   @Input() cocktails: any[] = [];
-  @Input() onlyFavorites: boolean = false;  // Impostato a false di default
-  @Input() favoriteUsername: string = ''; // Nome utente per i preferiti
-  @Input() recommended: any[] = []; // Cocktails suggeriti
-  @Input() showRecommended: boolean = false; // Mostra i cocktail consigliati
-
+  @Input() onlyFavorites: boolean = false;
+  @Input() favoriteUsername: string = '';
+  @Input() recommended: any[] = [];
+  @Input() showRecommended: boolean = false;
 
   filteredCocktails: any[] = [];
   displayedCocktails: any[] = [];
@@ -29,6 +29,8 @@ export class CocktailsGridComponent implements OnInit, OnDestroy {
   errorMessage = '';
   currentIndex = 0;
   pageSize = 30;
+  scrollDistance = 3;  // Scrolla quando è alla fine
+  scrollUpDistance = 2;  // Triggera lo scroll anche quando si ritorna verso l'alto
 
   private searchSub!: Subscription;
   private categorySub!: Subscription;
@@ -56,7 +58,15 @@ export class CocktailsGridComponent implements OnInit, OnDestroy {
   ngOnChanges(): void {
     this.fetchAllCocktails();
   }
-  
+
+  loadMoreCocktails() {
+    if (!this.loading) {
+      this.loading = true;
+      this.displayNextCocktails();
+      this.loading = false;
+    }
+  }
+
 
   subscribeToSearch() {
     this.searchSub = this.searchService.searchQuery$.subscribe(() => this.applySearchFilter());
