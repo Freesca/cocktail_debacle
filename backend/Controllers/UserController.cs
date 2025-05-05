@@ -119,7 +119,7 @@ public async Task<IActionResult> UpdateProfile([FromBody] UpdateUserProfileDto d
         {
             var passwordValid = await _userManager.CheckPasswordAsync(user, dto.Password);
             if (!passwordValid)
-                return BadRequest(new { message = "Password errata. Impossibile cancellare l'account." });
+                return BadRequest(new { message = "Wrong Password" });
         }
 
          // Carica i dati collegati esplicitamente

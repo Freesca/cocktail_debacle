@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NgIconsModule } from '@ng-icons/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service'; // Assicurati che il percorso sia corretto
+import { signal } from '@angular/core';
 
 @Component({
   selector: 'app-register-form',
@@ -15,6 +16,10 @@ export class RegisterFormComponent {
   username = '';
   email = '';
   password = '';
+  confirmPassword = '';
+  consentData = false;
+  consentSuggestions = false;
+  error = signal<string | null>(null);
 
   acceptedTerms = false;
   acceptedPrivacy = false;
@@ -27,27 +32,21 @@ export class RegisterFormComponent {
 
   onSubmit() {
     if (this.acceptedTerms && this.acceptedPrivacy) {
-      this.authService.register(this.username, this.email, this.password).subscribe({
+      this.authService.register(
+        this.username,
+        this.email,
+        this.password,
+        this.confirmPassword,
+        this.consentData,
+        this.consentSuggestions
+      ).subscribe({
         next: () => {
-          console.log('Registrazione completata con successo');
-          
-          // Dopo la registrazione, possiamo fare il login automatico
-          this.authService.login(this.username, this.password).subscribe({
-            next: () => {
-              console.log('Login avvenuto con successo dopo la registrazione');
-              this.authService.fetchUserInfoIfLoggedIn();
-              this.registerSuccess.emit();
-              this.closeForm.emit(); // Chiude il form
-            },
-            error: (err) => {
-              console.error('Errore nel login dopo la registrazione:', err);
-              // Gestisci errori di login se necessario
-            }
-          });
+          this.authService.fetchUserInfoIfLoggedIn();
+          this.registerSuccess.emit();
+          this.closeForm.emit(); // Chiude il form
         },
-        error: (err) => {
-          console.error('Errore nella registrazione:', err);
-          // Qui puoi gestire messaggi di errore o alert
+        error: (err: any) => {
+          this.error.set(err?.error?.message || 'Error during registration');
         }
       });
     }

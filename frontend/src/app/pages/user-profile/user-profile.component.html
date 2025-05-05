@@ -127,7 +127,7 @@
                   formControlName="consentSuggestions"
                 />
                 <label class="form-check-label" for="consentSuggestions">
-                  I agree to receive personalized suggestions
+                  
                 </label>
               </div>
             </div>
@@ -152,6 +152,7 @@
                     type="password"
                     class="form-control"
                     [(ngModel)]="deletePassword"
+                    [ngModelOptions]="{ standalone: true }"
                     name="deletePassword"
                     required
                   />

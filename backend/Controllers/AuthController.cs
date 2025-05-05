@@ -49,7 +49,9 @@ public class AuthController : ControllerBase
         var user = new User
         {
             UserName = dto.Username,
-            Email = dto.Email
+            Email = dto.Email,
+            ConsentData = dto.ConsentData,
+            ConsentSuggestions = dto.ConsentSuggestions
         };
 
         var result = await _userManager.CreateAsync(user, dto.Password);
