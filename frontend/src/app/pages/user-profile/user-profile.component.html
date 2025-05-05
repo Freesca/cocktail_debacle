@@ -176,7 +176,8 @@
       <a ngbNavLink>Cocktail personalizzati</a>
       <ng-template ngbNavContent>
         <div class="row">
-          <div class="col-md-4">
+          <div>
+            <app-cocktails-grid [createdByUsername]="profileUsername" [onlyCreatedBy]="true"></app-cocktails-grid>
           </div>
         </div>
       </ng-template>
