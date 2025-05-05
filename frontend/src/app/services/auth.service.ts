@@ -21,26 +21,14 @@ export class AuthService {
   login(usernameOrEmail: string, password: string) {
     return this.http.post(`${this.apiUrl}/login`, { usernameOrEmail, password }, {
       withCredentials: true
-    }).pipe(
-      map(() => {
-        this.fetchUserInfoIfLoggedIn(); // 👈 Fetch subito dopo login
-        return true;
-      }),
-      catchError(() => of(false))
-    );
+    })
   }
   
 
-  register(username: string, email: string, password: string) {
-    return this.http.post(`${this.apiUrl}/register`, { username, email, password }, {
+  register(username: string, email: string, password: string, confirmPassword: string, consentData: boolean, consentSuggestions: boolean) {
+    return this.http.post(`${this.apiUrl}/register`, { username, email, password, confirmPassword, consentData, consentSuggestions }, {
       withCredentials: true
-    }).pipe(
-      map(() => {
-        this.fetchUserInfoIfLoggedIn(); // 👈 Fetch subito dopo login
-        return true;
-      }),
-      catchError(() => of(false))
-    );
+    })
   }
 
   isLoggedIn(): Observable<boolean> {

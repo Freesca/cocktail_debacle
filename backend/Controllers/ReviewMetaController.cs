@@ -55,7 +55,6 @@ public class ReviewMetadataController : ControllerBase
 
     }
 
-    [Authorize]
     [HttpGet("place/{placeIdOrGoogle}")]
     public async Task<IActionResult> GetMetadataPlace(string placeIdOrGoogle)
     {

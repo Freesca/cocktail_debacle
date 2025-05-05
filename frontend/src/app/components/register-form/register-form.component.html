@@ -7,8 +7,13 @@
       <ng-icon name="heroXMark" class="text-green-500" style="width: 30px; height: 30px;"></ng-icon>
     </button>
   
-    <h3>Registrati</h3>
-  
+    <h3>Register</h3>
+
+    <!-- Display error message if any -->
+    <div *ngIf="error()" class="alert alert-danger">
+      {{ error() }}
+    </div>
+
     <!-- Form di registrazione -->
     <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
       <div class="form-group">
@@ -25,19 +30,38 @@
         <label for="password">Password</label>
         <input type="password" id="password" class="form-control" [(ngModel)]="password" name="password" required />
       </div>
+
+      <div class="form-group mt-2">
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" id="confirmPassword" class="form-control" [(ngModel)]="confirmPassword" name="confirmPassword" required />
+      </div>
+
+      <div class="form-check mt-3">
+        <input type="checkbox" id="consentData" class="form-check-input" [(ngModel)]="consentData" name="consentData" required />
+        <label for="consentData" class="form-check-label">
+          I consent to the collection of my data
+        </label>
+      </div>
+
+      <div class="form-check mt-3">
+        <input type="checkbox" id="consentSuggestions" class="form-check-input" [(ngModel)]="consentSuggestions" name="consentSuggestions" required />
+        <label for="consentSuggestions" class="form-check-label">
+          I agree to receive personalized suggestions
+        </label>
+      </div>
   
       <!-- Checkbox condizioni -->
       <div class="form-check mt-3">
         <input type="checkbox" id="terms" class="form-check-input" [(ngModel)]="acceptedTerms" name="terms" required />
         <label for="terms" class="form-check-label">
-          Accetto i <a href="/terms" target="_blank">Termini e Condizioni</a>
+          I accept the <a href="/terms" target="_blank">Terms and Conditions</a>
         </label>
       </div>
   
       <div class="form-check mt-2">
         <input type="checkbox" id="privacy" class="form-check-input" [(ngModel)]="acceptedPrivacy" name="privacy" required />
         <label for="privacy" class="form-check-label">
-          Accetto la <a href="/privacy" target="_blank">Privacy Policy</a>
+          I accept the <a href="/privacy" target="_blank">Privacy Policy</a>
         </label>
       </div>
   
@@ -45,12 +69,12 @@
         type="submit" 
         class="btn btn-success mt-3 w-100" 
         [disabled]="!acceptedTerms || !acceptedPrivacy">
-        Registrati
+        Register
       </button>
     </form>
     <!-- Divider -->
 <div class="text-center my-3">
-    <span>oppure</span>
+    <span>or</span>
   </div>
   
   <!-- Bottone Google -->
@@ -58,14 +82,14 @@
   class="btn w-100 d-flex align-items-center justify-content-center gap-2 px-3 py-2 border rounded-pill shadow-sm"
   style="background-color: white; border-color: #ddd;">
   <img src="/assets/google.svg" alt="Google logo" width="20" height="20">
-  <span class="text-dark fw-medium">Continua con Google</span>
+  <span class="text-dark fw-medium">Continue with Google</span>
 </button>
   
   
     <!-- Cambia a login -->
     <div class="text-center mt-3">
-      <p>Hai già un account?</p>
-      <button (click)="switchToLoginForm()" class="btn btn-link">Accedi</button>
+      <p>Already have an account?</p>
+      <button (click)="switchToLoginForm()" class="btn btn-link">Log in</button>
     </div>
   </div>
   

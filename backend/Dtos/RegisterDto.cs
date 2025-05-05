@@ -13,5 +13,14 @@ namespace backend.DTOs
 
         [Required]
         public string Password { get; set; } = null!;
+
+        [Required]
+        public string ConfirmPassword { get; set; } = null!;
+
+        [Required]
+        public bool ConsentData { get; set; }
+
+        [Required]
+        public bool ConsentSuggestions { get; set; }
     }
 }

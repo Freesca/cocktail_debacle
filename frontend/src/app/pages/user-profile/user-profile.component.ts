@@ -53,8 +53,8 @@ export class UserProfileComponent implements OnInit {
   isLoading = signal(true);
   activeId = 2; // Per il tab attivo
   profileForm!: FormGroup;
-  deletePassword: string = '';
-  confirmDelete: boolean = false;
+  deletePassword = '';
+  confirmDelete = false;
 
   
   // Profile visibility controls
@@ -150,7 +150,7 @@ export class UserProfileComponent implements OnInit {
         });
       },
       error: (err) => {
-        this.error.set(err.error?.message || 'Errore di caricamento profilo');
+        this.error.set(err.error?.message || 'Error loading profile data');
         this.isLoading.set(false);
       },
     });
@@ -173,7 +173,7 @@ export class UserProfileComponent implements OnInit {
     this.userService.updateProfile(data).subscribe({
       next: () => {
         const newUsername = this.profileForm.get('username')?.value;
-        this.successMessage.set('Profilo aggiornato con successo!');
+        this.successMessage.set('Profile updated successfully!');
         this.error.set('');
         this.editMode = false;
   
@@ -191,7 +191,7 @@ export class UserProfileComponent implements OnInit {
         }
       },
       error: (err: any) => {
-        this.error.set(err?.error?.message || 'Errore durante l\'aggiornamento.');
+        this.error.set(err?.error?.message || 'Error updating profile');
         this.successMessage.set('');
       }
     });
@@ -199,13 +199,14 @@ export class UserProfileComponent implements OnInit {
   
 
   deleteAccount() {
-    if (!this.isOwnProfile) return;
   
     const dto: DeleteProfileDto = { password: this.deletePassword };
+    console.log('Deleting account with password:', this.deletePassword);
+    console.log('Dto:', dto);
   
     this.userService.deleteAccount(dto).subscribe({
       next: () => {
-        this.successMessage.set('Account eliminato con successo!');
+        this.successMessage.set('Profile deleted successfully!');
   
         // Esegui logout dell'utente
         this.authService.logout();
@@ -214,7 +215,7 @@ export class UserProfileComponent implements OnInit {
         this.router.navigate(['/']).then(() => location.reload());
       },
       error: (err: any) => {
-        this.error.set(err.error?.message || 'Errore durante la cancellazione');
+        this.error.set(err.error?.message || 'Error deleting profile');
       },
     });
   }

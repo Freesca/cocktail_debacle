@@ -11,7 +11,6 @@ public class ReviewPlaceCocktailController(AppDbContext db) : ControllerBase
 {
     private readonly AppDbContext _db = db;
 
-    [Authorize]
     [HttpGet]
     public async Task<IActionResult> GetReviewsForCocktailAtPlace(string placeIdOrGoogle, string cocktailIdOrExternal)
     {

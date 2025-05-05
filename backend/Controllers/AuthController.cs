@@ -44,19 +44,33 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Register(RegisterDto dto)
     {
         if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+        {
+            var errors = ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage)
+                .ToList();
+
+            return BadRequest(new { message = string.Join("; ", errors) });
+        }
+
+        if (dto.Password != dto.ConfirmPassword)
+            return BadRequest(new { message = "Passwords do not match" });
 
         var user = new User
         {
             UserName = dto.Username,
-            Email = dto.Email
+            Email = dto.Email,
+            ConsentData = dto.ConsentData,
+            ConsentSuggestions = dto.ConsentSuggestions
         };
 
         var result = await _userManager.CreateAsync(user, dto.Password);
 
         if (!result.Succeeded)
-            return BadRequest(result.Errors);
-
+        {
+             var errorMessages = result.Errors.Select(e => e.Description).ToList();
+            return BadRequest(new { message = string.Join("; ", errorMessages) });
+        }
         // Effettua il login automatico
         var signInResult = await _signInManager.PasswordSignInAsync(user, dto.Password, false, false);
         
@@ -79,12 +93,12 @@ public class AuthController : ControllerBase
                    ?? await _userManager.FindByEmailAsync(dto.UsernameOrEmail);
 
         if (user == null)
-            return Unauthorized(new { message = "Invalid credentials." });
+            return Unauthorized(new { message = "Invalid Username or Email" });
 
         var result = await _signInManager.CheckPasswordSignInAsync(user, dto.Password, false);
 
         if (!result.Succeeded)
-            return Unauthorized(new { message = "Invalid credentials." });
+            return Unauthorized(new { message = "Invalid Password" });
 
         var token = _jwtService.GenerateToken(user);
         SetJwtCookie(token);
