@@ -15,7 +15,6 @@ namespace backend.DTOs
         public string Password { get; set; } = null!;
 
         [Required]
-        [Compare("Password", ErrorMessage = "Password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; } = null!;
 
         [Required]

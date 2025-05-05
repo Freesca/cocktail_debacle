@@ -44,7 +44,17 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Register(RegisterDto dto)
     {
         if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+        {
+            var errors = ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage)
+                .ToList();
+
+            return BadRequest(new { message = string.Join("; ", errors) });
+        }
+
+        if (dto.Password != dto.ConfirmPassword)
+            return BadRequest(new { message = "Passwords do not match" });
 
         var user = new User
         {
