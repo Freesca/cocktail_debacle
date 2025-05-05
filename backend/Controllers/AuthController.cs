@@ -57,8 +57,10 @@ public class AuthController : ControllerBase
         var result = await _userManager.CreateAsync(user, dto.Password);
 
         if (!result.Succeeded)
-            return BadRequest(result.Errors);
-
+        {
+             var errorMessages = result.Errors.Select(e => e.Description).ToList();
+            return BadRequest(new { message = string.Join("; ", errorMessages) });
+        }
         // Effettua il login automatico
         var signInResult = await _signInManager.PasswordSignInAsync(user, dto.Password, false, false);
         
@@ -81,12 +83,12 @@ public class AuthController : ControllerBase
                    ?? await _userManager.FindByEmailAsync(dto.UsernameOrEmail);
 
         if (user == null)
-            return Unauthorized(new { message = "Invalid credentials." });
+            return Unauthorized(new { message = "Invalid Username or Email" });
 
         var result = await _signInManager.CheckPasswordSignInAsync(user, dto.Password, false);
 
         if (!result.Succeeded)
-            return Unauthorized(new { message = "Invalid credentials." });
+            return Unauthorized(new { message = "Invalid Password" });
 
         var token = _jwtService.GenerateToken(user);
         SetJwtCookie(token);

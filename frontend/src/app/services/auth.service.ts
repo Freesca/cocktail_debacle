@@ -26,7 +26,7 @@ export class AuthService {
   
 
   register(username: string, email: string, password: string, confirmPassword: string, consentData: boolean, consentSuggestions: boolean) {
-    return this.http.post(`${this.apiUrl}/register`, { username, email, password, confirmPassword }, {
+    return this.http.post(`${this.apiUrl}/register`, { username, email, password, confirmPassword, consentData, consentSuggestions }, {
       withCredentials: true
     })
   }

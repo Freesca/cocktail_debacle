@@ -17,8 +17,8 @@ export class RegisterFormComponent {
   email = '';
   password = '';
   confirmPassword = '';
-  consentData = false;
-  consentSuggestions = false;
+  consentData = true;
+  consentSuggestions = true;
   error = signal<string | null>(null);
 
   acceptedTerms = false;
