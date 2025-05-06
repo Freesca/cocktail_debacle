@@ -44,7 +44,18 @@
         <span class="stars">{{ getStarRating(review.rating) }}</span>
         <span class="rating-value ms-2">{{ review.rating }}/5</span>
       </div>
-      <p class="card-text review-comment">{{ review.comment || 'No comment' }}</p>
+      <p
+        class="card-text review-comment"
+        [class.collapsed]="!isCommentExpanded && needsToggle">
+        {{ review.comment || 'No comment' }}
+      </p>
+      <!-- Pulsante toggle (appare solo se necessario) -->
+      <button
+        *ngIf="needsToggle"
+        class="btn p-0 show-more-btn"
+        (click)="toggleComment()">
+        {{ isCommentExpanded ? 'Show less' : 'Show more' }}
+      </button>
     </div>
 
     <!-- Edit form -->

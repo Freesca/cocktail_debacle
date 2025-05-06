@@ -127,3 +127,46 @@
     font-size: 1.25rem;
   }
 }
+
+/* Limita il paragrafo a 3 righe con ellissi */
+/* Commento in modalità “collapsed” (max 3 righe + fade) */
+.review-comment.collapsed {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  position: relative;                // serve per il ::after
+
+  /* dissolvenza in fondo */
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2.5rem;                  // alto quanto basta a coprire l’ultima riga
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 1) 100%
+    );
+    pointer-events: none;            // il clic passa al bottone sotto
+  }
+}
+
+/* Bottone “Show more / Show less” minimal */
+/* Bottone “Show more / Show less” */
+.show-more-btn {
+  font-size: 0.875rem;              // piccolino
+  color: #007bff;                   // blu
+  display: block;                   // si comporta da block…
+  width: max-content;               // …ma resta largo quanto il testo
+  margin: 0 auto;                   // centra orizzontalmente
+  text-decoration: none !important; // niente sottolineatura
+
+  &:hover,
+  &:focus {
+    text-decoration: none !important; // nessuna sottolineatura neppure al passaggio/ focus
+  }
+}
+
