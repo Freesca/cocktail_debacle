@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { SearchBarComponent } from "../../components/search-bar/search-bar.component";
 import { AuthService } from "../../services/auth.service";
 import { CocktailService } from "../../services/cocktails.service";
+import { UserService } from '../../services/user.service';
 
 
 
@@ -23,7 +24,8 @@ export class CocktailsComponent implements OnInit {
 
   constructor(
     private cocktailService: CocktailService,
-    private authService: AuthService
+    private authService: AuthService,
+    private userService: UserService
   ) {}
   
 
@@ -31,12 +33,16 @@ export class CocktailsComponent implements OnInit {
     this.authService.isLoggedIn().subscribe((isLoggedIn: boolean) => {
       this.isLoggedIn = isLoggedIn; 
       if (isLoggedIn) {
-        this.cocktailService.getRecommendedCocktails().subscribe({
-          next: (data) => {
-            this.recommendedCocktails = data.map(c => ({ ...c, isRecommended: true }));
-          },
-          error: () => {
-            this.recommendedCocktails = [];
+        this.userService.getProfile().subscribe((profile) => {
+          if (profile.consentSuggestions) {
+            this.cocktailService.getRecommendedCocktails().subscribe({
+              next: (data) => {
+                this.recommendedCocktails = data.map(c => ({ ...c, isRecommended: true }));
+              },
+              error: () => {
+                this.recommendedCocktails = [];
+              }
+            });
           }
         });
       }

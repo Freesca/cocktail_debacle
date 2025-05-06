@@ -131,7 +131,7 @@ export class UserProfileComponent implements OnInit {
 
   loadOwnProfileDetails() {
     // Load detailed profile data (only for logged-in user viewing their own profile)
-    this.http.get<any>('/api/user/profile').subscribe({
+    this.userService.getProfile().subscribe({
       next: (res) => {
         this.username = res.userName;
         this.email = res.email;
