@@ -20,22 +20,22 @@
       </button>
     </div>
 
-    <div *ngIf="isLoading" class="text-center p-2">
-      <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
-    </div>
-
     <div *ngIf="hasError" class="alert alert-danger mt-2">
       {{ errorMessage }}
     </div>
   </div>
 
-  <!-- GRID DEI RISULTATI DELLA SEARCH -->
-  <div *ngIf="searchTerm && searchResults.length > 0"
-       class="search-places-section mt-5">
+  <h5 *ngIf="searchTerm" class="text-muted text-center mb-3">Results</h5>
 
-    <h5 class="text-muted text-center mb-3">Results</h5>
+  <div *ngIf="isLoading" class="text-center p-2">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <!-- GRID DEI RISULTATI DELLA SEARCH -->
+  <div *ngIf="searchTerm && searchResults.length > 0 && !isLoading"
+       class="search-places-section mt-5">
 
     <div class="place-grid"
          infiniteScroll

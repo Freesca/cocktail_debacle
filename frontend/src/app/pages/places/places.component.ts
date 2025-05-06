@@ -60,7 +60,6 @@ export class PlacesComponent implements OnInit, OnDestroy {
         );
       })
     ).subscribe(response => {
-      this.isLoading = false;
       this.searchResults = response.results;
 
       // carica le foto (stesso identico flusso dei nearby)
@@ -85,6 +84,7 @@ export class PlacesComponent implements OnInit, OnDestroy {
         // reset paginazione grid risultati search
         this.displayedSearchPlaces = [];
         this.searchPlacesCurrentIndex = 0;
+        this.isLoading = false;
         this.displayNextSearchPlaces();
       });
     });

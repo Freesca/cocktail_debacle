@@ -51,7 +51,7 @@ export class UserProfileComponent implements OnInit {
   currentIndex = 0;
   pageSize = 30;
   isLoading = signal(true);
-  activeId = 2; // Per il tab attivo
+  activeId = 1; // Per il tab attivo
   profileForm!: FormGroup;
   deletePassword = '';
   confirmDelete = false;
