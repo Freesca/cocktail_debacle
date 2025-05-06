@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { NgIconsModule } from '@ng-icons/core';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
+import { UserCocktailsService } from '../../services/user-cocktails.service';
 
 @Component({
   selector: 'app-cocktails-grid',
@@ -22,6 +23,9 @@ export class CocktailsGridComponent implements OnInit, OnDestroy {
   @Input() favoriteUsername: string = '';
   @Input() recommended: any[] = [];
   @Input() showRecommended: boolean = false;
+  @Input() onlyCreatedBy: boolean = false;
+  @Input() createdByUsername: string = '';
+
 
   filteredCocktails: any[] = [];
   displayedCocktails: any[] = [];
@@ -40,7 +44,8 @@ export class CocktailsGridComponent implements OnInit, OnDestroy {
   constructor(
     private cocktailService: CocktailService,
     private favouritesService: FavouritesService,
-    private searchService: SearchService
+    private searchService: SearchService,
+    private userCocktailsService: UserCocktailsService
   ) {}
 
   ngOnInit() {
@@ -78,8 +83,12 @@ export class CocktailsGridComponent implements OnInit, OnDestroy {
 
   fetchAllCocktails() {
     this.loading = true;
+
+    const fetchFn = this.onlyCreatedBy
+    ? this.userCocktailsService.getUserCocktails(this.createdByUsername || undefined)
+    : this.cocktailService.getAllCocktails();
   
-    this.cocktailService.getAllCocktails().subscribe(
+    fetchFn.subscribe(
       (data) => {
         // Mappa i cocktail e marca i recommended
         this.cocktails = data.map((cocktail) => ({
@@ -114,14 +123,14 @@ export class CocktailsGridComponent implements OnInit, OnDestroy {
             this.loading = false;
           },
           (error) => {
-            console.error('Errore nel recuperare i preferiti', error);
+            console.error('Error fetching favorites', error);
             this.applySearchFilter();
             this.loading = false;
           }
         );
       },
       (error) => {
-        this.errorMessage = 'Errore nel caricare i cocktail!';
+        this.errorMessage = 'Error loading cocktails';
         this.loading = false;
       }
     );

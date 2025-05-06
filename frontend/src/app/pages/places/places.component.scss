@@ -1,4 +1,10 @@
 /* General Styles */
+
+.search-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
 $place-radius: 8px;
 $place-overlay-gradient: linear-gradient(
   to top,

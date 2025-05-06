@@ -16,13 +16,16 @@ import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 })
 export class PlacesComponent implements OnInit, OnDestroy {
   searchTerm = '';
-  searchResults: PlaceResult[] = [];
   isLoading = false;
   hasError = false;
   errorMessage = '';
   
+  searchResults: PlaceResult[] = [];
   nearbyPlaces: PlaceResult[] = [];
   displayedNearbyPlaces: PlaceResult[] = [];
+  displayedSearchPlaces: PlaceResult[] = [];
+  searchPlacesCurrentIndex = 0;
+  searchPlacesPageSize = 10;
   nearbyPlacesCurrentIndex: number = 0;
   nearbyPlacesPageSize: number = 10;
   isLoadingNearby: boolean = false;
@@ -57,8 +60,33 @@ export class PlacesComponent implements OnInit, OnDestroy {
         );
       })
     ).subscribe(response => {
-      this.isLoading = false;
       this.searchResults = response.results;
+
+      // carica le foto (stesso identico flusso dei nearby)
+      const blobRequests = this.searchResults.map(place => {
+        const photoRef = place.photos?.[0]?.photo_reference;
+        if (!photoRef) {
+          place['photoUrl'] = 'assets/default-place.jpg';
+          return of(null);
+        }
+        return this.placeService.getPlacePhoto(photoRef).pipe(
+          catchError(() => of(null)),
+          switchMap(blob => {
+            place['photoUrl'] = blob
+              ? URL.createObjectURL(blob)
+              : 'assets/default-place.jpg';
+            return of(null);
+          })
+        );
+      });
+    
+      forkJoin(blobRequests).subscribe(() => {
+        // reset paginazione grid risultati search
+        this.displayedSearchPlaces = [];
+        this.searchPlacesCurrentIndex = 0;
+        this.isLoading = false;
+        this.displayNextSearchPlaces();
+      });
     });
   }
 
@@ -145,6 +173,18 @@ export class PlacesComponent implements OnInit, OnDestroy {
     }
   }
 
+  displayNextSearchPlaces(): void {
+    if (this.searchPlacesCurrentIndex >= this.searchResults.length) { return; }
+  
+    const next = this.searchResults.slice(
+      this.searchPlacesCurrentIndex,
+      this.searchPlacesCurrentIndex + this.searchPlacesPageSize
+    );
+  
+    this.displayedSearchPlaces = [...this.displayedSearchPlaces, ...next];
+    this.searchPlacesCurrentIndex += this.searchPlacesPageSize;
+  }
+
   displayNextNearbyPlaces(): void {
     console.log("Indice attuale:", this.nearbyPlacesCurrentIndex);
     console.log("Caricando i posti...");
@@ -169,6 +209,7 @@ export class PlacesComponent implements OnInit, OnDestroy {
   clearSearch(): void {
     this.searchTerm = '';
     this.searchResults = [];
+    this.displayedSearchPlaces = []; 
   }
 
   goToPlaceDetails(place: PlaceResult): void {

@@ -49,13 +49,15 @@
         <div class="card-body">
         <h5 class="card-title">{{ place.name || 'Unknown Place' }}</h5>
         <p class="card-text text-muted small mb-2">{{ place.address || 'No address available' }}</p>
-        <div class="d-flex justify-content-between align-items-center mt-2">
-            <div class="rating">
-            <span class="stars">{{ getStarRating(place.averageScore) }}</span>
-            <span class="average">{{ place.averageScore.toFixed(1) }}</span>
+        <div class="review-summary mt-3 text-center">
+            <div class="rating-stars mb-1">
+              <span class="stars">{{ getStarRating(place.averageScore) }}</span>
+              <span class="average ms-1">{{ place.averageScore.toFixed(1) }}</span>
             </div>
-            <span class="review-count">{{ place.reviewCount }} {{ place.reviewCount === 1 ? 'review' : 'reviews' }}</span>
-        </div>
+            <div class="review-count small text-muted">
+              {{ place.reviewCount }} {{ place.reviewCount === 1 ? 'review' : 'reviews' }}
+            </div>
+          </div>          
         </div>
     </div>
     </div>

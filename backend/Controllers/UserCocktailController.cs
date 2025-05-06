@@ -20,9 +20,9 @@ public class UserCocktailController : ControllerBase
         _userManager = userManager;
     }
 
-    [HttpGet]
     [Authorize]
-    public async Task<IActionResult> GetUserCocktails([FromQuery] string? username = null)
+    [HttpGet("{username?}")]
+    public async Task<IActionResult> GetUserCocktails(string? username = null)
     {
         User? user;
 
