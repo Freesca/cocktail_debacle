@@ -79,7 +79,6 @@ export class ReviewsComponent implements OnInit {
     this.authService.userInfo$.subscribe(user => {
       this.currentUser = user;
     });
-    this.authService.fetchUserInfoIfLoggedIn();
   
     this.route.paramMap.subscribe(params => {
       const placeId = params.get('placeId');

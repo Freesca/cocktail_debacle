@@ -164,7 +164,7 @@
           <app-review-card
           *ngFor="let review of reviews"
           [review]="review"
-          [currentUserName]="currentUser.username"
+          [currentUserName]="currentUser?.username"
           [ratingOptions]="ratingOptions"
           (navigateToUserProfile)="navigateToUserProfile($event)"
           (refreshParent)="loadReviews()">
