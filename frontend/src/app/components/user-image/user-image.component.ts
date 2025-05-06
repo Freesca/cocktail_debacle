@@ -40,6 +40,6 @@ export class UserImageComponent implements OnInit {
     for (let i = 0; i < this.userName.length; i++) {
       hash = this.userName.charCodeAt(i) + ((hash << 5) - hash);
     }
-    return `hsl(${hash % 360}, 70%, 50%)`; // Colori vivaci e leggibili
+    return `hsl(${hash % 360}, 70%, 20%)`; // Colori vivaci e leggibili
   }
 }

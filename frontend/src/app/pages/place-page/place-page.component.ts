@@ -37,19 +37,28 @@ export class PlacePageComponent implements OnInit {
         this.navigateToPlaces();
         return;
       }
-
+  
       this.placeId = id;
-
-      const navigationState = window.history.state;
-      if (navigationState && navigationState.place) {
-        this.place = navigationState.place;
-        this.loading = false;
-        this.loadPlacePhoto();
-      } else {
-        this.navigateToPlaces();
-      }
+  
+      this.placeService.getPlaceDetails(id).subscribe({
+        next: (response) => {
+          if (response.status === 'OK') {
+            this.place = response.result;
+            this.loading = false;
+            this.loadPlacePhoto();
+          } else {
+            this.error = true;
+            this.loading = false;
+          }
+        },
+        error: () => {
+          this.error = true;
+          this.loading = false;
+        }
+      });
     });
   }
+  
 
   loadPlacePhoto(): void {
     if (this.place?.photos && this.place.photos.length > 0) {
