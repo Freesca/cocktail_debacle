@@ -38,13 +38,11 @@
               
               <div class="card-body">
                 <h5 class="card-title">{{ review.strDrink || 'Unknown Cocktail' }}</h5>
-                <div class="d-flex justify-content-between align-items-center">
-                  <div class="rating">
-                    <span class="stars">{{ getStarRating(review.averageScore) }}</span>
-                    <span class="average">{{ review.averageScore.toFixed(1) }}</span>
-                  </div>
-                  <span class="review-count">{{ review.reviewCount }} {{ review.reviewCount === 1 ? 'review' : 'reviews' }}</span>
-                </div>
+                <div class="rating-summary mt-2 text-center">
+                  <div class="stars mb-1">{{ getStarRating(review.averageScore) }}</div>
+                  <div class="average mb-1">{{ review.averageScore.toFixed(1) }}</div>
+                  <div class="review-count text-muted">{{ review.reviewCount }} {{ review.reviewCount === 1 ? 'review' : 'reviews' }}</div>
+                </div>                
               </div>
             </div>
           </div>
