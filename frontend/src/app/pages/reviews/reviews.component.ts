@@ -11,6 +11,7 @@ import { catchError, forkJoin, of } from 'rxjs';
 import { ReviewCardComponent } from '../../components/review-card/review-card.component';
 import { RouterModule } from '@angular/router';
 import { NgIconsModule } from '@ng-icons/core';
+import { AuthModalService } from '../../services/auth-modal.service';
 
 
 @Component({
@@ -71,7 +72,8 @@ export class ReviewsComponent implements OnInit {
     private placeService: PlaceService,
     private cocktailService: CocktailService,
     private authService: AuthService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private authModalService: AuthModalService
   ) {}
 
   ngOnInit(): void {
@@ -182,6 +184,12 @@ export class ReviewsComponent implements OnInit {
   }
   
   toggleReviewForm(): void {
+    // Check if user is logged in
+    if (!this.currentUser) {
+      this.authModalService.open();
+      return;
+    }
+    
     this.showReviewForm = !this.showReviewForm;
     
     // Reset form state when toggling

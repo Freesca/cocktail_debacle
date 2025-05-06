@@ -8,6 +8,7 @@ import { RouterModule } from '@angular/router';
 import { NgIconsModule } from '@ng-icons/core';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { UserCocktailsService } from '../../services/user-cocktails.service';
+import { AuthModalService } from '../../services/auth-modal.service';
 
 @Component({
   selector: 'app-cocktails-grid',
@@ -25,6 +26,7 @@ export class CocktailsGridComponent implements OnInit, OnDestroy {
   @Input() showRecommended: boolean = false;
   @Input() onlyCreatedBy: boolean = false;
   @Input() createdByUsername: string = '';
+  @Input() loggedIn: boolean = false;
 
 
   filteredCocktails: any[] = [];
@@ -45,7 +47,8 @@ export class CocktailsGridComponent implements OnInit, OnDestroy {
     private cocktailService: CocktailService,
     private favouritesService: FavouritesService,
     private searchService: SearchService,
-    private userCocktailsService: UserCocktailsService
+    private userCocktailsService: UserCocktailsService,
+    private authModalService: AuthModalService
   ) {}
 
   ngOnInit() {
@@ -204,6 +207,10 @@ export class CocktailsGridComponent implements OnInit, OnDestroy {
   }
 
   toggleFavorite(cocktail: any) {
+    if (!this.loggedIn) {
+      this.authModalService.open();
+      return;
+    }
     cocktail.isFavorite = !cocktail.isFavorite;
     if (cocktail.isFavorite) {
       this.favouritesService.addFavourite(cocktail.idDrink).subscribe(

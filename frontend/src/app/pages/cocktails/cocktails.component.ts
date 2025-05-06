@@ -18,7 +18,7 @@ import { UserService } from '../../services/user.service';
 })
 export class CocktailsComponent implements OnInit {
   currentSort = 'name';
-  isLoggedIn = false;
+  loggedIn = false;
   recommendedCocktails: any[] = [];
   recommendedReady: boolean = false;
 
@@ -30,9 +30,9 @@ export class CocktailsComponent implements OnInit {
   
 
   ngOnInit(): void {
-    this.authService.isLoggedIn().subscribe((isLoggedIn: boolean) => {
-      this.isLoggedIn = isLoggedIn; 
-      if (isLoggedIn) {
+    this.authService.isLoggedIn().subscribe((loggedIn: boolean) => {
+      this.loggedIn = loggedIn; 
+      if (loggedIn) {
         this.userService.getProfile().subscribe((profile) => {
           if (profile.consentSuggestions) {
             this.cocktailService.getRecommendedCocktails().subscribe({
