@@ -25,19 +25,20 @@
     </div>
   </div>
 
-  <h5 *ngIf="searchTerm" class="text-muted text-center mb-3">Results</h5>
-
-  <div *ngIf="isLoading" class="text-center p-2">
-    <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Loading...</span>
-    </div>
-  </div>
-
   <!-- GRID DEI RISULTATI DELLA SEARCH -->
-  <div *ngIf="searchTerm && searchResults.length > 0 && !isLoading"
+  <div *ngIf="searchTerm"
        class="search-places-section mt-5">
+       <div class="text-center mb-3">
+        <h5 class="text-muted mb-2">Results</h5>
+      </div>
+    
+      <div *ngIf="isLoading" class="text-center py-3">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
 
-    <div class="place-grid"
+    <div *ngIf="searchResults.length > 0 && !isLoading" class="place-grid"
          infiniteScroll
          [infiniteScrollDistance]="scrollDistance"
          [infiniteScrollThrottle]="150"
@@ -62,13 +63,13 @@
     </div>
   </div>
 
+  <!--       <button class="btn btn-outline-primary uniform-button" (click)="searchNearbyPlaces()" [disabled]="isLoadingNearby">
+          <i class="bi bi-arrow-repeat me-1"></i> Refresh
+        </button> -->
   <!-- Nearby Places -->
   <div *ngIf="!searchTerm" class="nearby-places-section mt-5">
     <div class="text-center mb-3">
       <h5 class="text-muted mb-2">Nearby Places</h5>
-<!--       <button class="btn btn-outline-primary uniform-button" (click)="searchNearbyPlaces()" [disabled]="isLoadingNearby">
-        <i class="bi bi-arrow-repeat me-1"></i> Refresh
-      </button> -->
     </div>
     
 
