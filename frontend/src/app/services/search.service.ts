@@ -57,6 +57,14 @@ export class SearchService {
   get glassValue(): string {
     return this.glassSubject.getValue();
   }
+
+  private updateTrigger = new BehaviorSubject<void>(undefined);
+  updateTrigger$ = this.updateTrigger.asObservable();
+
+
+  triggerUpdate() {
+    this.updateTrigger.next();
+  }
 }
 
 

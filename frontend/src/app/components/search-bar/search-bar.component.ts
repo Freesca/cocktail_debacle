@@ -47,7 +47,10 @@ export class SearchBarComponent implements OnInit {
     this.loadCategories();
     this.loadIngredients();
     this.loadGlasses();
+
   }
+
+  
 
   private checkIfHome(): void {
     this.isHome = this.router.url === '/';
@@ -63,7 +66,7 @@ export class SearchBarComponent implements OnInit {
   loadCategories() {
     this.cocktailService.getCategories().subscribe(
       (data) => {
-        this.categories = ['places', ...data]; // Aggiungiamo 'places' come categoria
+        this.categories = [...data]; // Aggiungiamo 'places' come categoria
       },
       (error) => {
         console.error('Errore nel caricare le categorie', error);
@@ -95,20 +98,26 @@ export class SearchBarComponent implements OnInit {
 
   onSearch() {
     this.isScrolled = true;
-    // Se la modalità è 'places', cerchiamo locali
+  
     if (this.selectedMode === 'places') {
-      // Eseguiamo la ricerca dei locali tramite il servizio
-      this.placeService.searchPlaces(this.searchQuery.trim());
-      this.router.navigate(['/places'], {
-        queryParams: { q: this.searchQuery.trim() }
-      });
+      // Aggiorniamo il servizio di ricerca con il nuovo valore
+      this.searchService.setSearchQuery(this.searchQuery.trim());
+  
+      // Navigazione alla pagina dei luoghi senza duplicati
+      if (this.router.url !== '/places') {
+        this.router.navigate(['/places'], {
+          queryParams: { q: this.searchQuery.trim() }
+        });
+      } else {
+        // Emettiamo manualmente l'evento per aggiornare i risultati
+        this.searchService.triggerUpdate();
+      }
     } else {
-      // Se la modalità è 'cocktails', cerchiamo cocktail
       this.searchService.setSearchQuery(this.searchQuery.trim());
       this.searchService.setCategory(this.selectedCategory);
       this.searchService.setIngredient(this.selectedIngredient);
       this.searchService.setGlass(this.selectedGlass);
-
+  
       this.router.navigate(['/cocktails'], {
         queryParams: {
           q: this.searchQuery.trim(),
@@ -119,6 +128,8 @@ export class SearchBarComponent implements OnInit {
       });
     }
   }
+  
+  
 
   onEnterKey(event: KeyboardEvent) {
     if (event.key === 'Enter') {
