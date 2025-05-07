@@ -35,7 +35,7 @@ export class CocktailsComponent implements OnInit {
       this.loggedIn = loggedIn; 
       if (loggedIn) {
         this.userService.getProfile().subscribe((profile) => {
-          this.username = profile.username;
+          this.username = profile.userName;
           if (profile.consentSuggestions) {
             this.cocktailService.getRecommendedCocktails().subscribe({
               next: (data) => {

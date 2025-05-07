@@ -101,7 +101,7 @@ export class CocktailsGridComponent implements OnInit, OnDestroy {
         }));
   
         // Aggiungi info preferiti
-        if (this.favoriteUsername !== '') {
+        if (this.favoriteUsername) {
           this.favouritesService.getFavourites(this.favoriteUsername).subscribe(
             (favourites) => {
               const favoriteIds = favourites.map((f: any) => f.idDrink);
