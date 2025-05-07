@@ -1,5 +1,6 @@
 .container-fluid {
     padding: 0!important;
     padding-left: 80px;
+    margin-top: 50px;
     overflow-x: hidden;
 }

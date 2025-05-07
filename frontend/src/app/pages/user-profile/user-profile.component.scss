@@ -1,5 +1,6 @@
 .profile-container {
     max-width: 900px;
+    margin-top: 80px;
   }
   
 .clickable {
@@ -27,5 +28,38 @@
   font-weight: 500;
   color: #495057;
 }
+
+.instagram-tabs {
+  display: flex;
+  justify-content: space-around;
+  border-bottom: 1px solid #ddd;
+
+  .nav-item {
+    flex: 1;
+    text-align: center;
+
+    .nav-link {
+      font-size: 1.1rem;
+      font-weight: bold;
+      padding: 10px 0;
+      color: #333;
+      transition: color 0.2s ease;
+      border: none;
+      border-bottom: 2px solid transparent;
+      background-color: transparent;
+
+      &:hover {
+        color: #000;
+        background-color: transparent;
+      }
+
+      &.active {
+        color: #000;
+        border-bottom: 2px solid #000;
+      }
+    }
+  }
+}
+
 
   
