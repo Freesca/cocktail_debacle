@@ -19,6 +19,8 @@ import { UserService } from '../../services/user.service';
 export class CocktailsComponent implements OnInit {
   currentSort = 'name';
   loggedIn = false;
+  showRecommended = true;
+  consentSuggestions = false;
   recommendedCocktails: any[] = [];
   recommendedReady: boolean = false;
   username: string = '';
@@ -36,7 +38,8 @@ export class CocktailsComponent implements OnInit {
       if (loggedIn) {
         this.userService.getProfile().subscribe((profile) => {
           this.username = profile.userName;
-          if (profile.consentSuggestions) {
+          this.consentSuggestions = profile.consentSuggestions
+          if (this.consentSuggestions) {
             this.cocktailService.getRecommendedCocktails().subscribe({
               next: (data) => {
                 this.recommendedCocktails = data.map(c => ({ ...c, isRecommended: true }));
@@ -55,6 +58,10 @@ export class CocktailsComponent implements OnInit {
         this.recommendedReady = true;
       }
     });
+  }
+
+  toggleRecommended(): void {
+    this.showRecommended = !this.showRecommended;
   }
 
   onSortChange(sortType: string) {

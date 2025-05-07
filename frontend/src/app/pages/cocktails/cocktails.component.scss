@@ -59,3 +59,63 @@ $cocktail-text-color: #fff;
     }
   }
 }
+
+/* Interruttore “Recommended” */
+.recommended-switch {
+  display: flex;
+  align-items: center;
+
+  /* label */
+  .form-check-label {
+    font-weight: 600;
+    font-size: 0.85rem;
+    user-select: none;
+  }
+
+  /* toggle */
+  .form-check-input {
+    width: 42px;
+    height: 22px;
+    appearance: none;             // reset native switch
+    background: #ced4da;          // track OFF
+    border-radius: 22px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.25s ease;
+    border: none; // bordo bianco
+
+    /* knob */
+    &::before {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 18px;
+      height: 18px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.25s ease;
+    }
+
+    /* stato ON: gradiente identico al badge .recommended-label */
+    &:checked {
+      background: linear-gradient(to right, #d5710e, #dab603);
+      border: none!important; // bordo bianco
+    }
+    &:checked::before {
+      transform: translateX(20px);
+    }
+
+    /* focus ring (accessibilità) */
+    &:focus-visible {
+      outline: 2px solid #dab603;
+      outline-offset: 2px;
+    }
+
+    &:focus {
+      outline: none!important;
+      box-shadow: none!important;
+    }
+  }
+}
+
