@@ -120,6 +120,9 @@ export class CocktailsGridComponent implements OnInit, OnDestroy {
               this.loading = false;
             }
           );
+        } else {
+          this.applySearchFilter();
+          this.loading = false;
         }
       },
       (error) => {
