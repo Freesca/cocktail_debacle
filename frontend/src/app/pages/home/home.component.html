@@ -31,7 +31,7 @@
     <div class="bento-grid">
       <ng-container *ngFor="let place of places; let i = index">
         <!-- Prima card speciale -->
-        <div *ngIf="i === 3" class="bento-box box-4 gradient-card">
+        <div *ngIf="i === 3" class="bento-box box-4 gradient-card1">
           <div class="box-overlay static-text">
             <div class="main-text">Discover the places near you</div>
             <div class="sub-text">Click on one of the boxes</div>
@@ -39,7 +39,7 @@
         </div>
     
         <!-- Seconda card speciale -->
-        <div *ngIf="i === 5" class="bento-box box-6 gradient-card" [routerLink]="['/places']" style="cursor: pointer;">
+        <div *ngIf="i === 5" class="bento-box box-6 gradient-card2" [routerLink]="['/places']" style="cursor: pointer;">
           <div class="box-overlay static-text">
             <div class="main-text">Find more</div>
             <div class="sub-text">by clicking here</div>
