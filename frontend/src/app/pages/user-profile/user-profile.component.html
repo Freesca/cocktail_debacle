@@ -1,4 +1,4 @@
-<div class="profile-container container mt-4">
+<div class="profile-container container">
   <!-- Show loading indicator if still loading -->
   <div *ngIf="isLoading()" class="text-center py-3">
     <div class="spinner-border text-primary" role="status">
@@ -16,10 +16,10 @@
     {{ successMessage() }}
   </div>
 
-  <div *ngIf="!isLoading()" class="profile-header d-flex justify-content-between align-items-center mb-4">
+  <div *ngIf="!isLoading()" class="profile-header d-flex justify-content-between align-items-center mb-5">
     <div class="d-flex align-items-center">
       <app-user-image [userName]="username" size="large"></app-user-image>
-      <div class="ms-3">
+      <div class="mt-3 ms-3">
         <h3>{{ username }}</h3>
         <!-- Only show email for own profile -->
         <p *ngIf="isOwnProfile" class="text-muted">{{ email }}</p>
@@ -171,9 +171,9 @@
     
 
   <!-- Sezioni con tab -->
-  <ul ngbNav #nav="ngbNav" [(activeId)]="activeId" class="nav nav-tabs mb-3">
-    <li [ngbNavItem]="1">
-      <a ngbNavLink>Cocktail personalizzati</a>
+  <ul ngbNav #nav="ngbNav" [(activeId)]="activeId" class="nav nav-tabs instagram-tabs mb-3">
+    <li [ngbNavItem]="1" class="nav-item">
+      <a ngbNavLink class="nav-link">Cocktail personalizzati</a>
       <ng-template ngbNavContent>
         <div class="row">
           <div>
@@ -182,9 +182,9 @@
         </div>
       </ng-template>
     </li>
-
-    <li [ngbNavItem]="2">
-      <a ngbNavLink>Cocktail Preferiti</a>
+  
+    <li [ngbNavItem]="2" class="nav-item">
+      <a ngbNavLink class="nav-link">Cocktail Preferiti</a>
       <ng-template ngbNavContent>
         <div class="row">
           <div>
@@ -193,31 +193,24 @@
         </div>
       </ng-template>
     </li>
-
-    <li [ngbNavItem]="3">
-      <a ngbNavLink>Recensioni</a>
+  
+    <li [ngbNavItem]="3" class="nav-item">
+      <a ngbNavLink class="nav-link">Recensioni</a>
       <ng-template ngbNavContent>
         <div class="row">
           <div class="col-md-12">
-        
-            <!-- Loading spinner -->
             <div *ngIf="reviewsLoading" class="text-center py-4">
               <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Loading reviews...</span>
               </div>
             </div>
-        
-            <!-- Error message -->
             <div *ngIf="reviewsError" class="alert alert-danger">
               {{ reviewsError }}
             </div>
-        
-            <!-- Reviews list -->
             <div *ngIf="!reviewsLoading && !reviewsError">
               <div *ngIf="reviews.length === 0" class="text-center py-4">
                 <p class="text-muted">No reviews found for this user.</p>
               </div>
-        
               <div *ngIf="reviews.length > 0" class="reviews-list">
                 <app-review-card
                   *ngFor="let review of reviews"
@@ -230,10 +223,10 @@
               </div>
             </div>
           </div>
-        </div>        
+        </div>
       </ng-template>
     </li>
   </ul>
-
+  
   <div [ngbNavOutlet]="nav" class="mt-3"></div>
-</div>
+</div>  

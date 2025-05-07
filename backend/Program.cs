@@ -123,6 +123,44 @@ using (var scope = app.Services.CreateScope())
     {
         Console.WriteLine("Il file cocktails.json non è stato trovato.");
     }
+
+        // ✅ Import degli utenti
+    var usersFilePath = Path.Combine(env.WebRootPath ?? "wwwroot", "data", "users.json");
+    if (File.Exists(usersFilePath))
+    {
+        try
+        {
+            var json = await File.ReadAllTextAsync(usersFilePath);
+            var users = JsonSerializer.Deserialize<List<User>>(json);
+
+            if (users != null)
+            {
+                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+
+                foreach (var user in users)
+                {
+                    if (user.Email != null && await userManager.FindByEmailAsync(user.Email) == null)
+                    {
+                        // Imposta manualmente una password o prendila dal JSON
+                        var result = await userManager.CreateAsync(user, "PasswordForte123!");
+
+                        if (!result.Succeeded)
+                        {
+                            Console.WriteLine($"Errore creazione utente {user.Email}: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Errore durante l'importazione degli utenti: {ex.Message}");
+        }
+    }
+    else
+    {
+        Console.WriteLine("Il file users.json non è stato trovato.");
+    }
 }
 
 

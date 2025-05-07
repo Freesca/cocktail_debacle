@@ -82,4 +82,8 @@ export class HomeComponent implements OnInit {
     console.log('Navigating to place with ID:', placeId);
     this.router.navigate(['/place', placeId]);
   }
+  navigateTo(page: string): void {
+    this.router.navigate([`/${page}`]);
+  }
+  
 }

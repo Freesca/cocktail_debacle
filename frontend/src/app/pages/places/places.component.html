@@ -1,24 +1,8 @@
-<div class="container mt-4">
+<div class="container mt-4 position-relative ">
   <h2 class="mb-4 text-center">Places</h2>
 
   <div class="search-container position-relative mb-4">
-    <div class="input-group">
-      <input
-        type="text"
-        class="form-control"
-        placeholder="Search for places..."
-        [(ngModel)]="searchTerm"
-        (input)="search(searchTerm)"
-        aria-label="Search"
-      />
-      <button 
-        *ngIf="searchTerm" 
-        class="btn btn-outline-secondary" 
-        type="button"
-        (click)="clearSearch()">
-        Clear
-      </button>
-    </div>
+
 
     <div *ngIf="hasError" class="alert alert-danger mt-2">
       {{ errorMessage }}
