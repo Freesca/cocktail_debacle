@@ -38,15 +38,20 @@ export class CocktailsComponent implements OnInit {
             this.cocktailService.getRecommendedCocktails().subscribe({
               next: (data) => {
                 this.recommendedCocktails = data.map(c => ({ ...c, isRecommended: true }));
+                this.recommendedReady = true;
               },
               error: () => {
                 this.recommendedCocktails = [];
+                this.recommendedReady = true;
               }
             });
+          } else {
+            this.recommendedReady = true;
           }
         });
+      } else {
+        this.recommendedReady = true;
       }
-      this.recommendedReady = true;
     });
   }
 

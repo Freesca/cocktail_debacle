@@ -63,15 +63,13 @@ export class CocktailsGridComponent implements OnInit, OnDestroy {
     this.glassSub?.unsubscribe();
   }
 
-  ngOnChanges(): void {
+/*   ngOnChanges(): void {
     this.fetchAllCocktails();
-  }
+  } */
 
   loadMoreCocktails() {
     if (!this.loading) {
-      this.loading = true;
       this.displayNextCocktails();
-      this.loading = false;
     }
   }
 
