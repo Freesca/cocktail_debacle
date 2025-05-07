@@ -21,6 +21,7 @@ export class CocktailsComponent implements OnInit {
   loggedIn = false;
   recommendedCocktails: any[] = [];
   recommendedReady: boolean = false;
+  username: string = '';
 
   constructor(
     private cocktailService: CocktailService,
@@ -34,6 +35,7 @@ export class CocktailsComponent implements OnInit {
       this.loggedIn = loggedIn; 
       if (loggedIn) {
         this.userService.getProfile().subscribe((profile) => {
+          this.username = profile.username;
           if (profile.consentSuggestions) {
             this.cocktailService.getRecommendedCocktails().subscribe({
               next: (data) => {

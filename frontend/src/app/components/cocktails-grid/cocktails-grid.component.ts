@@ -52,8 +52,8 @@ export class CocktailsGridComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.subscribeToSearch();
     this.fetchAllCocktails();
+    this.subscribeToSearch();
   }
 
   ngOnDestroy() {
@@ -63,9 +63,9 @@ export class CocktailsGridComponent implements OnInit, OnDestroy {
     this.glassSub?.unsubscribe();
   }
 
-/*   ngOnChanges(): void {
+  ngOnChanges(): void {
     this.fetchAllCocktails();
-  } */
+  }
 
   loadMoreCocktails() {
     if (!this.loading) {
@@ -86,7 +86,7 @@ export class CocktailsGridComponent implements OnInit, OnDestroy {
     this.loading = true;
 
     const fetchFn = this.onlyCreatedBy
-    ? this.userCocktailsService.getUserCocktails(this.createdByUsername || undefined)
+    ? this.userCocktailsService.getUserCocktails(this.createdByUsername)
     : this.cocktailService.getAllCocktails();
   
     fetchFn.subscribe(
@@ -100,35 +100,27 @@ export class CocktailsGridComponent implements OnInit, OnDestroy {
           isRecommended: this.recommended?.some(r => r.idDrink === cocktail.idDrink) || false
         }));
   
-        // Se non c'è una ricerca attiva e va data priorità ai recommended, ordina
-        const query = this.searchService.searchQueryValue?.trim().toLowerCase();
-        if (!query && this.showRecommended) {
-          this.cocktails.sort((a, b) => {
-            if (a.isRecommended && !b.isRecommended) return -1;
-            if (!a.isRecommended && b.isRecommended) return 1;
-            return 0;
-          });
-        }
-  
         // Aggiungi info preferiti
-        this.favouritesService.getFavourites(this.favoriteUsername || undefined).subscribe(
-          (favourites) => {
-            const favoriteIds = favourites.map((f: any) => f.idDrink);
-            this.cocktails.forEach((cocktail) => {
-              if (favoriteIds.includes(cocktail.idDrink)) {
-                cocktail.isFavorite = true;
-              }
-            });
-  
-            this.applySearchFilter();
-            this.loading = false;
-          },
-          (error) => {
-            console.error('Error fetching favorites', error);
-            this.applySearchFilter();
-            this.loading = false;
-          }
-        );
+        if (this.favoriteUsername !== '') {
+          this.favouritesService.getFavourites(this.favoriteUsername).subscribe(
+            (favourites) => {
+              const favoriteIds = favourites.map((f: any) => f.idDrink);
+              this.cocktails.forEach((cocktail) => {
+                if (favoriteIds.includes(cocktail.idDrink)) {
+                  cocktail.isFavorite = true;
+                }
+              });
+            
+              this.applySearchFilter();
+              this.loading = false;
+            },
+            (error) => {
+              console.error('Error fetching favorites', error);
+              this.applySearchFilter();
+              this.loading = false;
+            }
+          );
+        }
       },
       (error) => {
         this.errorMessage = 'Error loading cocktails';
@@ -168,29 +160,34 @@ export class CocktailsGridComponent implements OnInit, OnDestroy {
   sortCocktails() {
     const query = this.searchService.searchQueryValue.trim().toLowerCase();
   
-    // Ordina mettendo i recommended in alto solo se non c'è una ricerca attiva
-    if (this.sortType === 'name' && this.showRecommended && !query) {
+    // 1️⃣ definisci il comparatore 'secondario' in base a sortType
+    let secondaryCompare: (a: any, b: any) => number;
+    switch (this.sortType) {
+      case 'popularity':
+        secondaryCompare = (a, b) => (b.popularity || 0) - (a.popularity || 0);
+        break;
+      case 'reviews':
+        secondaryCompare = (a, b) => (b.reviewsCount || 0) - (a.reviewsCount || 0);
+        break;
+      default:                       // 'name' o qualunque altro valore
+        secondaryCompare = (a, b) => a.strDrink.localeCompare(b.strDrink);
+    }
+  
+    // 2️⃣ se dobbiamo dare priorità ai recommended (e NON c’è ricerca)
+    if (this.showRecommended && !query) {
       this.filteredCocktails.sort((a, b) => {
         if (a.isRecommended && !b.isRecommended) return -1;
         if (!a.isRecommended && b.isRecommended) return 1;
-        return a.strDrink.localeCompare(b.strDrink);
+        return secondaryCompare(a, b);          // stesso gruppo → ordina col secondario
       });
       return;
     }
   
-    // Altrimenti usa sort "normale"
-    switch (this.sortType) {
-      case 'name':
-        this.filteredCocktails.sort((a, b) => a.strDrink.localeCompare(b.strDrink));
-        break;
-      case 'popularity':
-        this.filteredCocktails.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
-        break;
-      case 'reviews':
-        this.filteredCocktails.sort((a, b) => (b.reviewsCount || 0) - (a.reviewsCount || 0));
-        break;
-    }
+    // 3️⃣ caso normale: ordina solo col comparatore scelto
+    this.filteredCocktails.sort(secondaryCompare);
   }
+  
+
 
   resetPagination() {
     this.currentIndex = 0;
