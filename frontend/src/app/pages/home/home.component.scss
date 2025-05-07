@@ -1,27 +1,35 @@
 .home-container {
   position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
+  height: 90vh;
   width: 100%;
   z-index: 1;
-  background: url('/assets/images/bar.jpg') no-repeat center center / cover;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
-  
 
-  .overlay {
-    background: rgba(0, 0, 0, 0.7);
-    width: 100%;
-    height: 100%;
-    padding: 2rem;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+  .heroImage1 {
+    position: absolute;
+    bottom: 0%;
+    left: 0;
+    width: 50%;
+    height: 50%;
+    object-fit: cover;
+    overflow: visible;
+    z-index: -1;
   }
+
+  .heroImage2 {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50%;
+    height: 50%;
+    object-fit: cover;
+    overflow: visible;
+    z-index: -1;
+  }
+  
 
   .home-title {
     font-size: 2.5rem;
@@ -37,6 +45,36 @@
     color: transparent;
   }
 
+  .cta-buttons {
+    margin-top: 20px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    z-index: 2;
+  
+    .cta-btn {
+      width: 190px;
+      padding: 12px 24px;
+      font-size: 1rem;
+      color: #fff;
+      background-color: #000;
+      border: none;
+      border-radius: 30px;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      cursor: pointer;
+  
+      &:hover {
+        background-color: #333;
+      }
+  
+      &:active {
+        transform: scale(0.95);
+      }
+    }
+  }
+  
+  
+
   .scroll-arrow {
     position: absolute;
     bottom: 20px;
@@ -44,7 +82,7 @@
     transform: translateX(-50%);
     font-size: 2rem;
     animation: bounce 2s infinite;
-    color: white;
+    color: black;
     cursor: default;
   }
 
@@ -68,7 +106,6 @@
   align-items: center;     // centra orizzontalmente
   text-align: center;
   font-size: 2rem;
-  animation: fadeIn 1s ease-in;
 
   .discover-text {
     margin-bottom: 2rem;
@@ -91,52 +128,18 @@
   }
 }
 
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-40px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  
-}
 
 .image-section {
   position: relative;
   height: 100vh;
-  background: url('/assets/images/pub.jpg') no-repeat center center / cover;
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: #f0f0f5;
   z-index: 1;
 
-  .overlay {
-    background: rgba(0, 0, 0, 0.7);
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    padding: 20px;
-  }
-
   .section-title {
-    color: white;
+    color: black;
     font-size: 2.5rem;
     text-align: center;
     margin-bottom: 30px; /* Aggiunto margine per separare dal bento */
@@ -156,7 +159,7 @@
     position: relative;
     overflow: hidden;
     border-radius: 10px;
-    box-shadow: 0 0px 1px rgb(255, 255, 255);
+    box-shadow: 0 0px 1px rgb(0, 0, 0);
     transition: transform 0.3s ease;
     background-size: cover;
     background-position: center;
@@ -244,6 +247,14 @@
   }
 }
 
+
 // .box-1 { grid-column: span 2; grid-row: span 2; }
 // .box-3 { grid-column: span 2; }
 // .box-6 { grid-row: span 2; }
+
+.app-carousel
+{
+  width: 100%;
+  padding-left: 10%;
+  padding-right: 10%;
+}

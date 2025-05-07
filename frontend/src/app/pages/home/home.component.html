@@ -1,25 +1,33 @@
 <div class="home-container" [class.hidden]="scrolled" #homeSection>
   <div class="overlay" [class.hidden]="scrolled">
-    <h1 class="home-title text-center animate-title">
-      Welcome on <span class="gradient-text">Cocktail Débâcle</span>,<br />
-      scroll down for more!
+    <img [src]="'/assets/images/spritz.png'" alt="Spritz" class="heroImage1"/>
+    <img [src]="'/assets/images/lime.png'" alt="Lime" class="heroImage2"/>
+    <h1 class="home-title text-center animate-title" style="z-index: 2;">
+      Welcome on <span class="gradient-text">Cocktail Débâcle</span>.<br />
     </h1>
+
+    <!-- Call to Action -->
+    <div class="cta-buttons">
+      <button class="cta-btn" (click)="navigateTo('cocktails')">Explore Cocktails</button>
+      <button class="cta-btn" (click)="navigateTo('places')">Find Places</button>
+    </div>
+
     <div class="scroll-arrow" *ngIf="showArrow">
       <span>&#x2193;</span>
     </div>
   </div>
-  
 </div>
+
 <!-- SEZIONE 1 -->
 <div class="discover-section">
   <h2 class="discover-text">So many cocktails, discover them all!</h2>
-  <app-carousel></app-carousel>
+  <app-carousel class="app-carousel"></app-carousel>
 </div>
 
 <!-- SEZIONE 2: nuova immagine -->
 <div class="image-section">
   <div class="overlay">
-    <h2 class="section-title">Find the best places to drink your favorite cocktails</h2>
+    <h2 class="section-title">Find the best places to drink your favorites cocktails</h2>
     <div class="bento-grid">
       <ng-container *ngFor="let place of places; let i = index">
         <!-- Prima card speciale -->
