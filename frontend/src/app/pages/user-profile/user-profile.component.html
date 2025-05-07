@@ -177,7 +177,7 @@
       <ng-template ngbNavContent>
         <div class="row">
           <div>
-            <app-cocktails-grid [createdByUsername]="profileUsername" [onlyCreatedBy]="true"></app-cocktails-grid>
+            <app-cocktails-grid [favoriteUsername]="profileUsername" [createdByUsername]="profileUsername" [onlyCreatedBy]="true" [loggedIn]="isAuthenticated"></app-cocktails-grid>
           </div>
         </div>
       </ng-template>
@@ -188,7 +188,7 @@
       <ng-template ngbNavContent>
         <div class="row">
           <div>
-            <app-cocktails-grid [favoriteUsername]="profileUsername" [onlyFavorites]="true"></app-cocktails-grid>
+            <app-cocktails-grid [favoriteUsername]="profileUsername" [onlyFavorites]="true" [loggedIn]="isAuthenticated"></app-cocktails-grid>
           </div>
         </div>
       </ng-template>

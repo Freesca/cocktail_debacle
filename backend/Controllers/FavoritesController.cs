@@ -19,52 +19,33 @@ public class FavoritesController : ControllerBase
         _context = context;
     }
 
-// GET: /api/favorites/{username?}
-[Authorize]
-[HttpGet("{username?}")] // <-- Aggiungi il ? per renderlo opzionale
-public async Task<IActionResult> GetUserFavorites(string? username)
-{
-    User? user = null;
-
-    if (string.IsNullOrWhiteSpace(username))
+    // GET: /api/favorites/username
+    [HttpGet("{username}")]
+    public async Task<IActionResult> GetUserFavorites(string username)
     {
-        // Se username non è stato passato, prendi l'utente loggato
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (userId == null)
-            return Unauthorized();
+        User? user = null;
 
-        int userIdInt = Convert.ToInt32(userId);
-
-        user = await _context.Users
-            .Include(u => u.Favorites)
-            .ThenInclude(uf => uf.Cocktail)
-            .FirstOrDefaultAsync(u => u.Id == userIdInt);
-    }
-    else
-    {
-        // Altrimenti cerca per username
         user = await _context.Users
             .Include(u => u.Favorites)
             .ThenInclude(uf => uf.Cocktail)
             .FirstOrDefaultAsync(u => u.UserName == username);
+
+        if (user == null)
+            return NotFound(new { message = $"User '{username}' not found." });
+
+        var favorites = user.Favorites
+            .Select(uf => new CocktailDto
+            {
+                IdDrink = uf.Cocktail != null ? uf.Cocktail.IdDrink : "",
+                StrDrink = uf.Cocktail != null ? uf.Cocktail.StrDrink : "",
+                StrDrinkThumb = uf.Cocktail != null ? uf.Cocktail.StrDrinkThumb : "",
+                Popularity = uf.Cocktail != null ? uf.Cocktail.FavoritedBy.Count : 0,
+                ReviewsCount = uf.Cocktail != null ? uf.Cocktail.Reviews.Count : 0
+            })
+            .ToList();
+
+        return Ok(favorites);
     }
-
-    if (user == null)
-        return NotFound("User not found.");
-
-    var favorites = user.Favorites
-        .Select(uf => new CocktailDto
-        {
-            IdDrink = uf.Cocktail != null ? uf.Cocktail.IdDrink : "",
-            StrDrink = uf.Cocktail != null ? uf.Cocktail.StrDrink : "",
-            StrDrinkThumb = uf.Cocktail != null ? uf.Cocktail.StrDrinkThumb : "",
-            Popularity = uf.Cocktail != null ? uf.Cocktail.FavoritedBy.Count : 0,
-            ReviewsCount = uf.Cocktail != null ? uf.Cocktail.Reviews.Count : 0
-        })
-        .ToList();
-
-    return Ok(favorites);
-}
 
 
     // POST: /api/favorites/15346

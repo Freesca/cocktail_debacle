@@ -9,7 +9,7 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { UserImageComponent } from '../user-image/user-image.component'; // Aggiungi il percorso corretto
 import { filter } from 'rxjs/operators';
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
-
+import {AuthModalService} from "../../services/auth-modal.service";
 
 
 @Component({
@@ -41,7 +41,7 @@ export class NavbarComponent {
   isAddReview = false;
   isAddCocktail = false;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router, public authModalService: AuthModalService) {}
 
   ngOnInit() {
     this.authService.isLoggedIn().subscribe((isLoggedIn: boolean) => {
@@ -78,6 +78,7 @@ export class NavbarComponent {
   }
 
   toggleLoginForm() {
+    this.authModalService.toggle()
     this.showLoginForm = !this.showLoginForm;
     this.showRegisterForm = false;
   }
@@ -90,12 +91,14 @@ export class NavbarComponent {
     this.isAuthenticated = true;
     this.authService.fetchUserInfoIfLoggedIn(); // 👈 forza la fetch anche qui
     this.showLoginForm = false;
+    this.authModalService.close();
   }
 
   onRegisterSuccess() {
     this.isAuthenticated = true;
     this.authService.fetchUserInfoIfLoggedIn(); // 👈 forza la fetc
     this.showRegisterForm = false;
+    this.authModalService.close();
   }
 
   onLogout() {
@@ -112,5 +115,21 @@ export class NavbarComponent {
         console.error('Errore durante il logout');
       }
     });
-  }  
+  } 
+
+  handleAddReviewClick(): void {
+    if (!this.isAuthenticated) {
+      this.toggleLoginForm();              // apre/chiude la modale di login
+    } else {
+      this.router.navigate(['/add-review']);
+    }
+  }
+  
+  handleAddCocktailClick(): void {
+    if (!this.isAuthenticated) {
+      this.toggleLoginForm();              // idem
+    } else {
+      this.router.navigate(['/add-cocktail']);
+    }
+  }
 }

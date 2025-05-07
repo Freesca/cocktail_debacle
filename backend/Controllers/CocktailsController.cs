@@ -25,11 +25,64 @@ public class CocktailsController : ControllerBase
 
     // GET: /api/cocktails
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Cocktails>>> GetAllCocktails()
+
+    public async Task<ActionResult<IEnumerable<CocktailDto>>> GetAllCocktails()
     {
-        var cocktails = await _context.Cocktails.ToListAsync();
+        var cocktails = await _context.Cocktails
+            .AsNoTracking()                    // lettura‑only → performance
+            .Select(c => new CocktailDto
+            {
+                IdDrink        = c.IdDrink,
+                StrDrink       = c.StrDrink,
+                StrCategory    = c.StrCategory,
+                StrAlcoholic   = c.StrAlcoholic,
+                StrGlass       = c.StrGlass,
+                StrInstructions = c.StrInstructions,
+                StrDrinkThumb  = c.StrDrinkThumb,
+    
+                // INGREDIENTI (copiati 1‑1: puoi automatizzare con AutoMapper se preferisci)
+                StrIngredient1  = c.StrIngredient1,
+                StrIngredient2  = c.StrIngredient2,
+                StrIngredient3  = c.StrIngredient3,
+                StrIngredient4  = c.StrIngredient4,
+                StrIngredient5  = c.StrIngredient5,
+                StrIngredient6  = c.StrIngredient6,
+                StrIngredient7  = c.StrIngredient7,
+                StrIngredient8  = c.StrIngredient8,
+                StrIngredient9  = c.StrIngredient9,
+                StrIngredient10 = c.StrIngredient10,
+                StrIngredient11 = c.StrIngredient11,
+                StrIngredient12 = c.StrIngredient12,
+                StrIngredient13 = c.StrIngredient13,
+                StrIngredient14 = c.StrIngredient14,
+                StrIngredient15 = c.StrIngredient15,
+    
+                // MISURE
+                StrMeasure1  = c.StrMeasure1,
+                StrMeasure2  = c.StrMeasure2,
+                StrMeasure3  = c.StrMeasure3,
+                StrMeasure4  = c.StrMeasure4,
+                StrMeasure5  = c.StrMeasure5,
+                StrMeasure6  = c.StrMeasure6,
+                StrMeasure7  = c.StrMeasure7,
+                StrMeasure8  = c.StrMeasure8,
+                StrMeasure9  = c.StrMeasure9,
+                StrMeasure10 = c.StrMeasure10,
+                StrMeasure11 = c.StrMeasure11,
+                StrMeasure12 = c.StrMeasure12,
+                StrMeasure13 = c.StrMeasure13,
+                StrMeasure14 = c.StrMeasure14,
+                StrMeasure15 = c.StrMeasure15,
+    
+                UserId       = c.UserId ?? 0,          // se è nullable
+                Popularity   = c.FavoritedBy.Count(),  // COUNT(*) via SQL, niente lazy‑load
+                ReviewsCount = c.Reviews.Count()
+            })
+            .ToListAsync();
+    
         return Ok(cocktails);
     }
+
 
     // GET: /api/cocktails/15346
     [HttpGet("{id}")]

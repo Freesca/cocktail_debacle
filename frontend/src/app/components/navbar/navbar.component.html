@@ -36,14 +36,14 @@
 
     <!-- Icona Aggiungi Recensione -->
     <div class="col-12 d-flex align-items-center">
-      <button class="btn border-0 shadow-none mt-4 m-auto" ngbTooltip="Add review" placement="right" routerLink="/add-review">
+      <button class="btn border-0 shadow-none mt-4 m-auto" ngbTooltip="Add review" placement="right" (click)="handleAddReviewClick()">
         <ng-icon [name]="isAddReview ? 'heroChatBubbleOvalLeftSolid' : 'heroChatBubbleOvalLeft'" class="text-green-500" style="width: 30px; height: 30px"></ng-icon>
       </button>
     </div>
 
     <!-- Icona Aggiungi Drink -->
     <div class="col-12 d-flex align-items-center">
-      <button class="btn border-0 shadow-none mt-4 m-auto" ngbTooltip="Add cocktail" placement="right" routerLink="/add-cocktail">
+      <button class="btn border-0 shadow-none mt-4 m-auto" ngbTooltip="Add cocktail" placement="right" (click)="handleAddCocktailClick()">
         <ng-icon [name]="isAddCocktail ? 'heroPlusCircleSolid' : 'heroPlusCircle'" class="text-green-500" style="width: 30px; height: 30px"></ng-icon>
       </button>
     </div>
@@ -79,7 +79,7 @@
 </nav>
 
 <!-- Overlay per il login -->
-<div *ngIf="showLoginForm" class="overlay" (click)="toggleLoginForm()">
+<div *ngIf="authModalService.loginModal$ | async" class="overlay" (click)="toggleLoginForm()">
   <div class="login-form-container position-relative" (click)="$event.stopPropagation()">
     <app-login-form 
     *ngIf="!showRegisterForm"

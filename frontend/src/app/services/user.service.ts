@@ -25,6 +25,12 @@ export class UserService {
 
   constructor(private http: HttpClient) {}
 
+  getProfile(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/profile`, {
+      withCredentials: true
+    });
+  }
+
   updateProfile(data: UpdateProfileDto): Observable<any> {
     return this.http.patch(`${this.baseUrl}/profile`, data, {
       withCredentials: true

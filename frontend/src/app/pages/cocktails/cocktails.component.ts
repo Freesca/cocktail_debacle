@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { SearchBarComponent } from "../../components/search-bar/search-bar.component";
 import { AuthService } from "../../services/auth.service";
 import { CocktailService } from "../../services/cocktails.service";
+import { UserService } from '../../services/user.service';
 
 
 
@@ -17,30 +18,42 @@ import { CocktailService } from "../../services/cocktails.service";
 })
 export class CocktailsComponent implements OnInit {
   currentSort = 'name';
-  isLoggedIn = false;
+  loggedIn = false;
   recommendedCocktails: any[] = [];
   recommendedReady: boolean = false;
+  username: string = '';
 
   constructor(
     private cocktailService: CocktailService,
-    private authService: AuthService
+    private authService: AuthService,
+    private userService: UserService
   ) {}
   
 
   ngOnInit(): void {
-    this.authService.isLoggedIn().subscribe((isLoggedIn: boolean) => {
-      this.isLoggedIn = isLoggedIn; 
-      if (isLoggedIn) {
-        this.cocktailService.getRecommendedCocktails().subscribe({
-          next: (data) => {
-            this.recommendedCocktails = data.map(c => ({ ...c, isRecommended: true }));
-          },
-          error: () => {
-            this.recommendedCocktails = [];
+    this.authService.isLoggedIn().subscribe((loggedIn: boolean) => {
+      this.loggedIn = loggedIn; 
+      if (loggedIn) {
+        this.userService.getProfile().subscribe((profile) => {
+          this.username = profile.userName;
+          if (profile.consentSuggestions) {
+            this.cocktailService.getRecommendedCocktails().subscribe({
+              next: (data) => {
+                this.recommendedCocktails = data.map(c => ({ ...c, isRecommended: true }));
+                this.recommendedReady = true;
+              },
+              error: () => {
+                this.recommendedCocktails = [];
+                this.recommendedReady = true;
+              }
+            });
+          } else {
+            this.recommendedReady = true;
           }
         });
+      } else {
+        this.recommendedReady = true;
       }
-      this.recommendedReady = true;
     });
   }
 

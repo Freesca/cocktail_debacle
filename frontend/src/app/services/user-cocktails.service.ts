@@ -18,8 +18,8 @@ export class UserCocktailsService {
 
   constructor(private http: HttpClient) {}
 
-  getUserCocktails(username?: string): Observable<Cocktail[]> {
-    const url = username ? `${this.apiUrl}/${username}` : this.apiUrl;
+  getUserCocktails(username: string): Observable<Cocktail[]> {
+    const url = `${this.apiUrl}/${username}`;
     return this.http.get<Cocktail[]>(url);
   }
 

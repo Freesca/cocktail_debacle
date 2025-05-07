@@ -20,28 +20,16 @@ public class UserCocktailController : ControllerBase
         _userManager = userManager;
     }
 
-    [Authorize]
-    [HttpGet("{username?}")]
-    public async Task<IActionResult> GetUserCocktails(string? username = null)
+    [HttpGet("{username}")]
+    public async Task<IActionResult> GetUserCocktails(string username)
     {
         User? user;
 
-        // Se non viene passato uno username, usa l'utente autenticato
-        if (string.IsNullOrEmpty(username))
-        {
-            user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return Unauthorized(new { message = "User not found or not authenticated." });
-        }
-        else
-        {
-            user = await _userManager.Users
-                .Include(u => u.CreatedCocktails)
-                .FirstOrDefaultAsync(u => u.UserName == username);
-
-            if (user == null)
-                return NotFound(new { message = $"User '{username}' not found." });
-        }
+        user = await _userManager.Users
+            .Include(u => u.CreatedCocktails)
+            .FirstOrDefaultAsync(u => u.UserName == username);
+        if (user == null)
+            return NotFound(new { message = $"User '{username}' not found." });
 
         // Carica i cocktail creati
         var cocktails = await _context.Cocktails

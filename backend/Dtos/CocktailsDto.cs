@@ -50,7 +50,6 @@ public class CocktailDto
     public string? StrMeasure14 { get; set; }
     public string? StrMeasure15 { get; set; }
     public int UserId { get; set; }
-    public int CreatedBy { get; set; }
     public int Popularity { get; set; }
     public int ReviewsCount { get; set; }
 }

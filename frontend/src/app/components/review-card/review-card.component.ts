@@ -31,6 +31,8 @@ export class ReviewCardComponent {
   deletingReview: boolean = false;
   reviewSuccess: boolean = false;
   reviewError: string = '';
+  maxCollapsedChars = 250;
+  isCommentExpanded = false;
 
   constructor(private reviewService: ReviewService) {}
 
@@ -127,4 +129,13 @@ export class ReviewCardComponent {
   getFormattedDate(date: string): string {
     return new Date(date).toLocaleDateString();
   }
+
+  get needsToggle(): boolean {
+    return this.review?.comment?.length > this.maxCollapsedChars;
+  }
+
+  toggleComment(): void {
+    this.isCommentExpanded = !this.isCommentExpanded;
+  }
+  
 }
