@@ -98,80 +98,55 @@
 
 
 .carousel-container {
-  width: 100%;
+  position: relative;
   display: flex;
-  justify-content: center;
 }
 
 .carousel {
   display: flex;
-  justify-content: center;
-  align-items: center;
   overflow-x: hidden;
-  padding-bottom: 20px;
+  scroll-snap-type: x mandatory;
+  gap: 20px;  // Spazio tra le card
 }
 
 .carousel-slide {
   position: relative;
-  width: 200px!important;
-  min-width: 200px!important;
+  scroll-snap-align: center;
+}
+
+.carousel-image-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.carousel-image-container img {
+  width: 200px;  // Imposta la larghezza dell'immagine al 100% della card
   height: 200px;
-  transition: transform 0.3s ease, z-index 0.3s ease;
-  transform-origin: center;
-  cursor: pointer;
+  border-radius: 10px;  // Puoi aggiungere bordi arrotondati se lo desideri
+  object-fit: cover;
+}
 
-  img {
-    width: 100%!important;
-    height: 100%!important;
-    object-fit: cover;
-    border-radius: 12px;
-  }
-
-  h3 {
-    position: absolute;
-    font-size: 1.5rem;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: white;
-    text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
-  }
-  .discover-tile {
-      color: #fff;
-      width: 100%;
-      height: 100%;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 8px;
-      transition: transform 0.3s ease;
-    
-      h3 {
-        margin: 0;
-        font-size: 1.5rem;
-      }
-    
-      &:hover {
-        transform: scale(1.05);
-      }
-    }
-    .discover-tile img {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 12px;
-      z-index: -1; // per far comparire il testo sopra
-    }
-         
+.carousel-image-container h3 {
+  position: absolute;
+  bottom: 10px;  // Sposta il titolo verso il basso della card
+  left: 50%;
+  transform: translateX(-50%);  // Centra il titolo orizzontalmente
+  color: white;  // Imposta il colore del testo
+  padding: 5px 10px;  // Aggiunge un po' di spazio intorno al testo
+  border-radius: 5px;  // Angoli arrotondati del titolo
 }
 
 .arrow-left, .arrow-right {
-  background: transparent;
-  height: fit-content;
-  border: none;
-  margin: auto;
-}
+    background: transparent;
+    border: none;
+    margin: 0;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
 
-
+    &:hover {
+      opacity: 1;
+    }
+  }

@@ -3,17 +3,17 @@ import { CommonModule } from '@angular/common';
 import { CocktailService } from '../../services/cocktails.service';
 import { RouterModule } from '@angular/router';
 import { NgIconsModule } from '@ng-icons/core';
+import { NgbCarouselModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-carousel',
-  imports: [CommonModule, RouterModule, NgIconsModule],
+  imports: [CommonModule, RouterModule, NgIconsModule, NgbCarouselModule],
   templateUrl: './carousel.component.html',
   styleUrl: './carousel.component.scss'
 })
 export class CarouselComponent {
   sliderItems: { title: string, image: string, isDiscover: boolean }[] = [];
   slideDiscover = { title: 'Scopri', image: '/assets/images/discover.jpeg', isDiscover: true };
-  currentIndex: number = 0;
 
   constructor(private cocktailService: CocktailService) {}
 
@@ -22,28 +22,41 @@ export class CarouselComponent {
       next: (cocktails) => {
         this.sliderItems = cocktails
           .filter(c => c.strDrinkThumb && c.strDrink)
-          .slice(0, 9)
+          .slice(0, 9)  // Limita i cocktail a 9 per il carosello
           .map(c => ({
             title: c.strDrink,
             image: c.strDrinkThumb,
             isDiscover: false
           }));
-        this.sliderItems.push(this.slideDiscover);
+        this.sliderItems.push(this.slideDiscover);  // Aggiungi la slide "Scopri"
       },
       error: () => {
         console.error('Errore nel caricamento dei cocktail per il carousel.');
-      },
+      }
     });
   }
-
-  prevSlide() {
-    this.currentIndex = (this.currentIndex > 0) ? this.currentIndex - 1 : this.sliderItems.length - 1;
-  }
-
-  nextSlide() {
-    this.currentIndex = (this.currentIndex < this.sliderItems.length - 1) ? this.currentIndex + 1 : 0;
-  }
   
+  scrollLeft(carousel: HTMLElement) {
+    carousel.scrollBy({ left: -220, behavior: 'smooth' });
+  }
+
+  scrollRight(carousel: HTMLElement) {
+    carousel.scrollBy({ left: 220, behavior: 'smooth' });
+  }
+}
+
+
+  // nextSlide() {
+  //   if (this.currentIndex < this.sliderItems.length - this.visibleSlides) {
+  //     this.currentIndex++;
+  //   }
+  // }
+
+  // prevSlide() {
+  //   if (this.currentIndex > 0) {
+  //     this.currentIndex--;
+  //   }
+  // }
 
   // setHoveredIndex(index: number) {
   //   this.hoveredIndex = index;
@@ -60,4 +73,3 @@ export class CarouselComponent {
   //   if (this.hoveredIndex === null) return 1;
   //   return 100 - Math.abs(index - this.hoveredIndex);
   // }
-}

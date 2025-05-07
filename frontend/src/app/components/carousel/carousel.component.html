@@ -1,24 +1,27 @@
 <div class="carousel-container text-center mt-5">
-  <button class="arrow-left" (click)="prevSlide()">
+  <button class="arrow-left" (click)="scrollLeft(carousel)">
     <ng-icon name="heroArrowLeftCircleSolid" style="width: 40px; height: 40px;"></ng-icon>
   </button>
-  <div class="carousel">
+  <div class="carousel" #carousel>
     <div
       class="carousel-slide"
       *ngFor="let slide of sliderItems; let i = index"
-      [style.transform]="'translateX(' + ((i - currentIndex) * 10) + '%)'"
     >
       <a *ngIf="slide.isDiscover" [routerLink]="['/cocktails']" class="discover-tile">
-        <img [src]="slide.image" [alt]="slide.title" />
-        <h3>Discover</h3>
+        <div class="carousel-image-container">
+          <img [src]="slide.image" [alt]="slide.title" />
+          <h3>{{ slide.title }}</h3>
+        </div>
       </a>
       <ng-container *ngIf="!slide.isDiscover">
-        <img [src]="slide.image" [alt]="slide.title" />
-        <h3>{{ slide.title }}</h3>
+        <div class="carousel-image-container">
+          <img [src]="slide.image" [alt]="slide.title" />
+          <h3>{{ slide.title }}</h3>
+        </div>
       </ng-container>
     </div>
   </div>
-  <button class="arrow-right" (click)="nextSlide()">
+  <button class="arrow-right" (click)="scrollRight(carousel)">
     <ng-icon name="heroArrowRightCircleSolid" style="width: 40px; height: 40px;"></ng-icon>
   </button>
 </div>
