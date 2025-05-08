@@ -27,13 +27,12 @@
     </div>
     <!-- Only show settings button for own profile -->
     <button *ngIf="isOwnProfile" class="btn btn-outline-secondary" (click)="editMode = !editMode">
-      <i class="bi bi-gear"></i> Impostazioni
+      <i class="bi bi-gear"></i> Settings
     </button>
   </div>
 
     <!-- Modalità modifica - only visible for own profile -->
     <div *ngIf="editMode && isOwnProfile" class="mt-4 mb-5">
-      <hr />
       <div class="profile-edit-section px-3 py-4 rounded shadow-sm bg-light">
         <h4 class="mb-4 border-bottom pb-2">Edit Profile</h4>
     
@@ -173,7 +172,7 @@
   <!-- Sezioni con tab -->
   <ul ngbNav #nav="ngbNav" [(activeId)]="activeId" class="nav nav-tabs instagram-tabs mb-3">
     <li [ngbNavItem]="1" class="nav-item">
-      <a ngbNavLink class="nav-link">Cocktail personalizzati</a>
+      <a ngbNavLink class="nav-link">Custom Cocktails</a>
       <ng-template ngbNavContent>
         <div class="row">
           <div>
@@ -184,7 +183,7 @@
     </li>
   
     <li [ngbNavItem]="2" class="nav-item">
-      <a ngbNavLink class="nav-link">Cocktail Preferiti</a>
+      <a ngbNavLink class="nav-link">Favorites Cocktails</a>
       <ng-template ngbNavContent>
         <div class="row">
           <div>
@@ -195,7 +194,7 @@
     </li>
   
     <li [ngbNavItem]="3" class="nav-item">
-      <a ngbNavLink class="nav-link">Recensioni</a>
+      <a ngbNavLink class="nav-link">Reviews</a>
       <ng-template ngbNavContent>
         <div class="row">
           <div class="col-md-12">

@@ -124,7 +124,7 @@ using (var scope = app.Services.CreateScope())
         Console.WriteLine("Il file cocktails.json non è stato trovato.");
     }
 
-        // ✅ Import degli utenti
+    // ✅ Import degli utenti
     var usersFilePath = Path.Combine(env.WebRootPath ?? "wwwroot", "data", "users.json");
     if (File.Exists(usersFilePath))
     {
@@ -143,7 +143,6 @@ using (var scope = app.Services.CreateScope())
                     {
                         // Imposta manualmente una password o prendila dal JSON
                         var result = await userManager.CreateAsync(user, "PasswordForte123!");
-
                         if (!result.Succeeded)
                         {
                             Console.WriteLine($"Errore creazione utente {user.Email}: {string.Join(", ", result.Errors.Select(e => e.Description))}");
@@ -161,6 +160,102 @@ using (var scope = app.Services.CreateScope())
     {
         Console.WriteLine("Il file users.json non è stato trovato.");
     }
+
+    // ✅ IMPORT PLACES (mock)
+    var placesFilePath = Path.Combine(env.WebRootPath ?? "wwwroot", "data", "places.json");
+
+    if (File.Exists(placesFilePath))
+    {
+        try
+        {
+            var json = await File.ReadAllTextAsync(placesFilePath);
+            var places = JsonSerializer.Deserialize<List<Place>>(json);
+
+            if (places != null && !db.Places.Any())
+            {
+                db.Places.AddRange(places);
+                await db.SaveChangesAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Errore durante l'importazione dei places: {ex.Message}");
+        }
+    }
+    else
+    {
+        Console.WriteLine("Il file places.json non è stato trovato.");
+    }
+
+    // ✅ IMPORT REVIEWS (mock)
+    var reviewsFilePath = Path.Combine(env.WebRootPath ?? "wwwroot", "data", "reviews.json");
+    
+    if (File.Exists(reviewsFilePath))
+    {
+        try
+        {
+            var json = await File.ReadAllTextAsync(reviewsFilePath);
+    
+            //  JsonSerializer gestisce automaticamente i DateTime formattati "yyyy-MM-dd HH:mm:ss"
+            var reviews = JsonSerializer.Deserialize<List<Review>>(json,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+    
+            if (reviews != null && !db.Reviews.Any())
+            {
+                db.Reviews.AddRange(reviews);
+                await db.SaveChangesAsync();
+
+                // Raggruppa tutte le review per (PlaceId, CocktailId)
+                var grouped = reviews
+                    .Where(r => r.CocktailId != null)
+                    .GroupBy(r => new
+                    {
+                        r.PlaceId,
+                        CocktailId = r.CocktailId!
+                    });
+                
+                foreach (var group in grouped)
+                {
+                    var placeId = group.Key.PlaceId;
+                    var cocktailId = group.Key.CocktailId;
+                    var count = group.Count();
+                    var average = group.Average(r => r.Rating);
+
+                    var meta = await db.CocktailReviewMetadatas
+                        .FirstOrDefaultAsync(m => m.PlaceId == placeId && m.CocktailId == cocktailId);
+
+                    if (meta == null)
+                    {
+                        meta = new CocktailReviewMetadata
+                        {
+                            PlaceId = placeId,
+                            CocktailId = cocktailId,
+                            ReviewCount = count,
+                            AverageScore = average
+                        };
+                        db.CocktailReviewMetadatas.Add(meta);
+                    }
+                    else
+                    {
+                        // Ricalcola usando anche le review già presenti
+                        var totalReviews = meta.ReviewCount + count;
+                        meta.AverageScore = (meta.AverageScore * meta.ReviewCount + average * count) / totalReviews;
+                        meta.ReviewCount = totalReviews;
+                    }
+                }
+                await db.SaveChangesAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Errore durante l'importazione delle reviews: {ex.Message}");
+        }
+    }
+    else
+    {
+        Console.WriteLine("Il file reviews.json non è stato trovato.");
+    }
+
 }
 
 
