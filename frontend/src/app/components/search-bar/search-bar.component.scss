@@ -12,10 +12,14 @@
 
   &.scrolled {
     top: 0;
-    justify-content: flex-start;
-    padding: 10px 20px;
-    background-color: #fff;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    justify-content: center; /* Mantieni il centro */
+    padding: 20px; /* Stesso padding */
+    background-color: #f0f0f5; /* Stesso colore */
+  }
+
+  &.on-discover {
+    background-color: #ebebe9; /* Colore della discover-section */
+    box-shadow: none;
   }
 
   .input-group {
@@ -30,8 +34,15 @@
     align-items: center;
     overflow: hidden;
 
-    .switcher,
-    .btn-filters {
+    .search-input {
+      flex: 1;
+      padding-left: 20px;
+      border: none;
+      height: 100%;
+      outline: none;
+    }
+
+    .switcher, .btn-filters {
       display: flex;
       align-items: center;
       justify-content: center;
@@ -49,14 +60,7 @@
     }
     .btn-filters {
       background: transparent;
-      border-radius: 30px!important;
-    }
-    .search-input {
-      flex: 1;
-      padding-left: 20px;
-      border: none;
-      height: 100%;
-      outline: none;
+      border-radius: 30px !important;
     }
   }
 }

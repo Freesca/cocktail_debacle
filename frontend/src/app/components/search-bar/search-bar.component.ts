@@ -17,6 +17,7 @@ import { NgIconsModule } from '@ng-icons/core';
   styleUrls: ['./search-bar.component.scss'],
 })
 export class SearchBarComponent implements OnInit {
+  isOnDiscoverSection: boolean = false;
   isCollapsed: boolean = true;
   searchQuery = '';
   selectedCategory = '';
@@ -73,7 +74,17 @@ export class SearchBarComponent implements OnInit {
   @HostListener('window:scroll', [])
   onWindowScroll(): void {
     const offset = window.pageYOffset || document.documentElement.scrollTop;
-    this.isScrolled = offset > 10; 
+    this.isScrolled = offset > 10;
+    const discoverSection = document.querySelector('.discover-section') as HTMLElement;
+    const searchContainer = document.querySelector('.search-container') as HTMLElement;
+
+    if (discoverSection && searchContainer) {
+      const discoverSectionTop = discoverSection.getBoundingClientRect().top;
+      const searchHeight = searchContainer.offsetHeight;
+
+      // Verifica se la search bar si trova sopra la discover-section
+      this.isOnDiscoverSection = discoverSectionTop <= searchHeight;
+    }
   }
 
   loadCategories() {

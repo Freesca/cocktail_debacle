@@ -1,6 +1,10 @@
-<div class="search-container mb-4" style="z-index: 20;">
+<div 
+  class="search-container mb-4" 
+  [class.scrolled]="isScrolled"
+  [class.on-discover]="isOnDiscoverSection"
+  style="z-index: 20;">
   <div class="input-group">
-    <!-- Bottone Switch Modalità all’interno della barra di ricerca -->
+    <!-- Bottone Switch Modalità -->
     <button
       class="btn switcher"
       (click)="toggleMode()"
@@ -8,7 +12,7 @@
     >
       <ng-container *ngIf="selectedMode === 'cocktails'">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white" style="width: 30px; height: 30px;">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3h10.5M6.75 3l1.5 15a1.5 1.5 0 001.49 1.35h4.52a1.5 1.5 0 001.49-1.35l1.5-15M6.75 3h10.5M8.25 8h7.5" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3h10.5M6.75 3l1.5 15a1.5 1.5 0 001.49 1.35h4.52a1.5 1.5 0 001.49-1.35l1.5-15M6.75 3h10.5M8.25 8h7.5"/>
         </svg>
       </ng-container>
       <ng-container *ngIf="selectedMode === 'places'">
@@ -26,7 +30,7 @@
       [placeholder]="selectedMode === 'cocktails' ? 'Cerca cocktail...' : 'Cerca locali...'"
     />
 
-    <!-- Bottone per aprire i filtri (solo se in modalità cocktail) -->
+    <!-- Bottone per i filtri -->
     <button
       *ngIf="selectedMode === 'cocktails'"
       class="btn btn-filters"
@@ -39,7 +43,7 @@
   </div>
 </div>
 
-<!-- Filtri (solo per cocktail) -->
+<!-- Filtri per i cocktail -->
 <div *ngIf="!isCollapsed && selectedMode === 'cocktails'" class="filters card card-body">
   <div class="filter mb-2">
     <label for="category">Categoria</label>
