@@ -11,9 +11,9 @@
     <div class="cocktail-info d-flex flex-column">
       <div class="info-main flex-grow-1">
         <h2>{{ cocktail.strDrink }}</h2>
-        <p><strong>Category:</strong> {{ cocktail.strCategory }}</p>
-        <p><strong>Alcholic:</strong> {{ cocktail.strAlcoholic }}</p>
-        <p><strong>Glass type:</strong> {{ cocktail.strGlass }}</p>
+        <p>Category: <span class="text-muted"> {{ cocktail.strCategory }}</span></p> 
+        <p>Alcholic: <span class="text-muted">{{ cocktail.strAlcoholic }}</span></p>
+        <p>Glass type: <span class="text-muted">  {{ cocktail.strGlass }}</span></p>
       </div>
     
       <div *ngIf="cocktail.userName" class="created-by mt-3 mb-0 d-flex align-items-center justify-content-start">
@@ -55,18 +55,18 @@
   <div class="bottom-section">
     <div class="cocktail-instructions">
       <h3>Instructions</h3>
-      <p>{{ cocktail.strInstructions }}</p>
+      <p class="text-muted">{{ cocktail.strInstructions }}</p>
     </div>
 
     <div class="cocktail-ingredients">
-      <h3>ingridients</h3>
+      <h3>Ingridients</h3>
       <ul class="ingredient-list">
         <!-- Genera i dots in base al numero di ingredienti -->
         <li *ngFor="let i of getIngredientDots()">
           <ng-container *ngIf="cocktail['strIngredient' + i]">
-            <div class="ingredient">
-              <span class="dot"></span> 
-              {{ cocktail['strIngredient' + i] }} - {{ cocktail['strMeasure' + i] || '' }}
+            <div class="ingredient" >
+              <span class="dot"></span>
+              <span class="text-muted">{{ cocktail['strIngredient' + i] }}</span> - {{ cocktail['strMeasure' + i] || '' }}
             </div>
           </ng-container>
         </li>

@@ -45,7 +45,7 @@
         <span class="rating-value ms-2">{{ review.rating }}/5</span>
       </div>
       <p
-        class="card-text review-comment"
+        class="card-text review-comment text-muted"
         [class.collapsed]="!isCommentExpanded && needsToggle">
         {{ review.comment || 'No comment' }}
       </p>
