@@ -16,12 +16,19 @@
         <p><strong>Tipo di bicchiere:</strong> {{ cocktail.strGlass }}</p>
       </div>
     
-      <p *ngIf="cocktail.userName" class="created-by mt-3 mb-0">
+      <div *ngIf="cocktail.userName" class="created-by mt-3 mb-0 d-flex align-items-center justify-content-start">
         <strong>Created by:</strong>
-        <a [routerLink]="['/profile', cocktail.userName]" class="created-by-link">
-          {{ cocktail.userName }}
+        <a
+        [routerLink]="['/profile', cocktail.userName]"
+        class="d-flex align-items-center user-profile-link text-decoration-none">
+          <app-user-image
+            [userName]="cocktail.userName"
+            size="small"
+            class="mx-2"
+          ></app-user-image>
+          <div class="mb-0">{{ cocktail.userName }}</div>
         </a>
-      </p>
+      </div>
     </div>
     
   

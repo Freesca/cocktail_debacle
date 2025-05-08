@@ -13,6 +13,7 @@ import { FavouritesService } from '../../services/favourites.service';
 import { AuthService } from '../../services/auth.service';
 import { NgIconsModule } from '@ng-icons/core';
 import { RouterModule } from '@angular/router';
+import { UserImageComponent } from '../../components/user-image/user-image.component';
 
 interface PlaceWithDetails extends PlaceReviewMetadata {
   name?: string;
@@ -26,7 +27,7 @@ interface PlaceWithDetails extends PlaceReviewMetadata {
 @Component({
   selector: 'app-cocktail-page',
   standalone: true,
-  imports: [CommonModule, NgIconsModule, RouterModule],
+  imports: [CommonModule, NgIconsModule, RouterModule, UserImageComponent],
   templateUrl: './cocktail-page.component.html',
   styleUrls: ['./cocktail-page.component.scss'],
 })
