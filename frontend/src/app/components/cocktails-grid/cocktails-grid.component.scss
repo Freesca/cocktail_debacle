@@ -8,7 +8,6 @@ $cocktail-overlay-gradient: linear-gradient(
 );
 $cocktail-text-color: #fff;
 
-
 .cocktail-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, 200px);
@@ -31,7 +30,7 @@ $cocktail-text-color: #fff;
 
     img.cocktail-image {
       width: 100%;
-      aspect-ratio: 1 / 1; // Mantiene l'immagine quadrata
+      aspect-ratio: 1 / 1;
       object-fit: cover;
       border-radius: $cocktail-radius;
       display: block;
@@ -39,42 +38,35 @@ $cocktail-text-color: #fff;
 
     .cocktail-name-overlay {
       position: absolute;
-      bottom: 0;
-      width: 100%;
-      padding: 8px 5px;
-      background: $cocktail-overlay-gradient;
-      color: $cocktail-text-color;
-      text-align: center;
       font-weight: bold;
       font-size: 1rem;
-      border-bottom-left-radius: $cocktail-radius;
-      border-bottom-right-radius: $cocktail-radius;
+    }
+
+    .favorite-icon-btn {
+      background: none;
+      border: none;
+      padding: 0;
+      margin-left: auto;
+      cursor: pointer;
+
+      ng-icon {
+        width: 22px;
+        height: 22px;
+        color: $cocktail-text-color;
+      }
     }
   }
-}
-
-.recommended-label {
-  position: absolute;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: linear-gradient(
-    to right,
-    #d5710e,
-    #dab603
-  );
-  color: #fff; // bianco per contrasto
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  padding: 4px 10px;
-  border-radius: 20px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-  letter-spacing: 0.5px;
-  z-index: 5;
-  transition: background-color 0.2s ease-in-out;
-}
-
-.recommended-label:hover {
-  background-color: rgba(25, 135, 84, 1); // più intenso al passaggio
+  .recommended-label {
+    position: absolute;
+    left: 0px;
+    font-size: 0.75rem!important;
+    font-weight: 600!important;
+    text-transform: uppercase!important;
+    border-radius: 12px;
+    letter-spacing: 0.5px;
+    background: linear-gradient(45deg, #d5710e, #dab603);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
 }

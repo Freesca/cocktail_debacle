@@ -10,10 +10,9 @@ import { NgIconsModule } from '@ng-icons/core';
 
 @Component({
   selector: 'app-place-page',
-  standalone: true,
   imports: [CommonModule, ReviewsPlaceComponent, NgIconsModule],
   templateUrl: './place-page.component.html',
-  styleUrl: './place-page.component.css'
+  styleUrl: './place-page.component.scss'
 })
 export class PlacePageComponent implements OnInit {
   place: PlaceResult | null = null;
@@ -22,6 +21,7 @@ export class PlacePageComponent implements OnInit {
   error: boolean = false;
   photoUrl: SafeUrl | null = null;
   photoLoading: boolean = false;
+  fallbackImage: string = '/assets/images/notFoundB.png';
 
   constructor(
     private route: ActivatedRoute,

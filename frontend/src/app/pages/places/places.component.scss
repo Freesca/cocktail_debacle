@@ -18,19 +18,19 @@ $place-text-color: #fff;
 .place-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, 200px);
-  grid-auto-rows: 300px;
+  grid-auto-rows: 320px;
   gap: 2rem;
   justify-content: center;
   padding: 20px;
-  overflow-y: auto;  /* Permette lo scroll */
+  overflow-y: auto;
 }
 
 
 
 .place-card {
   position: relative;
-  width: 200px; /* Impostato a 100px di larghezza */
-  height: 200px; /* Impostato a 100px di altezza */
+  width: 200px;
+  height: 200px;
   flex-shrink: 0;
   flex-grow: 0;
   border-radius: $place-radius;
@@ -54,27 +54,13 @@ $place-text-color: #fff;
       object-fit: cover;
       display: block;
     }
-    
-
-    .place-name-overlay {
-      bottom: 0;
-      width: 100%;
-      padding: 4px 5px;
-      color: $place-text-color;
-      text-align: center;
-      font-weight: bold;
-      font-size: 0.8rem; /* Ridotto per adattarsi meglio alla dimensione piccola */
-      border-bottom-left-radius: $place-radius;
-      border-bottom-right-radius: $place-radius;
-    }
 
     .place-info {
       text-align: center;
       font-size: 0.85rem;
-      padding: 8px 4px;
       color: #333;
       border-radius: $place-radius;
-      margin-top: 0.5rem;
+      padding-top: 100px;
     }    
   }
 }

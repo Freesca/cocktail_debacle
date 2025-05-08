@@ -20,19 +20,19 @@
     }
   
     @media (min-width: 1200px) {
-      width: 50vw;
-      height: 50vh;
+      width: 30vw;
+      height: 30vh;
     }
   }
   
   .heroImage1 {
-    bottom: 0;
-    left: 0;
+    bottom: 130px;
+    left: 100px;
   }
   
   .heroImage2 {
-    top: 40px;
-    right: 0;
+    top: 150px;
+    right: 20px;
   }
   
   
@@ -103,8 +103,8 @@
 .discover-section {
   position: relative;
   height: 80vh;
-  margin-top: 100vh; // mantiene il layout dopo home-container
-  background-color: #f0f0f5;
+  margin-top: 88vh; // mantiene il layout dopo home-container
+  background-color: #ebebe9;
   z-index: 2;
   padding: 0 20px;
   display: flex;
@@ -142,7 +142,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f0f0f5;
+  background-color: #e9e9eb;
   z-index: 1;
 
   .section-title {

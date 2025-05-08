@@ -3,6 +3,7 @@
     <span class="visually-hidden">Loading...</span>
   </div>
 </div>
+
 <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
 
 <div 
@@ -12,6 +13,7 @@
   [infiniteScrollDistance]="scrollDistance"
   [infiniteScrollUpDistance]="scrollUpDistance"
   (scrolled)="loadMoreCocktails()">
+  
   <div *ngFor="let cocktail of displayedCocktails" class="cocktail-card position-relative">
     <a [routerLink]="['/cocktail', cocktail.idDrink]" class="image-link d-block position-relative">
       <img
@@ -19,18 +21,12 @@
         alt="{{ cocktail.strDrink }}"
         class="cocktail-image"
       />
-      <span
-        *ngIf="cocktail.isRecommended"
-        class="recommended-label"
-      >
-        Recommended
-      </span>
     </a>    
-    <div class="cocktail-name-overlay d-flex justify-content-between align-items-center px-2 pt-2">
+    <div class="cocktail-name-overlay d-flex px-2 pt-2">
       <span class="fw-bold">{{ cocktail.strDrink }}</span>
       <button
         class="favorite-icon-btn"
-        style="background: none; border: none; padding: 0; margin-left: auto"
+        style="background: none; border: none; padding: auto; margin-left: auto; margin-bottom: auto;"
         (click)="toggleFavorite(cocktail)"
       >
         <ng-icon
@@ -45,9 +41,13 @@
         ></ng-icon>
       </button>
     </div>
+    <div class="recommended-label px-2" *ngIf="cocktail.isRecommended">
+      Recommended
+    </div>
   </div>
 
   <div class="text-center text-muted fs-5 mt-5" *ngIf="displayedCocktails.length === 0 && !loading">
     Nessun cocktail trovato.
   </div>
 </div>
+

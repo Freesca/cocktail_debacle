@@ -57,6 +57,16 @@
         color: #000;
         border-bottom: 2px solid #000;
       }
+
+      
+      .cocktail-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr))!important; // 5 colonne
+        grid-auto-rows: 300px;
+        gap: 1.5rem;
+        justify-content: center;
+        padding: 20px;
+      }
     }
   }
 }

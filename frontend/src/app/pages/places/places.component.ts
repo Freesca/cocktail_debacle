@@ -32,6 +32,7 @@ export class PlacesComponent implements OnInit, OnDestroy {
   nearbyError = false;
   scrollDistance = 1;
   scrollUpDistance = 2;
+  fallbackImage = '/assets/images/notFoundB.png';
   
   private searchTerms = new Subject<string>();
 
@@ -111,14 +112,14 @@ export class PlacesComponent implements OnInit, OnDestroy {
 
   private loadPlacePhoto(photoRef: string | null, place: PlaceResult) {
     if (!photoRef) {
-      place['photoUrl'] = 'assets/default-place.jpg';
+      place['photoUrl'] = this.fallbackImage;
       return of(null);
     }
 
     return this.placeService.getPlacePhoto(photoRef).pipe(
       catchError(() => of(null)),
       switchMap(blob => {
-        place['photoUrl'] = blob ? URL.createObjectURL(blob) : 'assets/default-place.jpg';
+        place['photoUrl'] = blob ? URL.createObjectURL(blob) : this.fallbackImage;
         return of(null);
       })
     );
