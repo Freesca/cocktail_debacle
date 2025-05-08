@@ -11,9 +11,9 @@
     <div class="cocktail-info d-flex flex-column">
       <div class="info-main flex-grow-1">
         <h2>{{ cocktail.strDrink }}</h2>
-        <p><strong>Categoria:</strong> {{ cocktail.strCategory }}</p>
-        <p><strong>Alcolico:</strong> {{ cocktail.strAlcoholic }}</p>
-        <p><strong>Tipo di bicchiere:</strong> {{ cocktail.strGlass }}</p>
+        <p><strong>Category:</strong> {{ cocktail.strCategory }}</p>
+        <p><strong>Alcholic:</strong> {{ cocktail.strAlcoholic }}</p>
+        <p><strong>Glass type:</strong> {{ cocktail.strGlass }}</p>
       </div>
     
       <div *ngIf="cocktail.userName" class="created-by mt-3 mb-0 d-flex align-items-center justify-content-start">
@@ -54,12 +54,12 @@
   <!-- Sezione inferiore: istruzioni e ingredienti -->
   <div class="bottom-section">
     <div class="cocktail-instructions">
-      <h3>Istruzioni</h3>
+      <h3>Instructions</h3>
       <p>{{ cocktail.strInstructions }}</p>
     </div>
 
     <div class="cocktail-ingredients">
-      <h3>Ingredienti</h3>
+      <h3>ingridients</h3>
       <ul class="ingredient-list">
         <!-- Genera i dots in base al numero di ingredienti -->
         <li *ngFor="let i of getIngredientDots()">
