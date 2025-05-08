@@ -49,21 +49,7 @@
           I agree to receive personalized suggestions
         </label>
       </div>
-  
-      <!-- Checkbox condizioni -->
-      <div class="form-check mt-3">
-        <input type="checkbox" id="terms" class="form-check-input" [(ngModel)]="acceptedTerms" name="terms" required />
-        <label for="terms" class="form-check-label">
-          I accept the <a href="/terms" target="_blank">Terms and Conditions</a>
-        </label>
-      </div>
-  
-      <div class="form-check mt-2">
-        <input type="checkbox" id="privacy" class="form-check-input" [(ngModel)]="acceptedPrivacy" name="privacy" required />
-        <label for="privacy" class="form-check-label">
-          I accept the <a href="/privacy" target="_blank">Privacy Policy</a>
-        </label>
-      </div>
+
   
       <button 
         type="submit" 
@@ -71,6 +57,12 @@
         [disabled]="!acceptedTerms || !acceptedPrivacy">
         Register
       </button>
+      <div class="text-center mt-3">
+        <p class="text-muted">By registering, you agree to our 
+          <a href="#" class="text-decoration-none">Terms of Service</a> and 
+          <a href="#" class="text-decoration-none">Privacy Policy</a>.
+        </p>
+      </div>
     </form>
     <!-- Divider -->
 <div class="text-center my-3">
