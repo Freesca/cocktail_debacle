@@ -59,16 +59,16 @@ public class RecommendationService
             .Where(r => r.MatchCount > 0)
             .OrderByDescending(r => r.MatchCount)
             .ThenByDescending(r => r.Cocktail.FavoritedBy.Count)
-            .Take(12)
+            .Take(5)
             .ToListAsync();
 
-        if (ranked.Count < 12)
+        if (ranked.Count < 5)
         {
             var extra = await _context.Cocktails
                 .AsNoTracking()
                 .Where(c => !favoriteIds.Contains(c.IdDrink) && !ranked.Select(r => r.Cocktail.IdDrink).Contains(c.IdDrink))
                 .OrderByDescending(c => c.FavoritedBy.Count)
-                .Take(12 - ranked.Count)
+                .Take(5 - ranked.Count)
                 .ToListAsync();
 
             ranked.AddRange(extra.Select(c => new { Cocktail = c, MatchCount = 0 }));
