@@ -14,7 +14,7 @@
     
     <!-- Icona Cocktails -->
     <div class="col-12 d-flex align-items-center">
-      <button class="btn border-0 shadow-none mt-4 m-auto" ngbTooltip="Cocktails" placement="right" routerLink="/cocktails">
+      <button class="btn border-0 shadow-none mt-4 m-auto" ngbTooltip="Cocktails" placement="right" [class.active]="isActive('/cocktails')" routerLink="/cocktails">
         <svg *ngIf="isCocktails" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" style="width: 30px; height: 30px;">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3h10.5M6.75 3l1.5 15a1.5 1.5 0 001.49 1.35h4.52a1.5 1.5 0 001.49-1.35l1.5-15M6.75 3h10.5M8.25 8h7.5" />
         </svg>
@@ -29,7 +29,7 @@
 
     <!-- Icona Esplora -->
     <div class="col-12 d-flex align-items-center">
-      <button class="btn border-0 shadow-none mt-4 m-auto" ngbTooltip="Places" placement="right" routerLink="/places">
+      <button class="btn border-0 shadow-none mt-4 m-auto" ngbTooltip="Places" placement="right" [class.active]="isActive('/places')" routerLink="/places">
         <ng-icon [name]="isPlaces ? 'heroMapPinSolid' : 'heroMapPin'" style="width: 30px; height: 30px;"></ng-icon>
       </button>
     </div>

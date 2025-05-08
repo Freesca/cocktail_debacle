@@ -42,13 +42,26 @@ export class SearchBarComponent implements OnInit {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         this.checkIfHome();
+        this.updateModeBasedOnRoute();
       }
-    })
+    });
     this.loadCategories();
     this.loadIngredients();
     this.loadGlasses();
-
   }
+  
+  private updateModeBasedOnRoute(): void {
+    // Aggiorna la modalità in base alla rotta corrente
+    if (this.router.url.startsWith('/places')) {
+      this.selectedMode = 'places';
+      this.isCollapsed = true; // Nascondi i filtri in modalità places
+    } else if (this.router.url.startsWith('/cocktails')) {
+      this.selectedMode = 'cocktails';
+      this.isCollapsed = true; // I filtri rimangono chiusi anche in modalità cocktails
+    }
+  }
+  
+  
 
   
 
@@ -139,6 +152,7 @@ export class SearchBarComponent implements OnInit {
 
   toggleMode(): void {
     this.selectedMode = this.selectedMode === 'cocktails' ? 'places' : 'cocktails';
+    this.isCollapsed = this.selectedMode === 'places'; // Nascondi i filtri in modalità places
     this.onSearch();
   }
   

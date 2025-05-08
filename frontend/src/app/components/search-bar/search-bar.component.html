@@ -26,8 +26,9 @@
       [placeholder]="selectedMode === 'cocktails' ? 'Cerca cocktail...' : 'Cerca locali...'"
     />
 
-    <!-- Bottone per aprire i filtri -->
+    <!-- Bottone per aprire i filtri (solo se in modalità cocktail) -->
     <button
+      *ngIf="selectedMode === 'cocktails'"
       class="btn btn-filters"
       (click)="toggleFilters()"
       aria-expanded="false"
@@ -38,8 +39,8 @@
   </div>
 </div>
 
-<!-- Filtri (per cocktail o locali) -->
-<div *ngIf="!isCollapsed" class="filters card card-body">
+<!-- Filtri (solo per cocktail) -->
+<div *ngIf="!isCollapsed && selectedMode === 'cocktails'" class="filters card card-body">
   <div class="filter mb-2">
     <label for="category">Categoria</label>
     <select
@@ -85,4 +86,3 @@
     </select>
   </div>
 </div>
-

@@ -44,6 +44,7 @@ export class NavbarComponent {
   constructor(private authService: AuthService, private router: Router, public authModalService: AuthModalService) {}
 
   ngOnInit() {
+    this.updateIcons(this.router.url);
     this.authService.isLoggedIn().subscribe((isLoggedIn: boolean) => {
       this.isAuthenticated = isLoggedIn;
     });
@@ -61,13 +62,21 @@ export class NavbarComponent {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
-      this.isHome = event.urlAfterRedirects === '/';
-      this.isCocktails = event.urlAfterRedirects === '/cocktails';
-      // this.isCocktails = event.urlAfterRedirects.startsWith('/cocktail/');
-      this.isPlaces = event.urlAfterRedirects === '/places';
-      this.isAddReview = event.urlAfterRedirects === '/add-review';
-      this.isAddCocktail = event.urlAfterRedirects === '/add-cocktail';
+      this.updateIcons(event.url);
     });
+  }
+
+
+  isActive(route: string): boolean {
+    return this.router.url.startsWith(route);
+  }
+
+  updateIcons(url: string): void {
+    this.isHome = url === '/';
+    this.isCocktails = url.startsWith('/cocktails');
+    this.isPlaces = url.startsWith('/places');
+    this.isAddReview = url.startsWith('/add-review');
+    this.isAddCocktail = url.startsWith('/add-cocktail');
   }
 
   navigateToProfile() {
