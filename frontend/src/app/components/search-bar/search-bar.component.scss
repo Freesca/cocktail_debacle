@@ -33,13 +33,16 @@
     align-items: center;
     overflow: hidden;
     z-index: 30!important;
+    
 
     .search-input {
       flex: 1;
-      padding-left: 20px;
+      margin-left: 5px!important;
+      padding-left: 10px;
       border: none;
       height: 100%;
       outline: none;
+      box-shadow: none!important;
     }
 
     .switcher, .btn-filters {
