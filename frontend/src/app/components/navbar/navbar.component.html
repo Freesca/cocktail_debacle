@@ -70,8 +70,8 @@
       </button>
     
       <ul class="dropdown-menu show" [ngStyle]="{ display: showDropdown ? 'block' : 'none', top: '-70px', left: '100%' }" style="position: absolute;">
-        <li><a class="dropdown-item" (click)="navigateToProfile()">Profilo</a></li>
-        <li><hr class="dropdown-divider" /></li>
+        <li><a class="dropdown-item" (click)="navigateToProfile()">Profile</a></li>
+        <li><a class="dropdown-item" [routerLink]="'/settings'">Settings</a></li>
         <li><a class="dropdown-item" (click)="onLogout()">Logout</a></li>
       </ul>
     </div>

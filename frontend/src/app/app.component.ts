@@ -10,7 +10,7 @@ import { SearchBarComponent } from './components/search-bar/search-bar.component
   standalone: true,
   imports: [RouterModule, NavbarComponent, SearchBarComponent],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
   title = 'Cocktail Debacle';

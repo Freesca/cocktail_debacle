@@ -1,22 +1,17 @@
-import { Component, NgModule, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RouterModule, ActivatedRoute } from '@angular/router';
 import { UserImageComponent } from '../../components/user-image/user-image.component';
 import { AuthService } from '../../services/auth.service';
 import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { CocktailsGridComponent } from '../../components/cocktails-grid/cocktails-grid.component';
-import { FavouritesService } from '../../services/favourites.service';
 import { ReviewService } from '../../services/review.service';
 import { Review } from '../../services/review.service';
 import { ReviewCardComponent } from '../../components/review-card/review-card.component';
 import { SearchService } from '../../services/search.service';
 import { UserService } from '../../services/user.service';
-import { UpdateProfileDto, DeleteProfileDto } from '../../services/user.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { NgIcon } from '@ng-icons/core';
 
 
 @Component({
@@ -30,6 +25,7 @@ import { Router } from '@angular/router';
     ReviewCardComponent,
     NgbNavModule,
     CocktailsGridComponent,
+    NgIcon
   ],
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.scss']
@@ -37,10 +33,6 @@ import { Router } from '@angular/router';
 export class UserProfileComponent implements OnInit {
   username = '';
   email = '';
-  oldPassword = '';
-  newPassword = '';
-  consentData = false;
-  consentSuggestions = false;
   editMode = false;
   isAuthenticated = false;
   loading = false;
@@ -53,8 +45,6 @@ export class UserProfileComponent implements OnInit {
   isLoading = signal(true);
   activeId = 1; // Per il tab attivo
   profileForm!: FormGroup;
-  deletePassword = '';
-  confirmDelete = false;
 
   
   // Profile visibility controls
@@ -73,10 +63,7 @@ export class UserProfileComponent implements OnInit {
 
 
   constructor(
-    private router: Router,
-    private http: HttpClient, 
     private authService: AuthService, 
-    private favouritesService: FavouritesService,
     private route: ActivatedRoute,
     private reviewService: ReviewService,
     private searchService: SearchService,
@@ -135,18 +122,11 @@ export class UserProfileComponent implements OnInit {
       next: (res) => {
         this.username = res.userName;
         this.email = res.email;
-        this.consentData = res.consentData ?? false;
-        this.consentSuggestions = res.consentSuggestions ?? false;
         this.isLoading.set(false);
 
         this.profileForm = this.fb.group({
           username: [this.username, [Validators.required]],
           email: [this.email, [Validators.required, Validators.email]],
-          oldPassword: [''],
-          newPassword: [''],
-          confirmPassword: [''],
-          consentData: this.consentData,
-          consentSuggestions: this.consentSuggestions,
         });
       },
       error: (err) => {
@@ -162,64 +142,6 @@ export class UserProfileComponent implements OnInit {
       this.editMode = true;
     }
   }
-
-  updateProfile() {
-    if (!this.isOwnProfile) return;
-    if (this.profileForm.invalid) return;
-  
-    const oldUsername = this.username;  // Salva il vecchio username
-    const data: UpdateProfileDto = this.profileForm.value;
-  
-    this.userService.updateProfile(data).subscribe({
-      next: () => {
-        const newUsername = this.profileForm.get('username')?.value;
-        this.successMessage.set('Profile updated successfully!');
-        this.error.set('');
-        this.editMode = false;
-  
-        this.profileForm.patchValue({
-          oldPassword: '',
-          newPassword: '',
-          confirmPassword: ''
-        });
-  
-        // Redirect e reload
-        if (newUsername !== oldUsername) {
-          this.router.navigate(['/user', newUsername]).then(() => location.reload());
-        } else {
-          location.reload();
-        }
-      },
-      error: (err: any) => {
-        this.error.set(err?.error?.message || 'Error updating profile');
-        this.successMessage.set('');
-      }
-    });
-  }
-  
-
-  deleteAccount() {
-  
-    const dto: DeleteProfileDto = { password: this.deletePassword };
-    console.log('Deleting account with password:', this.deletePassword);
-    console.log('Dto:', dto);
-  
-    this.userService.deleteAccount(dto).subscribe({
-      next: () => {
-        this.successMessage.set('Profile deleted successfully!');
-  
-        // Esegui logout dell'utente
-        this.authService.logout();
-  
-        // Reindirizza alla home e ricarica completamente la pagina
-        this.router.navigate(['/']).then(() => location.reload());
-      },
-      error: (err: any) => {
-        this.error.set(err.error?.message || 'Error deleting profile');
-      },
-    });
-  }
-  
 
   loadUserReviews() {
     this.savedScrollY = window.scrollY;
