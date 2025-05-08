@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LoginFormComponent } from '../login-form/login-form.component';
 import { RegisterFormComponent } from '../register-form/register-form.component';
@@ -30,6 +30,7 @@ import {AuthModalService} from "../../services/auth-modal.service";
   styleUrl: './navbar.component.scss',
 })
 export class NavbarComponent {
+  @ViewChild('tooltip', { static: false }) tooltip!: NgbTooltip;
   isAuthenticated = false;
   showDropdown = false;
   showLoginForm = false;
@@ -79,6 +80,17 @@ export class NavbarComponent {
     this.isAddCocktail = url.startsWith('/add-cocktail');
   }
 
+  hideTooltipAndNavigate(tooltip: NgbTooltip, route: string): void {
+    this.hideTooltip(tooltip);
+    this.router.navigate([route]);
+  }
+
+  hideTooltip(tooltip: NgbTooltip): void {
+    if (tooltip.isOpen()) {
+      tooltip.close();
+    }
+  }
+
   navigateToProfile() {
     if (this.currentUsername) {
       this.router.navigate(['/profile', this.currentUsername]);
@@ -123,21 +135,5 @@ export class NavbarComponent {
         console.error('Errore durante il logout');
       }
     });
-  } 
-
-  handleAddReviewClick(): void {
-    if (!this.isAuthenticated) {
-      this.toggleLoginForm();              // apre/chiude la modale di login
-    } else {
-      this.router.navigate(['/add-review']);
-    }
-  }
-  
-  handleAddCocktailClick(): void {
-    if (!this.isAuthenticated) {
-      this.toggleLoginForm();              // idem
-    } else {
-      this.router.navigate(['/add-cocktail']);
-    }
   }
 }

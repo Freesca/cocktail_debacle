@@ -23,7 +23,6 @@
   }
 
   .input-group {
-    position: relative;
     max-width: 800px;
     width: 100%;
     border-radius: 30px;
@@ -33,6 +32,7 @@
     display: flex;
     align-items: center;
     overflow: hidden;
+    z-index: 30!important;
 
     .search-input {
       flex: 1;
@@ -64,21 +64,25 @@
     }
   }
 }
-
 .filters {
   position: absolute;
-  top: 10%;
+  top: 20px;
   left: 50%;
+  padding-top: 60px!important;
   transform: translateX(-50%);
   width: 100%;
   max-width: 800px;
   padding: 20px;
   background-color: #fff;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  z-index: 10;
+  z-index: 20!important;
+  border: none;
+  border-radius: 20px;
+
 
   .filter {
-    margin-bottom: 10px;
+    margin-bottom: 5px;
+    padding: 10px;
 
     label {
       font-weight: bold;
@@ -86,9 +90,8 @@
 
     select {
       width: 100%;
-      padding: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
+      border-radius: 30px;
     }
   }
 }
+
