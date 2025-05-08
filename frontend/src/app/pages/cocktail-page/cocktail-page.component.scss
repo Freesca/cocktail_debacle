@@ -9,8 +9,8 @@
   
   .top-section {
     display: flex;
-    gap: 30px;
-    align-items: flex-start;
+    align-items: stretch;
+    gap: 2rem;
   
     .cocktail-image img {
       width: 250px;
@@ -20,19 +20,12 @@
     }
   
     .cocktail-info {
-      flex: 1;
-  
-      h2 {
-        margin-top: 0;
-        margin-bottom: 15px;
-        font-size: 2rem;
-      }
-  
-      p {
-        margin: 5px 0;
-        font-size: 1rem;
-      }
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
+
+    
   }
   
   .bottom-section {
@@ -155,5 +148,17 @@
     color: #6c757d;
     font-size: 0.875rem;
   }
+
+  .created-by-link {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+  
+    &:hover,
+    &:focus {
+      text-decoration: underline;
+    }
+  }
+  
   
   

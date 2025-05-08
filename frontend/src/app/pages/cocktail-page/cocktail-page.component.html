@@ -1,20 +1,48 @@
 <div *ngIf="loading">Caricamento...</div>
 
 <div *ngIf="cocktail" class="cocktail-detail-container">
-  <div class="top-section">
+  <div class="top-section d-flex gap-4">
     <!-- Immagine -->
     <div class="cocktail-image">
       <img [src]="cocktail.strDrinkThumb" alt="{{ cocktail.strDrink }}" />
     </div>
-
-    <!-- Info principali -->
-    <div class="cocktail-info">
-      <h2>{{ cocktail.strDrink }}</h2>
-      <p><strong>Categoria:</strong> {{ cocktail.strCategory }}</p>
-      <p><strong>Alcolico:</strong> {{ cocktail.strAlcoholic }}</p>
-      <p><strong>Tipo di bicchiere:</strong> {{ cocktail.strGlass }}</p>
+  
+    <!-- Info + Created by incolonnati -->
+    <div class="cocktail-info d-flex flex-column">
+      <div class="info-main flex-grow-1">
+        <h2>{{ cocktail.strDrink }}</h2>
+        <p><strong>Categoria:</strong> {{ cocktail.strCategory }}</p>
+        <p><strong>Alcolico:</strong> {{ cocktail.strAlcoholic }}</p>
+        <p><strong>Tipo di bicchiere:</strong> {{ cocktail.strGlass }}</p>
+      </div>
+    
+      <p *ngIf="cocktail.userName" class="created-by mt-3 mb-0">
+        <strong>Created by:</strong>
+        <a [routerLink]="['/profile', cocktail.userName]" class="created-by-link">
+          {{ cocktail.userName }}
+        </a>
+      </p>
     </div>
+    
+  
+    <!-- Pulsante preferito -->
+    <button
+      class="favorite-icon-btn align-self-start"
+      style="background: none; border: none; padding: 0; margin-left: auto"
+      (click)="toggleFavorite(cocktail)">
+      <ng-icon
+        *ngIf="!cocktail.isFavorite"
+        name="heroBookmark"
+        style="width: 22px; height: 22px"
+      ></ng-icon>
+      <ng-icon
+        *ngIf="cocktail.isFavorite"
+        name="heroBookmarkSolid"
+        style="width: 22px; height: 22px"
+      ></ng-icon>
+    </button>
   </div>
+  
 
   <!-- Sezione inferiore: istruzioni e ingredienti -->
   <div class="bottom-section">

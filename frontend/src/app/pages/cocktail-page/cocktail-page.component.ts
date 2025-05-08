@@ -8,6 +8,11 @@ import { PlaceService } from '../../services/place.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { forkJoin, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
+import { AuthModalService } from '../../services/auth-modal.service';
+import { FavouritesService } from '../../services/favourites.service';
+import { AuthService } from '../../services/auth.service';
+import { NgIconsModule } from '@ng-icons/core';
+import { RouterModule } from '@angular/router';
 
 interface PlaceWithDetails extends PlaceReviewMetadata {
   name?: string;
@@ -21,7 +26,7 @@ interface PlaceWithDetails extends PlaceReviewMetadata {
 @Component({
   selector: 'app-cocktail-page',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, NgIconsModule, RouterModule],
   templateUrl: './cocktail-page.component.html',
   styleUrls: ['./cocktail-page.component.scss'],
 })
@@ -29,6 +34,7 @@ export class CocktailPageComponent implements OnInit {
   cocktail: any;
   loading = true;
   errorMessage = '';
+  loggedIn = false;
   
   // Place reviews related properties
   placeReviews: PlaceWithDetails[] = [];
@@ -42,10 +48,17 @@ export class CocktailPageComponent implements OnInit {
     private reviewService: ReviewService,
     private locationService: LocationService,
     private placeService: PlaceService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private authModalService: AuthModalService,
+    private favouritesService: FavouritesService,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
+    // Check if the user is logged in
+    this.authService.isLoggedIn().subscribe((loggedIn: boolean) => {
+      this.loggedIn = loggedIn;
+    });
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.cocktailService.getCocktailById(id).subscribe({
@@ -215,5 +228,24 @@ export class CocktailPageComponent implements OnInit {
     }
 
     return availableIngredients;
+  }
+
+  toggleFavorite(cocktail: any) {
+    if (!this.loggedIn) {
+      this.authModalService.open();
+      return;
+    }
+    cocktail.isFavorite = !cocktail.isFavorite;
+    if (cocktail.isFavorite) {
+      this.favouritesService.addFavourite(cocktail.idDrink).subscribe(
+        () => console.log('Cocktail added to favourites'),
+        (error) => console.error('Error adding cocktail to favorites', error)
+      );
+    } else {
+      this.favouritesService.removeFavourite(cocktail.idDrink).subscribe(
+        () => console.log('Cocktail added to favorites'),
+        (error) => console.error('Error adding cocktail to favorites', error)
+      );
+    }
   }
 }
