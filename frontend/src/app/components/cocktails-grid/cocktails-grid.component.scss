@@ -21,8 +21,19 @@ $cocktail-text-color: #fff;
 
 .cocktail-card {
   position: relative;
-  overflow: hidden;
+  width: 200px; /* Impostato a 100px di larghezza */
+  height: 200px; /* Impostato a 100px di altezza */
+  flex-shrink: 0;
+  flex-grow: 0;
   border-radius: $cocktail-radius;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
+  cursor: pointer;
+
+  &:hover {
+    transform: scale(1.05); /* Leggero ingrandimento all'hover */
+  }
 
   a.image-link {
     display: block;
