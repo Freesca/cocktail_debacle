@@ -25,7 +25,6 @@
       type="text"
       class="form-control search-input"
       [(ngModel)]="searchQuery"
-      (input)="onSearch()"
       (keyup.enter)="onSearch()"
       [placeholder]="selectedMode === 'cocktails' ? 'Cerca cocktail...' : 'Cerca locali...'"
     />

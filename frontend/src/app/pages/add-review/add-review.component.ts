@@ -182,20 +182,20 @@ export class AddReviewComponent implements OnInit {
 
   selectPlace(place: PlaceResult): void {
     this.selectedPlace = place;
-    
-    // Set place details for review
     this.newReview.googlePlaceId = place.place_id;
     this.newReview.placeName = place.name;
     
-    // Set coordinates if available
+    // Assegna il nome del locale all'input
+    this.placeSearchQuery = place.name;
+    
     if (place.geometry && place.geometry.location) {
       this.newReview.latitude = place.geometry.location.lat;
       this.newReview.longitude = place.geometry.location.lng;
     }
-    
-    // Load place photo if available
-    this.loadPlacePhoto(place);
+  
+    this.placeSearchResults = [];
   }
+  
 
   loadPlacePhoto(place: PlaceResult): void {
     if (place.photos && place.photos.length > 0) {
@@ -273,6 +273,11 @@ export class AddReviewComponent implements OnInit {
   selectCocktail(cocktail: any): void {
     this.selectedCocktail = cocktail;
     this.newReview.cocktailId = cocktail.idDrink;
+  
+    // Assegna il nome del cocktail all'input
+    this.cocktailSearchQuery = cocktail.strDrink;
+  
+    this.cocktailSearchResults = [];
   }
 
   // Review submission

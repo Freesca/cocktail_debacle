@@ -18,7 +18,7 @@ import { NgIconsModule } from '@ng-icons/core';
 })
 export class SearchBarComponent implements OnInit {
   isOnDiscoverSection: boolean = false;
-  isCollapsed: boolean = true;
+  isCollapsed: boolean = true; // I filtri sono nascosti di default
   searchQuery = '';
   selectedCategory = '';
   selectedIngredient = '';
@@ -50,7 +50,7 @@ export class SearchBarComponent implements OnInit {
     this.loadIngredients();
     this.loadGlasses();
   }
-  
+
   private updateModeBasedOnRoute(): void {
     // Aggiorna la modalità in base alla rotta corrente
     if (this.router.url.startsWith('/places')) {
@@ -61,10 +61,6 @@ export class SearchBarComponent implements OnInit {
       this.isCollapsed = true; // I filtri rimangono chiusi anche in modalità cocktails
     }
   }
-  
-  
-
-  
 
   private checkIfHome(): void {
     this.isHome = this.router.url === '/';
@@ -122,12 +118,17 @@ export class SearchBarComponent implements OnInit {
 
   onSearch() {
     this.isScrolled = true;
-  
+
+    // Verifica se il campo di ricerca è vuoto
+    if (!this.searchQuery.trim()) {
+      return;
+    }
+
     if (this.selectedMode === 'places') {
       // Aggiorniamo il servizio di ricerca con il nuovo valore
       this.searchService.setSearchQuery(this.searchQuery.trim());
-  
-      // Navigazione alla pagina dei luoghi senza duplicati
+
+      // Navigazione alla pagina dei luoghi solo se non siamo già su di essa
       if (this.router.url !== '/places') {
         this.router.navigate(['/places'], {
           queryParams: { q: this.searchQuery.trim() }
@@ -141,7 +142,7 @@ export class SearchBarComponent implements OnInit {
       this.searchService.setCategory(this.selectedCategory);
       this.searchService.setIngredient(this.selectedIngredient);
       this.searchService.setGlass(this.selectedGlass);
-  
+
       this.router.navigate(['/cocktails'], {
         queryParams: {
           q: this.searchQuery.trim(),
@@ -152,8 +153,6 @@ export class SearchBarComponent implements OnInit {
       });
     }
   }
-  
-  
 
   onEnterKey(event: KeyboardEvent) {
     if (event.key === 'Enter') {
@@ -161,14 +160,17 @@ export class SearchBarComponent implements OnInit {
     }
   }
 
+  // Cambia modalità senza eseguire subito la ricerca
   toggleMode(): void {
+    // Impediamo di aprire i filtri quando si cambia da 'places' a 'cocktails'
+    if (this.selectedMode === 'cocktails') {
+      this.isCollapsed = true; // I filtri sono nascosti
+    }
     this.selectedMode = this.selectedMode === 'cocktails' ? 'places' : 'cocktails';
-    this.isCollapsed = this.selectedMode === 'places'; // Nascondi i filtri in modalità places
-    this.onSearch();
   }
-  
+
+  // Toggle dei filtri: aperto o chiuso manualmente dall'utente
   toggleFilters() {
     this.isCollapsed = !this.isCollapsed;
   }
-
 }
