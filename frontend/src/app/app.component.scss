@@ -1,7 +1,13 @@
-.container-fluid {
+.main-container {
     padding: 0!important;
-    padding-left: 80px;
     margin-top: 50px;
     overflow-x: hidden;
     min-width: 400px;
+}
+
+@media (min-width: 768px)
+{   .main-container {
+        max-width: calc(100% - 80px);
+        margin-left: 80px;
+    }
 }

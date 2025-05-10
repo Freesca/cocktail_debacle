@@ -9,7 +9,6 @@
   padding: 20px;
   transition: all 0.3s ease;
   background-color: #f0f0f5;
-
   &.scrolled {
     top: 0;
     justify-content: center; /* Mantieni il centro */
@@ -98,3 +97,9 @@
   }
 }
 
+@media (min-width: 768px)
+{   .search-container {
+      width: calc(100% - 80px);
+      transform: translateX(calc(-50% + 40px));
+    }
+}
