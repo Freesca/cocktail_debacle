@@ -1,6 +1,6 @@
 .home-container {
   position: fixed;
-  height: 90vh;
+  height: 80vh;
   width: calc(100% - 80px);
   z-index: 1;
   display: flex;
@@ -16,8 +16,8 @@
     width: 30vw;
     height: 30vh;
     @media (min-width: 768px) {
-      width: 20vw;
-      height: 20vh;
+      width: 30vw;
+      height: 30vh;
     }
   
     @media (min-width: 1200px) {
@@ -27,13 +27,21 @@
   }
   
   .heroImage1 {
-    bottom: 130px;
-    left: 100px;
+    bottom: 20px;
+    left: 50px;
+    @media (min-width: 768px) {
+      bottom: 30px;
+      left: 100px;
+    }
   }
   
   .heroImage2 {
-    top: 150px;
+    top: 20px;
     right: 20px;
+    @media (min-width: 768px) {
+      top: 20px;
+      right: 20px;
+    }
   }
   
   

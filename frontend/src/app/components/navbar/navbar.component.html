@@ -89,18 +89,18 @@
 
 <!-- Overlay per il login -->
 <div *ngIf="authModalService.loginModal$ | async" class="overlay" (click)="toggleLoginForm()">
-  <div class="login-form-container position-relative" (click)="$event.stopPropagation()">
+  <div class="login-form-container position-relative px-5" (click)="$event.stopPropagation()">
     <app-login-form 
-    *ngIf="!showRegisterForm"
-    (loginSuccess)="onLoginSuccess()" 
-    (closeForm)="toggleLoginForm()"
-    (switchToRegister)="showRegisterForm = true">
-  </app-login-form>
-  <app-register-form
-    *ngIf="showRegisterForm"
-    (registerSuccess)="onRegisterSuccess()"
-    (closeForm)="toggleLoginForm()"
-    (switchToLogin)="showRegisterForm = false">
-  </app-register-form>
+      *ngIf="!showRegisterForm"
+      (loginSuccess)="onLoginSuccess()" 
+      (closeForm)="toggleLoginForm()"
+      (switchToRegister)="showRegisterForm = true">
+    </app-login-form>
+    <app-register-form
+      *ngIf="showRegisterForm"
+      (registerSuccess)="onRegisterSuccess()"
+      (closeForm)="toggleLoginForm()"
+      (switchToLogin)="showRegisterForm = false">
+    </app-register-form>
   </div>
 </div>
