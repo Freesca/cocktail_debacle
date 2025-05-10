@@ -4,9 +4,17 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   background-color: #f0f0f5;
   top: 0;
-  width: 80px;
+  max-width: 80px;
   height: 100vh;
+  &.btn {
+    display: flex;
+    align-items: center;
+  }
 }
+.gap {
+  gap: 10px;
+}
+
 .overlay {
   z-index: 100;
   position: fixed;
@@ -56,4 +64,73 @@
   background-color: none;
   border-radius: 20px;
   cursor: pointer;
+}
+
+
+@media screen and (max-width: 768px) {
+  .navbar {
+    max-width: 100%;
+    height: auto;
+    height: 70px!important;
+    top: auto!important;
+    bottom: 0!important;
+    left: 0!important;
+    right: 0!important;
+    padding: auto;
+    margin: 0!important;
+    flex-direction: row!important;
+    align-items: center;
+    display: flex!important;
+    justify-content:center!important;
+    flex-wrap: nowrap;
+    box-sizing: border-box!important;
+    .row {
+      flex-direction: row!important;
+      width: fit-content!important;
+      margin: 0!important;
+      box-sizing: border-box!important;
+      .col {
+        padding: auto!important;
+        margin: 0!important;
+        justify-content: center!important;
+      }
+    }
+    .logo,
+    .home-icon {
+      display: none!important;
+    }
+
+    .top-navbar {
+      flex-direction: row!important;
+      width: 80%!important;
+      .btn {
+        margin: 0!important;
+      }
+    }
+    .bottom-navbar {
+      flex-direction: row!important;
+      justify-content: center!important;
+      align-items: center!important;
+      width: 20%!important;
+      display: block!important;
+      .col {
+        justify-content: center!important;
+      }
+      .dropdown, .btn {
+        // border: 2px solid red!important;
+        transform: scale(0.85)!important;
+        margin-bottom: 4px!important;
+      }
+    }
+  }
+
+  .overlay {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .login-form-container {
+    width: 90%;
+  }
+  
 }
