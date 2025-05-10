@@ -1,6 +1,6 @@
 <nav class="navbar navbar-light d-flex flex-column position-fixed h-100 justify-content-between align-items-center container m-auto py-4">
  <!-- Top Navbar -->
-  <div class="row top-navbar">
+  <div class="row top-navbar flex-column justify-content-center align-items-center">
     <!-- Logo -->
     <div class="col d-flex justify-content-center align-items-center logo">
       <a [routerLink]="['/']">
@@ -14,14 +14,14 @@
     </div>
 
     <!-- Icona Home -->
-    <div class="col col-md-12 d-flex align-items-center home-icon">
+    <div class="col d-flex align-items-center home-icon">
       <button class="btn border-0 shadow-none mt-4 m-auto" #HomeTooltip="ngbTooltip" ngbTooltip="Home" placement="right" (click)="hideTooltipAndNavigate(HomeTooltip, '/')">
         <ng-icon [name]="isHome ? 'heroHomeSolid' : 'heroHome'" class="text-green-500" style="width: 30px; height: 30px"></ng-icon>
       </button>
     </div>
     
     <!-- Icona Cocktails -->
-    <div class="col col-md-12 d-flex align-items-center">
+    <div class="col d-flex align-items-center">
       <button class="btn border-0 shadow-none mt-4 m-auto" #cocktailsTooltip="ngbTooltip" ngbTooltip="Cocktails" placement="right" [class.active]="isActive('/cocktails')" (click)="hideTooltipAndNavigate(cocktailsTooltip, '/cocktails')">
         <svg *ngIf="isCocktails" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" style="width: 30px; height: 30px;">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3h10.5M6.75 3l1.5 15a1.5 1.5 0 001.49 1.35h4.52a1.5 1.5 0 001.49-1.35l1.5-15M6.75 3h10.5M8.25 8h7.5" />
@@ -36,21 +36,21 @@
 
 
     <!-- Icona Esplora -->
-    <div class="col col-md-12 d-flex align-items-center">
+    <div class="col d-flex align-items-center">
       <button class="btn border-0 shadow-none mt-4 m-auto" #placesTooltip="ngbTooltip" ngbTooltip="Places" placement="right" [class.active]="isActive('/places')" (click)="hideTooltipAndNavigate(placesTooltip, '/places')">
         <ng-icon [name]="isPlaces ? 'heroMapPinSolid' : 'heroMapPin'" style="width: 30px; height: 30px;"></ng-icon>
       </button>
     </div>
 
     <!-- Icona Aggiungi Recensione -->
-    <div class="col col-md-12 d-flex align-items-center">
+    <div class="col d-flex align-items-center">
       <button class="btn border-0 shadow-none mt-4 m-auto" #addReviewTooltip="ngbTooltip" ngbTooltip="Add review" placement="right" (click)="hideTooltipAndNavigate(addReviewTooltip, '/add-review')">
         <ng-icon [name]="isAddReview ? 'heroChatBubbleOvalLeftSolid' : 'heroChatBubbleOvalLeft'" class="text-green-500" style="width: 30px; height: 30px"></ng-icon>
       </button>
     </div>
 
     <!-- Icona Aggiungi Drink -->
-    <div class="col col-md-12 d-flex align-items-center">
+    <div class="col d-flex align-items-center">
       <button class="btn border-0 shadow-none mt-4 m-auto" #addCocktailTooltip="ngbTooltip" ngbTooltip="Add cocktail" placement="right" (click)="hideTooltipAndNavigate(addCocktailTooltip, '/add-cocktail')">
         <ng-icon [name]="isAddCocktail ? 'heroPlusCircleSolid' : 'heroPlusCircle'" class="text-green-500" style="width: 30px; height: 30px"></ng-icon>
       </button>
@@ -89,7 +89,7 @@
 
 <!-- Overlay per il login -->
 <div *ngIf="authModalService.loginModal$ | async" class="overlay" (click)="toggleLoginForm()">
-  <div class="login-form-container position-relative px-5" (click)="$event.stopPropagation()">
+  <div class="card position-relative px-5" (click)="$event.stopPropagation()">
     <app-login-form 
       *ngIf="!showRegisterForm"
       (loginSuccess)="onLoginSuccess()" 

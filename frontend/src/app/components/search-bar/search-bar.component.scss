@@ -97,8 +97,13 @@
   }
 }
 
-@media (min-width: 768px)
-{   .search-container {
+@media (min-width: 769px)
+{  
+  .search-bar {
+    max-width: 100%!important;
+    flex: 0 0 100%!important;
+  }
+  .search-container {
       width: calc(100% - 80px);
       transform: translateX(calc(-50% + 40px));
       .logo {
