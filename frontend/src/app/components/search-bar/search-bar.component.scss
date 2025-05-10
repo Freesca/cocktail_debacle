@@ -101,5 +101,8 @@
 {   .search-container {
       width: calc(100% - 80px);
       transform: translateX(calc(-50% + 40px));
+      .logo {
+        display: none!important;
+      }
     }
 }

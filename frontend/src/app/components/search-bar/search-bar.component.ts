@@ -2,17 +2,16 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { CocktailService } from '../../services/cocktails.service';
 import { SearchService } from '../../services/search.service';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PlaceService } from '../../services/place.service';
 import { NgIconsModule } from '@ng-icons/core';
 
-
 @Component({
   selector: 'app-search-bar',
   standalone: true,
-  imports: [FormsModule, CommonModule,  NgIconsModule],
+  imports: [FormsModule, CommonModule,  NgIconsModule, RouterModule],
   templateUrl: './search-bar.component.html',
   styleUrls: ['./search-bar.component.scss'],
 })
