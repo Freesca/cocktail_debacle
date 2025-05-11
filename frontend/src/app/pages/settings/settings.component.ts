@@ -3,14 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { UserService, UpdateProfileDto, DeleteProfileDto } from '../../services/user.service';
 import { ReactiveFormsModule } from '@angular/forms';
+import { RouterModule, Router } from '@angular/router';
 
 @Component({
   selector: 'app-settings',
-  imports: [ CommonModule, FormsModule, NgIf, ReactiveFormsModule ],
+  imports: [ CommonModule, FormsModule, NgIf, ReactiveFormsModule, RouterModule],
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss']
 })
@@ -27,6 +27,7 @@ export class SettingsComponent implements OnInit {
   profileForm!: FormGroup;
   deletePassword = '';
   confirmDelete = false;
+  currentUsername = '';
 
   isOwnProfile = false;
   profileUsername = '';
@@ -41,6 +42,13 @@ export class SettingsComponent implements OnInit {
 
   ngOnInit() {
     this.loadOwnProfileDetails();
+
+    // Get current username for profile navigation
+    this.authService.userInfo$.subscribe(userInfo => {
+      if (userInfo) {
+        this.currentUsername = userInfo.username;
+      }
+    });
   }
 
   enableEdit() {

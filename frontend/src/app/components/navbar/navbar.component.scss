@@ -32,7 +32,7 @@
 /* Il form di login sarà centrato nell'overlay */
 .card {
   z-index: 500;
-  background-color: white;
+  background-color: #f0f0f5;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0.4, 0.4, 0.4, 0.4);
@@ -61,6 +61,7 @@
   border: none;
   border-radius: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background: #f8f9fa;
 }
 
 .dropdown-item {
@@ -86,6 +87,7 @@
     justify-content:center!important;
     flex-wrap: nowrap;
     box-sizing: border-box!important;
+    box-shadow: 0 -4px 20px -10px rgba(0, 0, 0, 0.1)!important;
     .row {
       flex-direction: row!important;
       width: fit-content!important;
@@ -154,5 +156,15 @@
     overflow: scroll!important;
     max-height: 100%!important;
     margin-bottom: 70px!important;
+    max-width: 100%!important;
+    border-radius: 0!important;
   }
 }
+
+@media screen and (max-width: 768px) {
+  .dropdown-menu {
+    top: -140px!important;
+    left: -110px!important;
+  }
+}
+  
