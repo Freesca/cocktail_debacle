@@ -54,7 +54,12 @@ export class ReviewService {
   private reviewsUrl = '/api/reviews';
   private _reviewModal$ = new BehaviorSubject<boolean>(false);
 
+  private cocktailName = new BehaviorSubject<string>('');
+  private placeName = new BehaviorSubject<string>('');
+  
   reviewModal$ = this._reviewModal$.asObservable();
+  cocktailName$ = this.cocktailName.asObservable();
+  placeName$ = this.placeName.asObservable();
 
   constructor(private http: HttpClient) { }
 
@@ -125,4 +130,20 @@ export class ReviewService {
   open()  { this._reviewModal$.next(true); }
   close() { this._reviewModal$.next(false); }
   toggle() { this._reviewModal$.next(!this._reviewModal$.value); }
+
+  setCocktailName(name: string): void {
+    this.cocktailName.next(name);
+  }
+ 
+  getCocktailName(): string {
+    return this.cocktailName.value;
+  }
+
+  setPlaceName(name: string): void {
+    this.placeName.next(name);
+  }
+
+  getPlaceName(): string {
+    return this.placeName.value;
+  }
 }

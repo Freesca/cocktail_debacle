@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CocktailService } from '../../services/cocktails.service';
 import { CommonModule } from '@angular/common';
@@ -80,7 +80,8 @@ export class CocktailPageComponent implements OnInit {
     }
   }
 
-  openAddReview(): void {
+  openAddReview(cocktailName: string): void {
+    this.reviewService.setCocktailName(cocktailName);
     this.reviewService.toggle();
   }
 

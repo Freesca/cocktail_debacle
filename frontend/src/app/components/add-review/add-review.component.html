@@ -11,7 +11,7 @@
     <!-- Luogo da selezionare -->
     <div class="input-group">
       <label for="place">Place:</label>
-      <input type="text" id="place" [(ngModel)]="placeSearchQuery" (input)="onPlaceSearchInput()" placeholder="Search a place..." />
+      <input type="text" id="place" [(ngModel)]="placeSearchQuery" [(ngModel)]="placeName" (input)="onPlaceSearchInput()" placeholder="Search a place..." />
       <div *ngIf="placeSearchResults.length > 0" class="place-list">
         <div class="place-item" *ngFor="let place of placeSearchResults" 
              (click)="selectPlace(place)" 
@@ -24,7 +24,7 @@
     <!-- Cocktail da selezionare -->
     <div class="input-group">
       <label for="cocktail">Cocktail:</label>
-      <input type="text" id="cocktail" [(ngModel)]="cocktailSearchQuery" (input)="onCocktailSearchInput()" placeholder="Search a cocktail.." />
+      <input type="text" id="cocktail" [(ngModel)]="cocktailSearchQuery" [(ngModel)]="cocktailName" (input)="onCocktailSearchInput()" placeholder="Search a cocktail.." />
       <div *ngIf="cocktailSearchResults.length > 0" class="cocktail-list">
         <div class="cocktail-item" *ngFor="let cocktail of cocktailSearchResults" 
              (click)="selectCocktail(cocktail)" 
