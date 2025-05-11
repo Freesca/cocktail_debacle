@@ -118,11 +118,6 @@ export class SearchBarComponent implements OnInit {
   onSearch() {
     this.isScrolled = true;
 
-    // Verifica se il campo di ricerca è vuoto
-    if (!this.searchQuery.trim()) {
-      return;
-    }
-
     if (this.selectedMode === 'places') {
       // Aggiorniamo il servizio di ricerca con il nuovo valore
       this.searchService.setSearchQuery(this.searchQuery.trim());
