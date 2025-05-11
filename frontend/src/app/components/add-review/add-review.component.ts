@@ -47,6 +47,7 @@ export class AddReviewComponent implements OnInit {
   cocktailName: string = '';
   placeName: string = '';
 
+  @Output() oneviewSuccess = new EventEmitter<boolean>();
   @Output() closeForm = new EventEmitter<void>();  // Evento per chiudere il form
 
   // Review form
@@ -305,9 +306,10 @@ export class AddReviewComponent implements OnInit {
       next: (response) => {
         this.submittingReview = false;
         this.reviewSuccess = true;
-        
+
         // Navigate to the review page after successful submission
         setTimeout(() => {
+          this.reviewService.close();
           this.router.navigate(['/reviews', this.selectedPlace?.place_id, this.selectedCocktail?.idDrink]);
         }, 2000);
       },
@@ -329,6 +331,6 @@ export class AddReviewComponent implements OnInit {
   }
 
   closeAddReview() {
-    this.closeForm.emit();  // Evento per chiudere il form
+    this.reviewService.close();
   }
 } 

@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LoginFormComponent } from '../login-form/login-form.component';
 import { RegisterFormComponent } from '../register-form/register-form.component';
@@ -113,13 +113,13 @@ export class NavbarComponent {
 
   toggleAddReview(): void {
     this.reviewService.toggle(); // Mostra il modal
-    this.showAddReview = !this.showAddReview;
-    this.showAddReview = false;
     this.isAddReview = !this.isAddReview;
+    this.showAddReview = false;
   }
 
-    closeOverlay(): void {
+  onReviewSuccess() {
     this.showAddReview = false;
+    this.reviewService.close();
   }
 
   onLoginSuccess() {

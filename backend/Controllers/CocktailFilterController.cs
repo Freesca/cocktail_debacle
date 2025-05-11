@@ -1,3 +1,9 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using backend.Data;
+
+namespace backend.Controllers;
+
 [ApiController]
 [Route("api/cocktails")]
 public class CocktailFilterController : ControllerBase

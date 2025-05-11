@@ -52,10 +52,6 @@
       <textarea id="comment" [(ngModel)]="newReview.comment" placeholder="Add a description..."></textarea>
     </div>
 
-    <!-- Errori e Successo -->
-    <div *ngIf="reviewError" class="error">{{ reviewError }}</div>
-    <div *ngIf="reviewSuccess" class="success">Review sent correctly!!</div>
-
     <!-- Pulsanti -->
     <div class="actions">
       <button (click)="submitReview()" [disabled]="submittingReview" class="submit-btn">
@@ -64,3 +60,7 @@
     </div>
   </div>
 </div>
+
+<!-- Errori e Successo -->
+<div *ngIf="reviewError" class="error d-flex justify-content-center align-items-center">{{ reviewError }}</div>
+<div *ngIf="reviewSuccess" class="succes justify-content-center align-items-center">Review sent correctly!!</div>
