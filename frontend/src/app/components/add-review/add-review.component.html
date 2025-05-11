@@ -1,6 +1,6 @@
 <div *ngIf="!reviewSuccess">
   <div class="review-card">
-    <h2>Lascia una recensione</h2>
+    <h2 class="mb-4">Leave a review</h2>
       <!-- Pulsante X -->
     <button 
         class="x-button position-absolute top-0 end-0 m-2 border-0 bg-transparent" 
@@ -10,8 +10,8 @@
     </button>
     <!-- Luogo da selezionare -->
     <div class="input-group">
-      <label for="place">Luogo:</label>
-      <input type="text" id="place" [(ngModel)]="placeSearchQuery" (input)="onPlaceSearchInput()" placeholder="Cerca un luogo..." />
+      <label for="place">Place:</label>
+      <input type="text" id="place" [(ngModel)]="placeSearchQuery" (input)="onPlaceSearchInput()" placeholder="Search a place..." />
       <div *ngIf="placeSearchResults.length > 0" class="place-list">
         <div class="place-item" *ngFor="let place of placeSearchResults" 
              (click)="selectPlace(place)" 
@@ -24,7 +24,7 @@
     <!-- Cocktail da selezionare -->
     <div class="input-group">
       <label for="cocktail">Cocktail:</label>
-      <input type="text" id="cocktail" [(ngModel)]="cocktailSearchQuery" (input)="onCocktailSearchInput()" placeholder="Cerca un cocktail..." />
+      <input type="text" id="cocktail" [(ngModel)]="cocktailSearchQuery" (input)="onCocktailSearchInput()" placeholder="Search a cocktail.." />
       <div *ngIf="cocktailSearchResults.length > 0" class="cocktail-list">
         <div class="cocktail-item" *ngFor="let cocktail of cocktailSearchResults" 
              (click)="selectCocktail(cocktail)" 
@@ -36,7 +36,7 @@
 
     <!-- Voto con stelline -->
     <div class="rating">
-      <label for="rating">Voto:</label>
+      <label for="rating">Rating:</label>
       <div class="stars">
         <span *ngFor="let star of ratingOptions; let i = index" 
               [ngClass]="{'selected': newReview.rating > i}" 
@@ -48,18 +48,18 @@
 
     <!-- Commento -->
     <div class="input-group">
-      <label for="comment">Commento:</label>
-      <textarea id="comment" [(ngModel)]="newReview.comment" placeholder="Aggiungi un commento..."></textarea>
+      <label for="comment">Description:</label>
+      <textarea id="comment" [(ngModel)]="newReview.comment" placeholder="Add a description..."></textarea>
     </div>
 
     <!-- Errori e Successo -->
     <div *ngIf="reviewError" class="error">{{ reviewError }}</div>
-    <div *ngIf="reviewSuccess" class="success">Recensione inviata con successo!</div>
+    <div *ngIf="reviewSuccess" class="success">Review sent correctly!!</div>
 
     <!-- Pulsanti -->
     <div class="actions">
       <button (click)="submitReview()" [disabled]="submittingReview" class="submit-btn">
-        {{ submittingReview ? 'Inviando...' : 'Invia Recensione' }}
+        {{ submittingReview ? 'Sending...' : 'Send review' }}
       </button>
     </div>
   </div>

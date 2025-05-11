@@ -11,7 +11,7 @@
       
         <ng-template #placeCocktailLink>
           <a [routerLink]="['/reviews', review.googlePlaceId, review.cocktailId]" class="d-flex flex-column clickable text-decoration-none">
-            <h5 class="card-title mb-0 clickable">{{ review.name || 'Unknown Place' }}</h5>
+            <h5 class="card-title mb-3 clickable">{{ review.name || 'Unknown Place' }}</h5>
             <h6 class="card-subtitle mb-0 text-muted">{{ review.strDrink || 'Unknown Cocktail' }}</h6>
           </a>
         </ng-template>

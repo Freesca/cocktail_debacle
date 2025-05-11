@@ -80,7 +80,6 @@ export class NavbarComponent {
     this.isHome = url === '/';
     this.isCocktails = url.startsWith('/cocktails');
     this.isPlaces = url.startsWith('/places');
-    this.isAddReview = url.startsWith('/add-review');
     this.isAddCocktail = url.startsWith('/add-cocktail');
   }
 
@@ -116,6 +115,7 @@ export class NavbarComponent {
     this.reviewService.toggle(); // Mostra il modal
     this.showAddReview = !this.showAddReview;
     this.showAddReview = false;
+    this.isAddReview = !this.isAddReview;
   }
 
     closeOverlay(): void {
