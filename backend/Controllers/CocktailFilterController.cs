@@ -1,9 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using backend.Data;
-
-namespace backend.Controllers;
-
 [ApiController]
 [Route("api/cocktails")]
 public class CocktailFilterController : ControllerBase
@@ -19,13 +13,17 @@ public class CocktailFilterController : ControllerBase
     [HttpGet("categories")]
     public async Task<ActionResult<IEnumerable<string>>> GetCategories()
     {
-        var categories = await _context.Cocktails
+        var raw = await _context.Cocktails
             .AsNoTracking()
-            .Where(c => !string.IsNullOrEmpty(c.StrCategory))
-            .Select(c => c.StrCategory!)
+            .Where(c => !string.IsNullOrWhiteSpace(c.StrCategory))
+            .Select(c => c.StrCategory!.Trim().ToLowerInvariant())
+            .ToListAsync();
+
+        var categories = raw
             .Distinct()
             .OrderBy(c => c)
-            .ToListAsync();
+            .Select(c => char.ToUpper(c[0]) + c.Substring(1))
+            .ToList();
 
         return Ok(categories);
     }
@@ -47,9 +45,10 @@ public class CocktailFilterController : ControllerBase
         var ingredients = ingredientLists
             .SelectMany(i => i)
             .Where(i => !string.IsNullOrWhiteSpace(i))
-            .Select(i => i!.Trim())
+            .Select(i => i!.Trim().ToLowerInvariant())
             .Distinct()
             .OrderBy(i => i)
+            .Select(i => char.ToUpper(i[0]) + i.Substring(1))
             .ToList();
 
         return Ok(ingredients);
@@ -59,13 +58,17 @@ public class CocktailFilterController : ControllerBase
     [HttpGet("glasses")]
     public async Task<ActionResult<IEnumerable<string>>> GetGlasses()
     {
-        var glasses = await _context.Cocktails
+        var raw = await _context.Cocktails
             .AsNoTracking()
-            .Where(c => !string.IsNullOrEmpty(c.StrGlass))
-            .Select(c => c.StrGlass!)
+            .Where(c => !string.IsNullOrWhiteSpace(c.StrGlass))
+            .Select(c => c.StrGlass!.Trim().ToLowerInvariant())
+            .ToListAsync();
+
+        var glasses = raw
             .Distinct()
             .OrderBy(g => g)
-            .ToListAsync();
+            .Select(g => char.ToUpper(g[0]) + g.Substring(1))
+            .ToList();
 
         return Ok(glasses);
     }
