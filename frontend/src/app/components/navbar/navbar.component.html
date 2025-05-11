@@ -44,7 +44,7 @@
 
     <!-- Icona Aggiungi Recensione -->
     <div class="col d-flex align-items-center">
-      <button class="btn border-0 shadow-none mt-4 m-auto" #addReviewTooltip="ngbTooltip" ngbTooltip="Add review" placement="right" (click)="hideTooltipAndNavigate(addReviewTooltip, '/add-review')">
+      <button class="btn border-0 shadow-none mt-4 m-auto" #addReviewTooltip="ngbTooltip" ngbTooltip="Add review" placement="right" (click)="toggleAddReview(); hideTooltip(addReviewTooltip)">
         <ng-icon [name]="isAddReview ? 'heroChatBubbleOvalLeftSolid' : 'heroChatBubbleOvalLeft'" class="text-green-500" style="width: 30px; height: 30px"></ng-icon>
       </button>
     </div>
@@ -102,5 +102,13 @@
       (closeForm)="toggleLoginForm()"
       (switchToLogin)="showRegisterForm = false">
     </app-register-form>
+  </div>
+</div>
+
+<!-- Overlay per il login -->
+<div *ngIf="reviewService.reviewModal$ | async" class="overlay" (click)="toggleAddReview()">
+  <div class="card position-relative px-5" (click)="$event.stopPropagation()">
+    <app-add-review *ngIf="!showAddReview" (closeForm)="toggleAddReview()">
+    </app-add-review>
   </div>
 </div>

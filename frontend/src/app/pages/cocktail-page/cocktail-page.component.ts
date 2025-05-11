@@ -80,6 +80,10 @@ export class CocktailPageComponent implements OnInit {
     }
   }
 
+  openAddReview(): void {
+    this.reviewService.toggle();
+  }
+
   loadNearbyPlaces(cocktailId: string) {
     this.reviewsLoading = true;
     

@@ -53,14 +53,14 @@
 
   <!-- Sezione inferiore: istruzioni e ingredienti -->
   <div class="bottom-section">
-    <div class="cocktail-instructions">
+    <div class="custom-card cocktail-instructions">
       <h3>Instructions</h3>
       <p class="text-muted">{{ cocktail.strInstructions }}</p>
     </div>
 
-    <div class="cocktail-ingredients">
+    <div class="custom-card">
       <h3>Ingredients</h3>
-      <ul class="ingredient-list">
+      <ul class="ingredient-list cocktail-ingredients">
         <!-- Genera i dots in base al numero di ingredienti -->
         <li *ngFor="let i of getIngredientDots()">
           <ng-container *ngIf="cocktail['strIngredient' + i]">
@@ -73,10 +73,16 @@
       </ul>      
     </div>
   </div>
+
+
   
   <!-- Places Reviews Section -->
-  <div class="places-section mt-5">
-    <h3 class="text-center mb-4">Where to find this cocktail near you</h3>
+  <div class="places-section container gap-5 mt-5">
+    <h3 class="text-center mb-4">Where to find this cocktail near you
+        <button class="btn btn-sm btn-outline-primary" (click)="openAddReview()">
+          Leave a review
+        </button>
+    </h3>
     
     <!-- Location error message -->
     <div *ngIf="locationError" class="alert alert-warning my-3">
@@ -136,6 +142,7 @@
         </div>
       </div>
     </div>
+
   </div>
 </div>
 

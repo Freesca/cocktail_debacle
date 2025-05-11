@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+
 
 export interface CocktailReviewMetadata {
   cocktailId: string;
@@ -51,6 +52,9 @@ export interface ReviewUpdateDto {
 export class ReviewService {
   private apiUrl = '/api/reviews/metadata';
   private reviewsUrl = '/api/reviews';
+  private _reviewModal$ = new BehaviorSubject<boolean>(false);
+
+  reviewModal$ = this._reviewModal$.asObservable();
 
   constructor(private http: HttpClient) { }
 
@@ -117,4 +121,8 @@ export class ReviewService {
       withCredentials: true
     });
   }
+  
+  open()  { this._reviewModal$.next(true); }
+  close() { this._reviewModal$.next(false); }
+  toggle() { this._reviewModal$.next(!this._reviewModal$.value); }
 }

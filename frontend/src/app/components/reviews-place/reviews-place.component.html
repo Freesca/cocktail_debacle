@@ -1,6 +1,10 @@
     <!-- Cocktail Reviews Section -->
     <div class="cocktail-reviews mt-5">
-        <h3 class="text-center mb-4">Cocktails reviewed at this place</h3>
+        <h3 class="text-center mb-4">Cocktails reviewed at this place
+          <button class="btn btn-sm btn-outline-primary" (click)="openAddReview()">
+            Leave a review
+          </button>
+        </h3>
         
         <!-- Loading indicator for reviews -->
         <div *ngIf="reviewsLoading" class="text-center py-3">

@@ -7,6 +7,11 @@
   align-items: center;
   justify-content: center;
   text-align: center;
+
+  .text-shadow {
+    text-shadow: 2px 2px 8px #fff;
+  }
+
   .heroImage1, .heroImage2 {
     position: absolute;
     object-fit: cover;
@@ -28,10 +33,10 @@
   
   .heroImage1 {
     bottom: 20px;
-    left: 50px;
+    left: 30px;
     @media (min-width: 768px) {
       bottom: 30px;
-      left: 100px;
+      left: 20px;
     }
   }
   

@@ -10,6 +10,8 @@ import { UserImageComponent } from '../user-image/user-image.component'; // Aggi
 import { filter } from 'rxjs/operators';
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import {AuthModalService} from "../../services/auth-modal.service";
+import { AddReviewComponent } from '../add-review/add-review.component';
+import { ReviewService } from '../../services/review.service';
 
 
 @Component({
@@ -23,7 +25,8 @@ import {AuthModalService} from "../../services/auth-modal.service";
     RegisterFormComponent,
     NgbDropdownModule,
     UserImageComponent, // Aggiungi il componente UserImage
-    NgbTooltip
+    NgbTooltip,
+    AddReviewComponent
 ],
   providers: [AuthService],
   templateUrl: './navbar.component.html',
@@ -41,8 +44,9 @@ export class NavbarComponent {
   isPlaces = false;
   isAddReview = false;
   isAddCocktail = false;
+  showAddReview = false;
 
-  constructor(private authService: AuthService, private router: Router, public authModalService: AuthModalService) {}
+  constructor(private authService: AuthService, private router: Router, public authModalService: AuthModalService, public reviewService: ReviewService) {}
 
   ngOnInit() {
     this.updateIcons(this.router.url);
@@ -106,6 +110,16 @@ export class NavbarComponent {
 
   toggleDropdown() {
     this.showDropdown = !this.showDropdown;
+  }
+
+  toggleAddReview(): void {
+    this.reviewService.toggle(); // Mostra il modal
+    this.showAddReview = !this.showAddReview;
+    this.showAddReview = false;
+  }
+
+    closeOverlay(): void {
+    this.showAddReview = false;
   }
 
   onLoginSuccess() {

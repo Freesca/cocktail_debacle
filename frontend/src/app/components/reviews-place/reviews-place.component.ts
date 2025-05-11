@@ -36,6 +36,10 @@ export class ReviewsPlaceComponent implements OnInit {
     this.loadCocktailReviews();
   }
 
+  openAddReview(): void {
+    this.reviewService.toggle();
+  }
+
   loadCocktailReviews(): void {
     this.reviewsLoading = true;
 
