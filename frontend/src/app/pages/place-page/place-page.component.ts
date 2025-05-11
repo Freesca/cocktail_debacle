@@ -22,6 +22,7 @@ export class PlacePageComponent implements OnInit {
   photoUrl: SafeUrl | null = null;
   photoLoading: boolean = false;
   fallbackImage: string = '/assets/images/notFoundB.png';
+  placeName: string = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -44,6 +45,7 @@ export class PlacePageComponent implements OnInit {
         next: (response) => {
           if (response.status === 'OK') {
             this.place = response.result;
+            this.placeName = this.place?.name || '';
             this.loading = false;
             this.loadPlacePhoto();
           } else {

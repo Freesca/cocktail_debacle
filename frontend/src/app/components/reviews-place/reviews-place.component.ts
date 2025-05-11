@@ -22,6 +22,7 @@ interface CocktailReviewWithDetails extends CocktailReviewMetadata {
 })
 export class ReviewsPlaceComponent implements OnInit {
   @Input() placeId!: string;
+  @Input() placeName!: string;
 
   reviewsLoading = false;
   cocktailReviews: CocktailReviewWithDetails[] = [];
@@ -36,7 +37,8 @@ export class ReviewsPlaceComponent implements OnInit {
     this.loadCocktailReviews();
   }
 
-  openAddReview(): void {
+  openAddReview(placeName: string): void {
+    this.reviewService.setPlaceName(placeName);
     this.reviewService.toggle();
   }
 

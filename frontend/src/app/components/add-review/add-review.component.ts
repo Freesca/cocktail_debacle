@@ -44,6 +44,9 @@ export class AddReviewComponent implements OnInit {
   selectedCocktail: any | null = null;
   placePhotoUrl: SafeUrl | null = null;
 
+  cocktailName: string = '';
+  placeName: string = '';
+
   @Output() closeForm = new EventEmitter<void>();  // Evento per chiudere il form
 
   // Review form
@@ -73,6 +76,8 @@ export class AddReviewComponent implements OnInit {
 
   ngOnInit(): void {
     // Set up debounced place search
+    this.placeName = this.reviewService.getPlaceName();
+    this.cocktailName = this.reviewService.getCocktailName();
     this.placeSearchQuerySubject.pipe(
       debounceTime(500),
       distinctUntilChanged()
