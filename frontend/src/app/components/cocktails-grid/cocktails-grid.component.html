@@ -4,7 +4,11 @@
   </div>
 </div>
 
-<div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+<div class="row">
+  <div class="col-12 my-3 text-center">
+    <div *ngIf="errorMessage" class="error text-muted">{{ errorMessage }}</div>
+  </div>
+</div>
 
 <div 
   class="cocktail-grid" 

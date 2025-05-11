@@ -73,14 +73,12 @@ export class CocktailsGridComponent implements OnInit, OnDestroy {
     }
   }
 
-
   subscribeToSearch() {
     this.searchSub = this.searchService.searchQuery$.subscribe(() => this.applySearchFilter());
     this.categorySub = this.searchService.category$.subscribe(() => this.applySearchFilter());
     this.ingredientSub = this.searchService.ingredient$.subscribe(() => this.applySearchFilter());
     this.glassSub = this.searchService.glass$.subscribe(() => this.applySearchFilter());
   }
-
 
   fetchAllCocktails() {
     this.loading = true;
@@ -92,6 +90,7 @@ export class CocktailsGridComponent implements OnInit, OnDestroy {
     fetchFn.subscribe(
       (data) => {
         // Mappa i cocktail e marca i recommended
+        
         this.cocktails = data.map((cocktail) => ({
           ...cocktail,
           popularity: cocktail.popularity || 0,
@@ -99,6 +98,13 @@ export class CocktailsGridComponent implements OnInit, OnDestroy {
           isFavorite: false,
           isRecommended: this.recommended?.some(r => r.idDrink === cocktail.idDrink) || false
         }));
+
+        console.log('Cocktails:', this.cocktails);
+        console.log('Cocktails:', this.cocktails.length);
+        
+        if (this.cocktails.length < 1) {
+          this.errorMessage = 'Nessun cocktail trovato';
+        }
   
         // Aggiungi info preferiti
         if (this.favoriteUsername) {
@@ -132,7 +138,6 @@ export class CocktailsGridComponent implements OnInit, OnDestroy {
     );
   }
   
-  
   applySearchFilter() {
     const query = this.searchService.searchQueryValue.trim().toLowerCase();
     const category = this.searchService.categoryValue.toLowerCase();
@@ -155,6 +160,15 @@ export class CocktailsGridComponent implements OnInit, OnDestroy {
   
       return nameMatch && categoryMatch && ingredientMatch && glassMatch && favoritesMatch;
     });
+
+    console.log('Cocktails:', this.filteredCocktails);
+    console.log('Cocktails:', this.filteredCocktails.length);
+    
+    if (this.filteredCocktails.length < 1) {
+      this.errorMessage = 'No cocktails found';
+    } else {
+      this.errorMessage = '';
+    }
   
     this.sortCocktails();
     this.resetPagination();
@@ -189,8 +203,6 @@ export class CocktailsGridComponent implements OnInit, OnDestroy {
     // 3️⃣ caso normale: ordina solo col comparatore scelto
     this.filteredCocktails.sort(secondaryCompare);
   }
-  
-
 
   resetPagination() {
     this.currentIndex = 0;

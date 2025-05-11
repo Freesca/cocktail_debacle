@@ -20,39 +20,21 @@ export class CocktailService {
     return this.http.get<any>(`${this.apiUrl}/${id}`);
   }
 
-  // Estrae le categorie uniche
+ // Estrae le categorie uniche
   getCategories(): Observable<string[]> {
-    return this.getAllCocktails().pipe(
-      map((cocktails) =>
-        [...new Set(cocktails.map((c) => c.strCategory).filter(Boolean))]
-      )
-    );
+    return this.http.get<string[]>(`${this.apiUrl}/categories`);
   }
 
-  // Estrae tutti gli ingredienti da tutti i cocktail
+  // Estrae tutti gli ingredienti unici
   getIngredients(): Observable<string[]> {
-    return this.getAllCocktails().pipe(
-      map((cocktails) => {
-        const ingredients = new Set<string>();
-        cocktails.forEach((c) => {
-          for (let i = 1; i <= 15; i++) {
-            const ingredient = c[`strIngredient${i}`];
-            if (ingredient) ingredients.add(ingredient);
-          }
-        });
-        return Array.from(ingredients);
-      })
-    );
+    return this.http.get<string[]>(`${this.apiUrl}/ingredients`);
   }
 
   // Estrae tutti i tipi di bicchiere
   getGlasses(): Observable<string[]> {
-    return this.getAllCocktails().pipe(
-      map((cocktails) =>
-        [...new Set(cocktails.map((c) => c.strGlass).filter(Boolean))]
-      )
-    );
+    return this.http.get<string[]>(`${this.apiUrl}/glasses`);
   }
+
 
   // Ottiene i cocktail ordinati per popolarità
   getPopularCocktails(): Observable<any[]> {
