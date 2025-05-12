@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CocktailService } from '../../services/cocktails.service';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { NgIconsModule } from '@ng-icons/core';
 import { NgbCarouselModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -12,13 +12,13 @@ import { NgbCarouselModule } from '@ng-bootstrap/ng-bootstrap';
   styleUrl: './carousel.component.scss'
 })
 export class CarouselComponent {
-  sliderItems: { title: string, image: string, isDiscover: boolean }[] = [];
-  slideDiscover = { title: 'Scopri', image: '/assets/images/discover.jpeg', isDiscover: true };
+  sliderItems: { title: string, image: string, isDiscover: boolean, id?: string }[] = [];
+  idDrink: string = '';
 
-  constructor(private cocktailService: CocktailService) {}
+  constructor(private cocktailService: CocktailService, private router: Router) {}
 
   ngOnInit() {
-    this.cocktailService.getAllCocktails().subscribe({
+    this.cocktailService.getPopularCocktails().subscribe({
       next: (cocktails) => {
         this.sliderItems = cocktails
           .filter(c => c.strDrinkThumb && c.strDrink)
@@ -26,16 +26,16 @@ export class CarouselComponent {
           .map(c => ({
             title: c.strDrink,
             image: c.strDrinkThumb,
-            isDiscover: false
+            isDiscover: false,
+            id: c.idDrink,
           }));
-        this.sliderItems.push(this.slideDiscover);  // Aggiungi la slide "Scopri"
       },
       error: () => {
         console.error('Errore nel caricamento dei cocktail per il carousel.');
       }
     });
   }
-  
+
   scrollLeft(carousel: HTMLElement) {
     carousel.scrollBy({ left: -220, behavior: 'smooth' });
   }
@@ -43,7 +43,18 @@ export class CarouselComponent {
   scrollRight(carousel: HTMLElement) {
     carousel.scrollBy({ left: 220, behavior: 'smooth' });
   }
+
+  navigateToCocktail(id?: string): void {
+    if (id) {
+      this.router.navigate(['/cocktail', id]);
+    } else {
+      console.error('ID non valido per il cocktail.');
+    }
+  }
+
+
 }
+
 
 
   // nextSlide() {
