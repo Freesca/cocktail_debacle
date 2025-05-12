@@ -50,12 +50,8 @@ export class NavbarComponent {
 
   ngOnInit() {
     this.updateIcons(this.router.url);
-    this.authService.isLoggedIn().subscribe((isLoggedIn: boolean) => {
-      this.isAuthenticated = isLoggedIn;
-    });
-  
-    // Get current username for profile navigation
-    this.authService.userInfo$.subscribe(userInfo => {
+    this.authService.userInfo$.subscribe((userInfo) => {
+      this.isAuthenticated = !!userInfo;
       if (userInfo) {
         this.currentUsername = userInfo.username;
       }
@@ -112,12 +108,17 @@ export class NavbarComponent {
   }
 
   toggleAddReview(): void {
+    if (!this.isAuthenticated) {
+      this.toggleLoginForm();
+      return;
+    }
     this.reviewService.toggle(); // Mostra il modal
     this.isAddReview = !this.isAddReview;
     this.showAddReview = false;
   }
 
   onReviewSuccess() {
+    this.isAddReview = !this.isAddReview;
     this.showAddReview = false;
     this.reviewService.close();
   }

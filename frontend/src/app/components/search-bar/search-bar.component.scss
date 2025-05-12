@@ -56,8 +56,14 @@
       transition: background-color 0.3s ease, border-radius 0.3s ease;
       border-radius: 30px;
 
-      &:hover, &:focus {
+      &:hover {
         background-color: #29272787;
+      }
+    
+      &:focus {
+        outline: none;
+        box-shadow: none;
+        // ❌ NON impostare background-color qui
       }
     }
     .btn-filters {

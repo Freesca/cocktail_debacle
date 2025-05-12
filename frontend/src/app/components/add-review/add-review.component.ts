@@ -331,6 +331,7 @@ export class AddReviewComponent implements OnInit {
   }
 
   closeAddReview() {
+    this.closeForm.emit();
     this.reviewService.close();
   }
 } 

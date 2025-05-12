@@ -7,6 +7,8 @@ import { FormsModule } from '@angular/forms';
 import { CocktailService } from '../../services/cocktails.service';
 import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { AuthModalService } from "../../services/auth-modal.service";
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-add-cocktail',
@@ -17,10 +19,17 @@ import { switchMap } from 'rxjs/operators';
 export class AddCocktailComponent {
   form: FormGroup;
   loading = false;
+  isAuthenticated = false;
   imagePreview: string | ArrayBuffer | null = null;
   selectedImageFile: File | null = null;
 
-  constructor(private fb: FormBuilder, private http: HttpClient, private router: Router, private cocktailService: CocktailService) {
+  constructor(
+    private fb: FormBuilder,
+    private http: HttpClient,
+    private router: Router,
+    private cocktailService: CocktailService,
+    private authService: AuthService,
+    private authModalService: AuthModalService) {
     this.form = this.fb.group({
       strDrink: ['', Validators.required],
       strCategory: ['', Validators.required],
@@ -35,6 +44,12 @@ export class AddCocktailComponent {
 
   get ingredients() {
     return this.form.get('ingredients') as FormArray;
+  }
+
+  ngOnInit() {
+    this.authService.userInfo$.subscribe((userInfo) => {
+      this.isAuthenticated = !!userInfo;
+    });
   }
 
   createIngredientFormGroup(): FormGroup {
@@ -76,6 +91,10 @@ export class AddCocktailComponent {
 
   onSubmit() {
     if (this.form.invalid) return;
+    if (this.isAuthenticated === false) {
+      this.authModalService.open();
+      return;
+    }
   
     this.loading = true;
   

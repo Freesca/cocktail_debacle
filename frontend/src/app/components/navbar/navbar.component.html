@@ -107,7 +107,7 @@
 
 <div *ngIf="reviewService.reviewModal$ | async" class="overlay" (click)="toggleAddReview()">
   <div class="card position-relative px-5" (click)="$event.stopPropagation()">
-    <app-add-review *ngIf="!showAddReview" (onReviewSucces)="onReviewSuccess()">
+    <app-add-review *ngIf="!showAddReview" (onReviewSucces)="onReviewSuccess()" (closeForm)="toggleAddReview()">
     </app-add-review>
   </div>
 </div>
