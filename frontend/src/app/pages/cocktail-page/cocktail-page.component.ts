@@ -6,7 +6,7 @@ import { ReviewService, PlaceReviewMetadata } from '../../services/review.servic
 import { LocationService } from '../../services/location.service';
 import { PlaceService } from '../../services/place.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { forkJoin, of } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { AuthModalService } from '../../services/auth-modal.service';
 import { FavouritesService } from '../../services/favourites.service';
@@ -19,7 +19,7 @@ interface PlaceWithDetails extends PlaceReviewMetadata {
   name?: string;
   address?: string;
   photoUrl?: SafeUrl;
-  photoReference?: string;
+  photoReference?: string | null;
   loading?: boolean;
   error?: boolean;
 }
@@ -165,7 +165,7 @@ export class CocktailPageComponent implements OnInit {
             
             // Load photos for places with photo references
             if (photoReference) {
-              this.loadPlacePhoto(index, photoReference);
+              this.getPlacePhoto(photoReference, index);
             }
           } else {
             this.placeReviews[index] = {
@@ -184,28 +184,34 @@ export class CocktailPageComponent implements OnInit {
     });
   }
 
-  loadPlacePhoto(placeIndex: number, photoReference: string) {
-    this.placeService.getPlacePhoto(photoReference, 400).subscribe({
-      next: (blob) => {
-        const objectURL = URL.createObjectURL(blob);
-        this.placeReviews[placeIndex].photoUrl = this.sanitizer.bypassSecurityTrustUrl(objectURL);
-        this.placeReviews[placeIndex].loading = false;
-        
-        // Check if all places are done loading
-        if (!this.placeReviews.some(p => p.loading)) {
-          this.reviewsLoading = false;
+  getPlacePhoto(photoReference: string, placeIndex: number): Observable<Blob> {
+    return this.placeService.getPlacePhoto(photoReference, 400).pipe(
+      map((response: any) => {
+        if (response instanceof Blob) {
+          const objectURL = URL.createObjectURL(response);
+          this.placeReviews[placeIndex].photoUrl = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+          this.placeReviews[placeIndex].loading = false;
+
+          // Check if all places are done loading
+          if (!this.placeReviews.some(p => p.loading)) {
+            this.reviewsLoading = false;
+          }
+          return response;
+        } else {
+          throw new Error('Unexpected response type');
         }
-      },
-      error: () => {
+      }),
+      catchError(() => {
         this.placeReviews[placeIndex].loading = false;
         this.placeReviews[placeIndex].error = true;
-        
+
         // Check if all places are done loading
         if (!this.placeReviews.some(p => p.loading)) {
           this.reviewsLoading = false;
         }
-      }
-    });
+        return of(null as unknown as Blob); // Return a fallback value
+      })
+    );
   }
 
   navigateToPlace(placeId: string) {

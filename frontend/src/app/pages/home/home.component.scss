@@ -48,8 +48,6 @@
       right: 20px;
     }
   }
-  
-  
 
   .home-title {
     font-size: 2.5rem;
@@ -116,7 +114,7 @@
 
 .discover-section {
   position: relative;
-  height: 80vh;
+  height: 70vh;
   width: 100%;
   margin-top: 88vh; // mantiene il layout dopo home-container
   background-color: #ebebe9;
@@ -138,7 +136,28 @@
   }
 }
 
+.popular-section {
+  position: relative;
+  height: 60vh;
+  width: 100%;
+  background-color: #ebebe9;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; // centra verticalmente
+  align-items: center;     // centra orizzontalmente
+  text-align: center;
+  font-size: 2rem;
 
+  .discover-text {
+    margin-bottom: 2rem;
+  }
+
+  .carousel-container {
+    width: 100%;
+    max-width: 900px;
+  }
+}
 
 @keyframes bounce {
   0%, 100% {
@@ -148,7 +167,6 @@
     transform: translate(-50%, 10px);
   }
 }
-
 
 .image-section {
   position: relative;

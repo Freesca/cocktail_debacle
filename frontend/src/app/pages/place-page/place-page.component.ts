@@ -68,9 +68,9 @@ export class PlacePageComponent implements OnInit {
       this.photoLoading = true;
 
       this.placeService.getPlacePhoto(photoRef, 800).subscribe({
-        next: (blob) => {
-          const objectURL = URL.createObjectURL(blob);
-          this.photoUrl = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+        next: (photoBlob: Blob) => {
+          const photoUrl = URL.createObjectURL(photoBlob);
+          this.photoUrl = this.sanitizer.bypassSecurityTrustUrl(photoUrl);
           this.photoLoading = false;
         },
         error: () => {
