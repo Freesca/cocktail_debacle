@@ -50,8 +50,8 @@ export class NavbarComponent {
 
   ngOnInit() {
     this.updateIcons(this.router.url);
-    this.authService.isLoggedIn().subscribe((isLoggedIn: boolean) => {
-      this.isAuthenticated = isLoggedIn;
+    this.authService.userInfo$.subscribe((userInfo) => {
+      this.isAuthenticated = !!userInfo;
     });
   
     // Get current username for profile navigation
