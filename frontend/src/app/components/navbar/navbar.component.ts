@@ -9,7 +9,7 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { UserImageComponent } from '../user-image/user-image.component'; // Aggiungi il percorso corretto
 import { filter } from 'rxjs/operators';
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
-import {AuthModalService} from "../../services/auth-modal.service";
+import { AuthModalService } from "../../services/auth-modal.service";
 import { AddReviewComponent } from '../add-review/add-review.component';
 import { ReviewService } from '../../services/review.service';
 

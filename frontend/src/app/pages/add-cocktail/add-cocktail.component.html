@@ -49,12 +49,12 @@
   
         <!-- Ingredienti dinamici -->
         <div class="cocktail-ingredients">
-          <label>Ingridients</label>
+          <label>Ingredients</label>
           <div formArrayName="ingredients">
             <div *ngFor="let ingredient of ingredients.controls; let i = index" [formGroupName]="i" class="ingredient-group mb-3">
               <div class="row g-2">
                 <div class="col-6">
-                  <input type="text" formControlName="ingredient" class="form-control" placeholder="Ingridient" required />
+                  <input type="text" formControlName="ingredient" class="form-control" placeholder="Ingredient" required />
                 </div>
                 <div class="col-4">
                   <input type="text" formControlName="measure" class="form-control" placeholder="Measure" required />
@@ -68,7 +68,7 @@
   
           <!-- Bottone per aggiungere un ingrediente -->
           <div class="text-center mt-3">
-            <button type="button" class="btn btn-success btn-sm" (click)="addIngredient()" [disabled]="ingredients.length >= 15">+ Add Ingridient</button>
+            <button type="button" class="btn btn-success btn-sm" (click)="addIngredient()" [disabled]="ingredients.length >= 15">+ Add Ingredient</button>
           </div>
         </div>
       </div>
