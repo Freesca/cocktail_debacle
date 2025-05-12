@@ -112,6 +112,10 @@ export class NavbarComponent {
   }
 
   toggleAddReview(): void {
+    if (!this.isAuthenticated) {
+      this.toggleLoginForm();
+      return;
+    }
     this.reviewService.toggle(); // Mostra il modal
     this.isAddReview = !this.isAddReview;
     this.showAddReview = false;
