@@ -1,18 +1,16 @@
     <!-- Modalità modifica - only visible for own profile -->
     <div class="settings-container d-flex flex-column container mt-4 mb-5">
 
-      <div class="row mt-4">
-        <div class="col-12">
-            <a [routerLink]="['/profile', currentUsername]">
-              Back to profile
-            </a>
-        </div>
-      </div>
-
-      <div class="profile-edit-section row px-3 py-4 mt-4 rounded shadow-sm bg-light">
-
+      <div class="profile-edit-section px-3 py-4 mt-4 rounded shadow-sm bg-light position-relative">
 
         <h4 class="mb-4 border-bottom pb-2">Edit Profile</h4>
+
+        <a 
+          [routerLink]="['/profile', currentUsername]" 
+          class="x-button position-absolute top-0 end-0 m-2 border-0 bg-transparent"
+          aria-label="Back to profile">
+          <ng-icon name="heroXMark" class="text-dark" style="width: 30px; height: 30px;"></ng-icon>
+        </a>
         
         <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
           <div class="row g-3">
