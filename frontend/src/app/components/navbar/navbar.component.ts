@@ -52,10 +52,6 @@ export class NavbarComponent {
     this.updateIcons(this.router.url);
     this.authService.userInfo$.subscribe((userInfo) => {
       this.isAuthenticated = !!userInfo;
-    });
-  
-    // Get current username for profile navigation
-    this.authService.userInfo$.subscribe(userInfo => {
       if (userInfo) {
         this.currentUsername = userInfo.username;
       }
@@ -122,6 +118,7 @@ export class NavbarComponent {
   }
 
   onReviewSuccess() {
+    this.isAddReview = !this.isAddReview;
     this.showAddReview = false;
     this.reviewService.close();
   }
