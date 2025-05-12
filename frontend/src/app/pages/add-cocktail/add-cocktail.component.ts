@@ -47,8 +47,8 @@ export class AddCocktailComponent {
   }
 
   ngOnInit() {
-    this.authService.userInfo$.subscribe((userInfo) => {
-      this.isAuthenticated = !!userInfo;
+    this.authService.isLoggedIn().subscribe((isLoggedIn: boolean) => {
+      this.isAuthenticated = isLoggedIn;
     });
   }
 

@@ -2,11 +2,10 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PlaceService, PlaceResult } from '../../services/place.service';
-import { Subject, debounceTime, distinctUntilChanged, switchMap, of, catchError, forkJoin, from, Observable } from 'rxjs';
+import { Subject, debounceTime, distinctUntilChanged, switchMap, of, catchError, forkJoin } from 'rxjs';
 import { Router } from '@angular/router';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { SearchService } from '../../services/search.service';
-import { IndexedDBService } from '../../services/indexed-db.service';
 
 @Component({
   selector: 'app-places',
@@ -40,8 +39,7 @@ export class PlacesComponent implements OnInit, OnDestroy {
   constructor(
     private placeService: PlaceService,
     private router: Router,
-    private searchService: SearchService,
-    private indexedDBService: IndexedDBService
+    private searchService: SearchService
   ) {}
 
   ngOnInit(): void {
@@ -58,22 +56,18 @@ export class PlacesComponent implements OnInit, OnDestroy {
     this.cleanupBlobUrls(this.searchResults);
   }
 
-  private cleanupBlobUrls(places: PlaceResult[]): void {
-    places.forEach(place => {
-      if (place['photoUrl']?.startsWith('blob:')) {
-        try {
-          URL.revokeObjectURL(place['photoUrl']);
-        } catch (error) {
-          console.error('Errore nel revocare URL del Blob', error);
-        }
-      }
-    });
-  }
-
   getFormattedAddress(place: PlaceResult): string {
     if (place.formatted_address) return place.formatted_address;
     if (place.vicinity) return place.vicinity;
     return 'Address not available';
+  }
+
+  private cleanupBlobUrls(places: PlaceResult[]): void {
+    places.forEach(place => {
+      if (place['photoUrl']?.startsWith('blob:')) {
+        URL.revokeObjectURL(place['photoUrl']);
+      }
+    });
   }
 
   searchPlaces(): void {
@@ -110,66 +104,26 @@ export class PlacesComponent implements OnInit, OnDestroy {
   private loadPlacePhotos(places: PlaceResult[], callback: () => void): void {
     const blobRequests = places.map(place => {
       const photoRef = place.photos?.[0]?.photo_reference || null;
-      console.log('Riferimento foto:', photoRef);
       return this.loadPlacePhoto(photoRef, place);
     });
 
-    forkJoin(blobRequests).subscribe({
-      next: () => {
-        console.log('Tutte le foto caricate');
-        callback();
-      },
-      error: err => {
-        console.error('Errore durante il caricamento delle foto', err);
-        this.handleError('Errore nel caricamento delle foto');
-      }
-    });
+    forkJoin(blobRequests).subscribe(callback);
   }
 
-
-
-  private loadPlacePhoto(photoRef: string | null, place: PlaceResult): Observable<null> {
-    console.log('Caricamento foto per:', place.name, photoRef);
-
+  private loadPlacePhoto(photoRef: string | null, place: PlaceResult) {
     if (!photoRef) {
-      console.log('Nessun riferimento foto, usando fallback');
       place['photoUrl'] = this.fallbackImage;
       return of(null);
     }
 
-    return from(this.indexedDBService.getPhoto(photoRef)).pipe(
-      switchMap((cachedBlob: Blob | null) => {
-        if (cachedBlob) {
-          console.log('Foto trovata nella cache');
-          place['photoUrl'] = URL.createObjectURL(cachedBlob);
-          return of(null);
-        } else {
-          console.log('Foto non trovata nella cache, caricamento dal server...');
-          return this.placeService.getPlacePhoto(photoRef).pipe(
-            catchError(() => {
-              console.log('Errore nel caricamento della foto dal server');
-              place['photoUrl'] = this.fallbackImage;
-              return of(null);
-            }),
-            switchMap((blob: Blob | null) => {
-              if (blob) {
-                console.log('Foto caricata dal server');
-                place['photoUrl'] = URL.createObjectURL(blob);
-                this.indexedDBService.addPhoto(photoRef, blob).catch(console.error);
-              } else {
-                console.log('Nessuna foto disponibile dal server, usando fallback');
-                place['photoUrl'] = this.fallbackImage;
-              }
-              return of(null);
-            })
-          );
-        }
+    return this.placeService.getPlacePhoto(photoRef).pipe(
+      catchError(() => of(null)),
+      switchMap(blob => {
+        place['photoUrl'] = blob ? URL.createObjectURL(blob) : this.fallbackImage;
+        return of(null);
       })
     );
   }
-
-
-
 
   private resetDisplayedSearchPlaces(): void {
     this.displayedSearchPlaces = [];
