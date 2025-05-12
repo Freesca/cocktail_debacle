@@ -7,10 +7,12 @@ import { AuthService } from '../../services/auth.service';
 import { UserService, UpdateProfileDto, DeleteProfileDto } from '../../services/user.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
+import { NgIconsModule } from '@ng-icons/core';
+
 
 @Component({
   selector: 'app-settings',
-  imports: [ CommonModule, FormsModule, NgIf, ReactiveFormsModule, RouterModule],
+  imports: [ CommonModule, FormsModule, NgIf, ReactiveFormsModule, RouterModule, NgIconsModule ],
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss']
 })
