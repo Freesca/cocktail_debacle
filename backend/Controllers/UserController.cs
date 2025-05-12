@@ -38,73 +38,73 @@ public class UserController : ControllerBase
         });
     }
 
-[HttpPatch("profile")]
-public async Task<IActionResult> UpdateProfile([FromBody] UpdateUserProfileDto dto)
-{
-    var user = await _userManager.GetUserAsync(User);
-    if (user == null)
-        return Unauthorized();
-
-    // Controllo Username già in uso (da altri)
-    if (!string.IsNullOrWhiteSpace(dto.Username) &&
-        dto.Username != user.UserName &&
-        await _userManager.Users.AnyAsync(u => u.UserName == dto.Username && u.Id != user.Id))
+    [HttpPatch("profile")]
+    public async Task<IActionResult> UpdateProfile([FromBody] UpdateUserProfileDto dto)
     {
-        return BadRequest(new { message = "Username already in use." });
-    }
-
-    // Controllo Email già in uso (da altri)
-    if (!string.IsNullOrWhiteSpace(dto.Email) &&
-        dto.Email != user.Email &&
-        await _userManager.Users.AnyAsync(u => u.Email == dto.Email && u.Id != user.Id))
-    {
-        return BadRequest(new { message = "Email already in use." });
-    }
-
-    // Aggiornamento Username ed Email
-    if (!string.IsNullOrWhiteSpace(dto.Username))
-        user.UserName = dto.Username;
-
-    if (!string.IsNullOrWhiteSpace(dto.Email))
-        user.Email = dto.Email;
-
-    if (dto.ConsentData.HasValue)
-        user.ConsentData = dto.ConsentData.Value;
-
-    if (dto.ConsentSuggestions.HasValue)
-        user.ConsentSuggestions = dto.ConsentSuggestions.Value;
-
-    // Gestione password se non esiste
-    if (string.IsNullOrWhiteSpace(user.PasswordHash))
-    {
-        if (!string.IsNullOrWhiteSpace(dto.NewPassword))
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return Unauthorized();
+    
+        // Controllo Username già in uso (da altri)
+        if (!string.IsNullOrWhiteSpace(dto.Username) &&
+            dto.Username != user.UserName &&
+            await _userManager.Users.AnyAsync(u => u.UserName == dto.Username && u.Id != user.Id))
+        {
+            return BadRequest(new { message = "Username already in use." });
+        }
+    
+        // Controllo Email già in uso (da altri)
+        if (!string.IsNullOrWhiteSpace(dto.Email) &&
+            dto.Email != user.Email &&
+            await _userManager.Users.AnyAsync(u => u.Email == dto.Email && u.Id != user.Id))
+        {
+            return BadRequest(new { message = "Email already in use." });
+        }
+    
+        // Aggiornamento Username ed Email
+        if (!string.IsNullOrWhiteSpace(dto.Username))
+            user.UserName = dto.Username;
+    
+        if (!string.IsNullOrWhiteSpace(dto.Email))
+            user.Email = dto.Email;
+    
+        if (dto.ConsentData.HasValue)
+            user.ConsentData = dto.ConsentData.Value;
+    
+        if (dto.ConsentSuggestions.HasValue)
+            user.ConsentSuggestions = dto.ConsentSuggestions.Value;
+    
+        // Gestione password se non esiste
+        if (string.IsNullOrWhiteSpace(user.PasswordHash))
+        {
+            if (!string.IsNullOrWhiteSpace(dto.NewPassword))
+            {
+                if (dto.NewPassword != dto.ConfirmPassword)
+                    return BadRequest(new { message = "Password and confirmation do not match." });
+    
+                var addPasswordResult = await _userManager.AddPasswordAsync(user, dto.NewPassword);
+                if (!addPasswordResult.Succeeded)
+                    return BadRequest(addPasswordResult.Errors);
+            }
+        }
+    
+        // Cambio password classico
+        if (!string.IsNullOrWhiteSpace(dto.OldPassword) && !string.IsNullOrWhiteSpace(dto.NewPassword))
         {
             if (dto.NewPassword != dto.ConfirmPassword)
                 return BadRequest(new { message = "Password and confirmation do not match." });
-
-            var addPasswordResult = await _userManager.AddPasswordAsync(user, dto.NewPassword);
-            if (!addPasswordResult.Succeeded)
-                return BadRequest(addPasswordResult.Errors);
+    
+            var passwordChangeResult = await _userManager.ChangePasswordAsync(user, dto.OldPassword, dto.NewPassword);
+            if (!passwordChangeResult.Succeeded)
+                return BadRequest(passwordChangeResult.Errors);
         }
+    
+        var result = await _userManager.UpdateAsync(user);
+        if (!result.Succeeded)
+            return BadRequest(result.Errors);
+    
+        return Ok(new { message = "Profile updated successfully" });
     }
-
-    // Cambio password classico
-    if (!string.IsNullOrWhiteSpace(dto.OldPassword) && !string.IsNullOrWhiteSpace(dto.NewPassword))
-    {
-        if (dto.NewPassword != dto.ConfirmPassword)
-            return BadRequest(new { message = "Password and confirmation do not match." });
-
-        var passwordChangeResult = await _userManager.ChangePasswordAsync(user, dto.OldPassword, dto.NewPassword);
-        if (!passwordChangeResult.Succeeded)
-            return BadRequest(passwordChangeResult.Errors);
-    }
-
-    var result = await _userManager.UpdateAsync(user);
-    if (!result.Succeeded)
-        return BadRequest(result.Errors);
-
-    return Ok(new { message = "Profile updated successfully" });
-}
 
     [HttpDelete("profile")]
     public async Task<IActionResult> DeleteAccount([FromBody] DeleteUserDto dto)

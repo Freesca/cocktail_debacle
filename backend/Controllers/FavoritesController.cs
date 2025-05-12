@@ -49,8 +49,8 @@ public class FavoritesController : ControllerBase
 
 
     // POST: /api/favorites/15346
-    [HttpPost("{idDrink}")]
     [Authorize]
+    [HttpPost("{idDrink}")]
     public async Task<IActionResult> AddFavorite(string idDrink)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
