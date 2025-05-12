@@ -85,99 +85,67 @@ public class CocktailsController : ControllerBase
 
 
     // GET: /api/cocktails/15346
-[HttpGet("{id}")]
-public async Task<ActionResult<CocktailDto>> GetCocktailById(string id)
-{
-    var cocktail = await _context.Cocktails
-        .Include(c => c.CreatedBy)
-        .Include(c => c.Reviews)
-        .Include(c => c.FavoritedBy)
-        .FirstOrDefaultAsync(c => c.IdDrink == id);
-
-    if (cocktail == null)
-        return NotFound();
-
-    var dto = new CocktailDto
+    [HttpGet("{id}")]
+    public async Task<ActionResult<CocktailDto>> GetCocktailById(string id)
     {
-        IdDrink = cocktail.IdDrink,
-        StrDrink = cocktail.StrDrink,
-        StrCategory = cocktail.StrCategory,
-        StrAlcoholic = cocktail.StrAlcoholic,
-        StrGlass = cocktail.StrGlass,
-        StrInstructions = cocktail.StrInstructions,
-        StrDrinkThumb = cocktail.StrDrinkThumb,
+        var cocktail = await _context.Cocktails
+            .Include(c => c.CreatedBy)
+            .Include(c => c.Reviews)
+            .Include(c => c.FavoritedBy)
+            .FirstOrDefaultAsync(c => c.IdDrink == id);
 
-        StrIngredient1 = cocktail.StrIngredient1,
-        StrIngredient2 = cocktail.StrIngredient2,
-        StrIngredient3 = cocktail.StrIngredient3,
-        StrIngredient4 = cocktail.StrIngredient4,
-        StrIngredient5 = cocktail.StrIngredient5,
-        StrIngredient6 = cocktail.StrIngredient6,
-        StrIngredient7 = cocktail.StrIngredient7,
-        StrIngredient8 = cocktail.StrIngredient8,
-        StrIngredient9 = cocktail.StrIngredient9,
-        StrIngredient10 = cocktail.StrIngredient10,
-        StrIngredient11 = cocktail.StrIngredient11,
-        StrIngredient12 = cocktail.StrIngredient12,
-        StrIngredient13 = cocktail.StrIngredient13,
-        StrIngredient14 = cocktail.StrIngredient14,
-        StrIngredient15 = cocktail.StrIngredient15,
+        if (cocktail == null)
+            return NotFound();
 
-        StrMeasure1 = cocktail.StrMeasure1,
-        StrMeasure2 = cocktail.StrMeasure2,
-        StrMeasure3 = cocktail.StrMeasure3,
-        StrMeasure4 = cocktail.StrMeasure4,
-        StrMeasure5 = cocktail.StrMeasure5,
-        StrMeasure6 = cocktail.StrMeasure6,
-        StrMeasure7 = cocktail.StrMeasure7,
-        StrMeasure8 = cocktail.StrMeasure8,
-        StrMeasure9 = cocktail.StrMeasure9,
-        StrMeasure10 = cocktail.StrMeasure10,
-        StrMeasure11 = cocktail.StrMeasure11,
-        StrMeasure12 = cocktail.StrMeasure12,
-        StrMeasure13 = cocktail.StrMeasure13,
-        StrMeasure14 = cocktail.StrMeasure14,
-        StrMeasure15 = cocktail.StrMeasure15,
-
-        UserId = cocktail.UserId ?? 0,
-        UserName = cocktail.CreatedBy?.UserName ?? string.Empty,
-        Popularity = cocktail.FavoritedBy.Count,
-        ReviewsCount = cocktail.Reviews.Count
-    };
-
-    return Ok(dto);
-}
-
-
-    // POST: /api/cocktails/import
-    [HttpPost("import")]
-    public async Task<IActionResult> ImportCocktails()
-    {
-        var filePath = Path.Combine(_env.WebRootPath ?? "wwwroot", "data", "cocktails.json");
-
-        if (!System.IO.File.Exists(filePath))
-            return NotFound("File JSON non trovato.");
-
-        try
+        var dto = new CocktailDto
         {
-            var json = await System.IO.File.ReadAllTextAsync(filePath);
-            var jsonDoc = JsonDocument.Parse(json);
-            var drinks = jsonDoc.RootElement.GetProperty("drinks");
+            IdDrink = cocktail.IdDrink,
+            StrDrink = cocktail.StrDrink,
+            StrCategory = cocktail.StrCategory,
+            StrAlcoholic = cocktail.StrAlcoholic,
+            StrGlass = cocktail.StrGlass,
+            StrInstructions = cocktail.StrInstructions,
+            StrDrinkThumb = cocktail.StrDrinkThumb,
 
-            var cocktails = JsonSerializer.Deserialize<List<Cocktails>>(drinks.GetRawText());
+            StrIngredient1 = cocktail.StrIngredient1,
+            StrIngredient2 = cocktail.StrIngredient2,
+            StrIngredient3 = cocktail.StrIngredient3,
+            StrIngredient4 = cocktail.StrIngredient4,
+            StrIngredient5 = cocktail.StrIngredient5,
+            StrIngredient6 = cocktail.StrIngredient6,
+            StrIngredient7 = cocktail.StrIngredient7,
+            StrIngredient8 = cocktail.StrIngredient8,
+            StrIngredient9 = cocktail.StrIngredient9,
+            StrIngredient10 = cocktail.StrIngredient10,
+            StrIngredient11 = cocktail.StrIngredient11,
+            StrIngredient12 = cocktail.StrIngredient12,
+            StrIngredient13 = cocktail.StrIngredient13,
+            StrIngredient14 = cocktail.StrIngredient14,
+            StrIngredient15 = cocktail.StrIngredient15,
 
-            if (cocktails == null || !cocktails.Any())
-                return BadRequest("Nessun cocktail trovato nel file.");
+            StrMeasure1 = cocktail.StrMeasure1,
+            StrMeasure2 = cocktail.StrMeasure2,
+            StrMeasure3 = cocktail.StrMeasure3,
+            StrMeasure4 = cocktail.StrMeasure4,
+            StrMeasure5 = cocktail.StrMeasure5,
+            StrMeasure6 = cocktail.StrMeasure6,
+            StrMeasure7 = cocktail.StrMeasure7,
+            StrMeasure8 = cocktail.StrMeasure8,
+            StrMeasure9 = cocktail.StrMeasure9,
+            StrMeasure10 = cocktail.StrMeasure10,
+            StrMeasure11 = cocktail.StrMeasure11,
+            StrMeasure12 = cocktail.StrMeasure12,
+            StrMeasure13 = cocktail.StrMeasure13,
+            StrMeasure14 = cocktail.StrMeasure14,
+            StrMeasure15 = cocktail.StrMeasure15,
 
-            _context.Cocktails.AddRange(cocktails);
-            await _context.SaveChangesAsync();
+            UserId = cocktail.UserId ?? 0,
+            UserName = cocktail.CreatedBy?.UserName ?? string.Empty,
+            Popularity = cocktail.FavoritedBy.Count,
+            ReviewsCount = cocktail.Reviews.Count
+        };
 
-            return Ok(new { message = $"Importati {cocktails.Count} cocktail nel database." });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Errore durante l'importazione: {ex.Message}");
-        }
+        return Ok(dto);
     }
 
     // GET: /api/cocktails/popular
@@ -193,6 +161,7 @@ public async Task<ActionResult<CocktailDto>> GetCocktailById(string id)
 
 
     // POST: /api/cocktails/upload-image
+    [Authorize]
     [HttpPost("upload-image")]
     public async Task<IActionResult> UploadImage(IFormFile file)
     {
