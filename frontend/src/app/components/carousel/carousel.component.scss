@@ -119,6 +119,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
+    &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0));
+    border-radius: 10px;  // Arrotonda gli angoli dello sfondo
+  }
 }
 
 .carousel-image-container img {
@@ -128,7 +138,8 @@
   object-fit: cover;
 }
 
-.carousel-image-container h3 {
+.carousel-image-container h5 {
+  z-index: 1;  // Assicura che il titolo sia sopra l'immagine
   position: absolute;
   bottom: 10px;  // Sposta il titolo verso il basso della card
   left: 50%;
